@@ -188,3 +188,20 @@ export function dialogWidth(params) {
 
   return "45%";
 }
+
+export function paramPaging(url, pageIndex, pageSize, textSearch, newObj) {
+  const params = new URLSearchParams();
+
+  if (pageIndex) params.append("page", pageIndex);
+  if (pageSize) params.append("limit", pageSize);
+  if (textSearch) params.append("search", textSearch);
+
+  // Tambahkan key-value dari newObj jika ada
+  if (newObj && typeof newObj === "object") {
+    Object.keys(newObj).forEach((key) => {
+      if (newObj[key]) params.append(key, newObj[key]);
+    });
+  }
+
+  return `${url}?${params.toString()}`;
+}

@@ -2,7 +2,9 @@ import { ref, watch } from "vue";
 import { createDebounce, isValElForm, messageInfo } from "../helpers/utils";
 import { catchError, catchErrorFinally } from "../helpers/catchResp";
 
-export default function useAddData(options = { returnAsArray: false }) {
+export default function useAddData(
+  options = { returnAsArray: false, formData: false }
+) {
   const addData = ref({});
   const addForm = ref(null);
   const addDialog = ref(false);
@@ -60,6 +62,15 @@ export default function useAddData(options = { returnAsArray: false }) {
     if (!resultVal) {
       return messageInfo("Terdapat form yang belum diisi.");
     }
+
+    if (options.formData) {
+      const formData = new FormData();
+      for (const key in addData.value) {
+        formData.append(key, addData.value[key]);
+      }
+      addData.value = formData;
+    }
+
     if (loadingComponent) {
       catchError(async () => {
         const { status, data } = await apiURL(optionalData || addData.value);
@@ -68,6 +79,8 @@ export default function useAddData(options = { returnAsArray: false }) {
           messageInfo(data.message || "Berhasil menyimpan data", "success");
           if (callback) callback(data.data);
         }
+        addForm.value.clearValidate();
+        addForm.value.resetFields();
       });
     } else {
       isLoading.value = true;
@@ -80,7 +93,11 @@ export default function useAddData(options = { returnAsArray: false }) {
             if (callback) callback(data.data);
           }
         },
-        () => (isLoading.value = false)
+        () => {
+          isLoading.value = false;
+          addForm.value.clearValidate();
+          addForm.value.resetFields();
+        }
       );
     }
   };

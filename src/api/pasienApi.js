@@ -1,22 +1,6 @@
 import { axiosAuth } from "../config/axios";
+import { paramPaging } from "../helpers/utils";
 const pageSizeEnv = parseInt(import.meta.env.VITE_PAGE_SIZE);
-
-function paramPaging(url, pageIndex, pageSize, textSearch, newObj) {
-  const params = new URLSearchParams();
-
-  if (pageIndex) params.append("page", pageIndex);
-  if (pageSize) params.append("limit", pageSize);
-  if (textSearch) params.append("search", textSearch);
-
-  // Tambahkan key-value dari newObj jika ada
-  if (newObj && typeof newObj === "object") {
-    Object.keys(newObj).forEach((key) => {
-      if (newObj[key]) params.append(key, newObj[key]);
-    });
-  }
-
-  return `${url}?${params.toString()}`;
-}
 
 export function listPasienPagination(
   pageIndex = 1,
@@ -39,4 +23,8 @@ export function updatePasien(id, data) {
 
 export function deletePasien(id) {
   return axiosAuth.delete(`/patients/${id}`);
+}
+
+export function listPasienSelect(search = "") {
+  return axiosAuth.get("/patients?limit=10&search=" + search);
 }

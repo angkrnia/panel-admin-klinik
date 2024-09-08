@@ -9,4 +9,5 @@ export const patientRule = {
   birthday: [maxStringRule(20)],
   age: [requiredRule()],
   address: [requiredRule(), maxStringRule(150)],
+  record_no: [maxStringRule(16)],
 };

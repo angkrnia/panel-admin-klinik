@@ -11,6 +11,7 @@
         <div class="py-5">
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
                 <el-table-column type="index" label="No" width="50" />
+                <el-table-column prop="record_no" label="No. Rekam Medis" />
                 <el-table-column prop="fullname" label="Nama Pasien" />
                 <el-table-column prop="gender" label="Jenis Kelamin" width="90" />
                 <el-table-column prop="no_ktp" label="No. KTP" />
@@ -42,8 +43,11 @@
         <template #header>
             <h1 class="border-b pb-5">Tambah Pasien</h1>
         </template>
-        <el-form label-width="120px" :label-position="labelPosition()" class="space-x-10" :model="addData" :rules="patientRule" ref="addForm">
+        <el-form label-width="150px" :label-position="labelPosition()" class="space-x-10" :model="addData" :rules="patientRule" ref="addForm">
             <div class="w-full">
+                <el-form-item label="No. Rekam Medis" prop="record_no">
+                    <el-input v-model="addData.record_no" placeholder="No. Rekam Medis" style="width: 100%" />
+                </el-form-item>
                 <el-form-item label="Nama Pasien" prop="fullname">
                     <el-input v-model="addData.fullname" placeholder="Nama Pasien" style="width: 100%" />
                 </el-form-item>
@@ -83,8 +87,11 @@
         <template #header>
             <h1 class="border-b pb-5">Tambah Pasien</h1>
         </template>
-        <el-form label-width="120px" :label-position="labelPosition()" class="space-x-10" :model="editData" :rules="patientRule" ref="editForm">
+        <el-form label-width="150px" :label-position="labelPosition()" class="space-x-10" :model="editData" :rules="patientRule" ref="editForm">
             <div class="w-full">
+                <el-form-item label="No. Rekam Medis" prop="record_no">
+                    <el-input v-model="editData.record_no" placeholder="No. Rekam Medis" style="width: 100%" />
+                </el-form-item>
                 <el-form-item label="Nama Pasien" prop="fullname">
                     <el-input v-model="editData.fullname" placeholder="Nama Pasien" style="width: 100%" />
                 </el-form-item>
