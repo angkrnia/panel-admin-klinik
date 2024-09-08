@@ -26,12 +26,12 @@ export default function useAddData(options = { returnAsArray: false }) {
   watch(addForm, () => {
     if (addForm.value && addDialog.value) {
       setTimeout(() => {
-        addForm.value.$el[clickElement.value].click();
-        addForm.value.$el[clickElement.value].focus();
+        addForm.value.$el[0].click();
+        addForm.value.$el[0].focus();
         requiredLabel.value = document.querySelectorAll(
           ".el-form-item.is-required"
         );
-      }, 10);
+      }, 100);
     }
   });
 
@@ -66,7 +66,7 @@ export default function useAddData(options = { returnAsArray: false }) {
         if (status == 201 || status == 200) {
           addDialog.value = false;
           messageInfo(data.message || "Berhasil menyimpan data", "success");
-          callback(data.data);
+          if (callback) callback(data.data);
         }
       });
     } else {
@@ -77,7 +77,7 @@ export default function useAddData(options = { returnAsArray: false }) {
           if (status == 201 || status == 200) {
             addDialog.value = false;
             messageInfo(data.message || "Berhasil menyimpan data", "success");
-            callback(data.data);
+            if (callback) callback(data.data);
           }
         },
         () => (isLoading.value = false)

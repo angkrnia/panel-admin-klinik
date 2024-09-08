@@ -116,3 +116,75 @@ export function onLogoutHandler() {
   appStore.setAuthentication(false);
   window.location.href = "/login";
 }
+
+export function convertDate(dateString) {
+  const date = new Date(dateString);
+
+  // Daftar bulan dalam format singkat
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  // Mendapatkan tanggal, bulan, tahun, dan waktu
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+
+  // Mendapatkan jam, menit, dan detik
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const seconds = date.getSeconds().toString().padStart(2, "0");
+
+  // Menentukan AM atau PM
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  // Konversi jam ke format 12-jam
+  hours = hours % 12 || 12;
+
+  // Menggabungkan hasil dalam format yang diinginkan
+  return `${day} ${month} ${year}, ${hours}:${minutes}:${seconds} ${ampm}`;
+}
+
+export function labelPosition() {
+  const isMobile = window.matchMedia(
+    "only screen and (max-width: 760px)"
+  ).matches;
+  if (isMobile) return "top";
+  return "left";
+}
+
+export function dialogWidth(params) {
+  const isMobile = window.matchMedia(
+    "only screen and (max-width: 760px)"
+  ).matches;
+  const isTablet = window.matchMedia(
+    "only screen and (min-width: 761px) and (max-width: 1024px)"
+  ).matches;
+  const isLaptop = window.matchMedia(
+    "only screen and (min-width: 1025px) and (max-width: 1440px)"
+  ).matches;
+  const isDesktop = window.matchMedia(
+    "only screen and (min-width: 1441px)"
+  ).matches;
+
+  if (isMobile) return "95%";
+  if (isTablet) return "65%";
+  if (isLaptop) return "50%";
+  if (isDesktop) {
+    if (params?.onDesktop) return params?.onDesktop;
+    return "45%";
+  }
+
+  return "45%";
+}

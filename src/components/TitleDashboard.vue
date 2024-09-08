@@ -7,9 +7,9 @@
                         d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
                 </svg>
             </button>
-            <h1 class="tracking-normal capitalize font-semibold text-sm">{{ title ? title : '' }}</h1>
+            <h1 class="tracking-normal capitalize font-semibold">{{ title ? title : '' }}</h1>
         </div>
-        <div>
+        <div class="flex items-center justify-end">
             <slot name="btn1"></slot>
             <el-button v-if="showButton" :disabled="isDisabled" type="primary" size="small" @click="() => emit('click')">{{ btnText }}</el-button>
             <el-button v-if="showButton2" :disabled="isDisabled" type="primary" size="small" @click="() => emit('click2')">{{ btnText2 }}</el-button>

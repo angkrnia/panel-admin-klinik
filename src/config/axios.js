@@ -16,7 +16,7 @@ axiosNoAuth.defaults.headers.common["Content-Type"] = "application/json";
 export const axiosAuth = axios.create({
   baseURL: baseUrl,
   timeout: 30000,
-  withCredentials: true,
+  // withCredentials: true,
 });
 axiosAuth.defaults.headers.common["Content-Type"] = "application/json";
 

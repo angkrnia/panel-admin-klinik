@@ -12,15 +12,23 @@ export const routes = [
     },
   },
   {
-    path: "/dashboard",
+    path: "/",
     component: () => import("@/views/WrapperPage.vue"),
     children: [
       {
-        path: "",
+        path: "/dashboard",
         name: "dashboard",
         component: () => import("@/views/HomePage.vue"),
         meta: {
           title: "Home",
+        },
+      },
+      {
+        path: "/data-pasien",
+        name: "data-pasien",
+        component: () => import("@/views/Patient/PatientPage.vue"),
+        meta: {
+          title: "Data Pasien",
         },
       },
     ],

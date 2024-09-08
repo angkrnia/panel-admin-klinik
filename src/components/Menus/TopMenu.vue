@@ -1,40 +1,42 @@
 <template>
-    <div class="flex items-start justify-between overflow-hidden h-full w-full">
-        <el-menu background-color="#2563eb" text-color="#f8fafc" active-text-color="#cbd5e1" :default-active="defaultActive" class="el-menu-demo" mode="horizontal" ellipsis>
-            <template v-for="(item, index) in menuList" :key="index">
-                <template v-if="item.hasChildren">
-                    <el-sub-menu :index="item.path">
-                        <template #title>{{ item.title }}</template>
-                        <template v-for="(child, idx) in item.children" :key="idx">
-                            <el-menu-item @click="$router.push(child.path)" :index="child.path">{{ child.title }}</el-menu-item>
-                        </template>
-                    </el-sub-menu>
+    <nav class="fixed z-50 bg-primary w-full">
+        <div class="flex items-start justify-between overflow-hidden h-full w-full">
+            <el-menu background-color="#2563eb" text-color="#f8fafc" active-text-color="#cbd5e1" :default-active="defaultActive" class="el-menu-demo" mode="horizontal" ellipsis>
+                <template v-for="(item, index) in menuList" :key="index">
+                    <template v-if="item.hasChildren">
+                        <el-sub-menu :index="item.path">
+                            <template #title>{{ item.title }}</template>
+                            <template v-for="(child, idx) in item.children" :key="idx">
+                                <el-menu-item @click="$router.push(child.path)" :index="child.path">{{ child.title }}</el-menu-item>
+                            </template>
+                        </el-sub-menu>
+                    </template>
+                    <template v-else>
+                        <el-menu-item @click="$router.push(item.path)" :index="item.path">{{ item.title }}</el-menu-item>
+                    </template>
                 </template>
-                <template v-else>
-                    <el-menu-item @click="$router.push(item.path)" :index="item.path">{{ item.title }}</el-menu-item>
-                </template>
-            </template>
-        </el-menu>
+            </el-menu>
 
-        <div class="flex items-center justify-evenly gap-x-3 px-3 bg-primary h-full">
-            <el-popover class="flex items-center justify-center cursor-pointer bg-primary" placement="bottom-end" :width="200" trigger="click">
-                <template #reference>
-                    <div class="flex items-center cursor-pointer w-full justify-around gap-x-2" id="profile">
-                        <el-icon class="cursor-pointer" :size="20">
-                            <UserFilled />
-                        </el-icon>
-                        <p>Profile</p>
+            <div class="px-3 bg-white h-full py-[17px]">
+                <el-popover class="flex items-center justify-center cursor-pointer bg-primary" placement="bottom-end" :width="200" trigger="click">
+                    <template #reference>
+                        <div class="flex items-center cursor-pointer w-full justify-around gap-x-2" id="profile">
+                            <el-icon class="cursor-pointer" :size="20">
+                                <UserFilled />
+                            </el-icon>
+                            <p>Profile</p>
+                        </div>
+                    </template>
+                    <div class="mr-2 space-y-2">
+                        <p class="font-semibold hidden lg:block text-sm text-nowrap text-center lg:mr-3">Admin Klinik</p>
+                        <el-tag @click="onUpdatePassword" class="w-full text-sm text-gray-500 cursor-pointer" type="warning">Ubah
+                            Password</el-tag>
+                        <el-tag @click="onLogoutHandler" class="w-full text-sm text-gray-500 cursor-pointer" type="danger">Logout</el-tag>
                     </div>
-                </template>
-                <div class="mr-2 space-y-2">
-                    <p class="font-semibold hidden lg:block text-sm text-nowrap text-center lg:mr-3">Admin Klinik</p>
-                    <el-tag @click="onUpdatePassword" class="w-full text-sm text-gray-500 cursor-pointer" type="warning">Ubah
-                        Password</el-tag>
-                    <el-tag @click="onLogoutHandler" class="w-full text-sm text-gray-500 cursor-pointer" type="danger">Logout</el-tag>
-                </div>
-            </el-popover>
+                </el-popover>
+            </div>
         </div>
-    </div>
+    </nav>
 </template>
 
 <script setup>
@@ -42,8 +44,8 @@ import { ref } from 'vue';
 import { onLogoutHandler } from '../../helpers/utils';
 import { useRoute } from 'vue-router';
 
-const defaultActive = ref('/dashboard');
 const route = useRoute();
+const defaultActive = ref(route.path);
 
 function onUpdatePassword() {
 

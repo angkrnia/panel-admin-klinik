@@ -1,10 +1,5 @@
 import { ref } from "vue";
-import {
-  getDifferentObject,
-  isValElForm,
-  messageInfo,
-  replaceNullWithEmptyString,
-} from "../helpers/utils";
+import { isValElForm, messageInfo } from "../helpers/utils";
 import { catchError } from "../helpers/catchResp";
 
 export default function useEditData(options = { returnAsArray: false }) {
@@ -19,31 +14,15 @@ export default function useEditData(options = { returnAsArray: false }) {
     editOrigin = JSON.parse(JSON.stringify(objectEdit)); //create new object v2
   };
 
-  const saveEdit = async (
-    apiURL,
-    OBJECT_ID,
-    callback,
-    message,
-    isReplaceNullToEmptyString
-  ) => {
+  const saveEdit = async (apiURL, OBJECT_ID, callback, message) => {
     const resultVal = await isValElForm(editForm.value);
     if (!resultVal) return;
-    let object = getDifferentObject(editData.value, editOrigin);
-
-    if (Array.isArray(OBJECT_ID)) {
-      OBJECT_ID.forEach((d) => {
-        object[d] = editData.value[d];
-      });
-    } else {
-      object[OBJECT_ID] = editData.value[OBJECT_ID];
-    }
-
-    if (isReplaceNullToEmptyString) {
-      object = replaceNullWithEmptyString(object);
-    }
 
     catchError(async () => {
-      const { status, data } = await apiURL(object);
+      const { status, data } = await apiURL(
+        editData.value[OBJECT_ID],
+        editData.value
+      );
       if (status == 200 || status == 201) {
         if (!message) {
           messageInfo("Berhasil mengubah data", "success");
@@ -51,7 +30,7 @@ export default function useEditData(options = { returnAsArray: false }) {
           messageInfo(message, "success");
         }
         editDialog.value = false;
-        callback(data.data);
+        if (callback) callback(data.data);
       }
     });
   };
