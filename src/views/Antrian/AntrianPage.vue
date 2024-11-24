@@ -94,6 +94,40 @@
         </template>
     </el-dialog>
 
+    <!-- FORM VIEW DIALOG -->
+    <el-dialog v-model="editDialog" :width="dialogWidth()" top="5vh">
+        <template #header>
+            <h1 class="border-b pb-5">Detail Antrian</h1>
+        </template>
+        <el-form label-width="120px" :label-position="labelPosition()" :rules="queueRule" class="space-x-10" :model="editData" ref="editForm">
+            <div class="w-full">
+                <el-form-item label="Dokter" prop="doctor_id">
+                    <el-select disabled v-model="editData.doctor_id" placeholder="Pilih Dokter">
+                        <el-option v-for="item in doctorList" :key="item.id" :label="item.fullname" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Nama Pasien" prop="patient_id">
+                    <el-patient-select disabled v-model="editData.patient_id" />
+                </el-form-item>
+                <el-form-item label="Keluhan" prop="complaint">
+                    <el-input readonly show-word-limit maxlength="255" v-model="editData.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Tekanan Darah" prop="blood_pressure">
+                    <el-input readonly show-word-limit maxlength="10" v-model="editData.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Berat" prop="weight">
+                    <el-input readonly type="number" v-model="editData.weight" placeholder="Berat" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Tinggi" prop="height">
+                    <el-input readonly type="number" v-model="editData.height" placeholder="Tinggi" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Suhu" prop="temperature">
+                    <el-input readonly type="number" v-model="editData.temperature" placeholder="Suhu" style="width: 100%" />
+                </el-form-item>
+            </div>
+        </el-form>
+    </el-dialog>
+
     <!-- DIALOG NOMOR ANTRIAN -->
     <el-dialog v-model="isShowQueueInfo" :width="dialogWidth()" top="5vh">
         <QueueInformation :item="queueInfo" @close-click="isShowQueueInfo = false" />
@@ -107,6 +141,7 @@ import useAddData from '../../composables/useAddData';
 import { convertDate, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
 import { queueRule } from '../../rules/queueRule';
 import QueueInformation from '../../components/QueueInformation.vue';
+import useEditData from '../../composables/useEditData';
 
 const activeName = ref('');
 const doctorList = ref([]);
@@ -167,7 +202,14 @@ const {
     currentPage,
 } = usePagination();
 const { addData, addForm, addDialog, saveAdd, cancelAdd, openDialog } = useAddData();
-
+const {
+    editData,
+    editForm,
+    editDialog,
+    openEditDialog,
+    saveEdit,
+    cancelEdit,
+} = useEditData();
 
 filterData.value = {
     status: activeName.value,
@@ -205,16 +247,29 @@ function handleClick(tab) {
     changeIndex(() => doPaginate(1), 1);
 }
 
-function onViewDialog() {
+function onViewDialog(data) {
+    data.temperature = data.history.temperature;
+    data.height = data.history.height;
+    data.weight = data.history.weight;
+    data.blood_pressure = data.history.blood_pressure;
+    data.complaint = data.history.complaint;
+    openEditDialog(data);
+}
+
+function onSaveEdit() {
 
 }
 
 async function openQueueDialog() {
-    const data = await doctorListHelper();
-    doctorList.value = data;
-    addData.value.doctor_id = data.find((item) => item.is_on_duty === true)?.id;
+    addData.value.doctor_id = doctorList.value.find((item) => item.is_on_duty === true)?.id;
     openDialog(1);
 }
 
+async function firstLoad() {
+    const data = await doctorListHelper();
+    doctorList.value = data;
+}
+
+firstLoad();
 doPaginate(pageIndex.value);
 </script>

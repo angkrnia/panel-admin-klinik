@@ -17,7 +17,9 @@ export const queryPatientList = async (query) => {
           result.push({
             label: `${element.fullname} (${
               element.record_no ? element.record_no : "-"
-            }) · ${element.address}`,
+            }) - ${element.nama_keluarga ? element.nama_keluarga : "-"} · ${
+              element.address
+            }`,
             value: element.id,
           });
         });

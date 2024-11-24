@@ -64,6 +64,11 @@ const menuList = [
         hasChildren: false,
     },
     {
+        title: 'Vital Sign',
+        path: '/vital-sign',
+        hasChildren: false,
+    },
+    {
         title: 'Master Data',
         path: '/data-pasien',
         hasChildren: true,
@@ -78,11 +83,6 @@ const menuList = [
                 path: '/data-dokter',
                 hasChildren: false
             },
-            {
-                title: 'Data Perawat',
-                path: '/data-perawat',
-                hasChildren: false
-            }
         ]
     }
 ]
