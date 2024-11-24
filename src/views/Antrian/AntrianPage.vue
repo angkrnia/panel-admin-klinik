@@ -2,7 +2,7 @@
     <section>
         <TitleDashboard title="Daftar Antrian">
             <template #btn1>
-                <el-button type="primary" @click="openDialog">Buat Antrian</el-button>
+                <el-button type="primary" @click="openQueueDialog">Buat Antrian</el-button>
             </template>
         </TitleDashboard>
     </section>
@@ -17,6 +17,7 @@
                         <div class="py-5">
                             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
                                 <el-table-column prop="queue" min-width="80" align="center" label="Nomor Antrian" />
+                                <el-table-column prop="status" min-width="80" align="center" label="Status" />
                                 <el-table-column prop="patient.fullname" min-width="100" label="Nama Pasien" />
                                 <el-table-column prop="patient.nama_keluarga" min-width="120" label="Nama Keluarga" />
                                 <el-table-column prop="patient.age" label="Usia" />
@@ -61,16 +62,21 @@
         <template #header>
             <h1 class="border-b pb-5">Tambah Antrian Baru</h1>
         </template>
-        <el-form label-width="120px" :label-position="labelPosition()" class="space-x-10" :model="addData" ref="addForm">
+        <el-form label-width="120px" :label-position="labelPosition()" :rules="queueRule" class="space-x-10" :model="addData" ref="addForm">
             <div class="w-full">
+                <el-form-item label="Dokter" prop="doctor_id">
+                    <el-select v-model="addData.doctor_id" placeholder="Pilih Dokter">
+                        <el-option v-for="item in doctorList" :key="item.id" :label="item.fullname" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="Nama Pasien" prop="patient_id">
                     <el-patient-select v-model="addData.patient_id" />
                 </el-form-item>
                 <el-form-item label="Keluhan" prop="complaint">
-                    <el-input v-model="addData.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                    <el-input show-word-limit maxlength="255" v-model="addData.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Tekanan Darah" prop="blood_pressure">
-                    <el-input v-model="addData.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />
+                    <el-input show-word-limit maxlength="10" v-model="addData.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Berat" prop="weight">
                     <el-input type="number" v-model="addData.weight" placeholder="Berat" style="width: 100%" />
@@ -87,15 +93,23 @@
             <FooterButtonDialog @save-click="onSaveAdd" @cancel-click="cancelAdd" />
         </template>
     </el-dialog>
+
+    <!-- DIALOG NOMOR ANTRIAN -->
+    <el-dialog v-model="isShowQueueInfo" :width="dialogWidth()" top="5vh">
+        <QueueInformation :item="queueInfo" @close-click="isShowQueueInfo = false" />
+    </el-dialog>
 </template>
 <script setup>
 import { ref } from 'vue';
 import usePagination from '../../composables/usePagination';
 import { listAntrianPagination, tambahAntrian } from '../../api/antrianApi';
 import useAddData from '../../composables/useAddData';
-import { convertDate, dialogWidth, labelPosition } from '../../helpers/utils';
+import { convertDate, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
+import { queueRule } from '../../rules/queueRule';
+import QueueInformation from '../../components/QueueInformation.vue';
 
 const activeName = ref('');
+const doctorList = ref([]);
 const filters = [
     {
         label: "Semua",
@@ -126,6 +140,13 @@ const filters = [
         name: "done",
     },
 ];
+const isShowQueueInfo = ref(false);
+const queueInfo = ref({
+    queue: 1,
+    status: 'waiting',
+    doctor: 'dr. Friska Yeni Sinamo',
+    patient: 'Jhon',
+});
 
 const {
     listData,
@@ -171,7 +192,12 @@ function changePage(index = 1) {
 }
 
 function onSaveAdd() {
-    saveAdd(tambahAntrian, () => doPaginate(1));
+    saveAdd(tambahAntrian, (data) => {
+        queueInfo.value.queue = data.queue;
+        queueInfo.value.status = data.status;
+        isShowQueueInfo.value = true;
+        doPaginate(1)
+    });
 }
 
 function handleClick(tab) {
@@ -181,6 +207,13 @@ function handleClick(tab) {
 
 function onViewDialog() {
 
+}
+
+async function openQueueDialog() {
+    const data = await doctorListHelper();
+    doctorList.value = data;
+    addData.value.doctor_id = data.find((item) => item.is_on_duty === true)?.id;
+    openDialog(1);
 }
 
 doPaginate(pageIndex.value);

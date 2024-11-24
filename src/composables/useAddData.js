@@ -28,8 +28,8 @@ export default function useAddData(
   watch(addForm, () => {
     if (addForm.value && addDialog.value) {
       setTimeout(() => {
-        addForm.value.$el[0].click();
-        addForm.value.$el[0].focus();
+        addForm.value.$el[clickElement.value].click();
+        addForm.value.$el[clickElement.value].focus();
         requiredLabel.value = document.querySelectorAll(
           ".el-form-item.is-required"
         );

@@ -5,9 +5,9 @@
                 Panel Admin
             </h1>
             <el-form @submit.prevent="onLogin" ref="addForm" :model="addData" :rules="loginRule">
-                <el-form-item prop="email">
-                    <label for="first" class="block mt-4 mb-2 text-left text-gray-700 font-bold">Email:</label>
-                    <input v-model="addData.email" type="email" id="first" name="first" placeholder="Enter your Email" class="block w-full px-4 py-2 border
+                <el-form-item prop="phone">
+                    <label for="first" class="block mt-4 mb-2 text-left text-gray-700 font-bold">No HP:</label>
+                    <input v-model="addData.phone" type="phone" id="first" name="first" placeholder="Enter your phone" class="block w-full px-4 py-2 border
                     -gray-300 rounded-md focus:outline-none
                      focus:border-green-400" required>
                 </el-form-item>

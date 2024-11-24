@@ -3,6 +3,7 @@ import { useAppStore } from "../store/appStore";
 import Cookies from "js-cookie";
 import { axiosAuth } from "../config/axios";
 import { jwtDecode } from "jwt-decode";
+import { getDokterSelect } from "../api/dokterApi";
 
 export const isObjectEmpty = (object) => {
   if (!object) return true;
@@ -204,4 +205,19 @@ export function paramPaging(url, pageIndex, pageSize, textSearch, newObj) {
   }
 
   return `${url}?${params.toString()}`;
+}
+
+export function doctorListHelper() {
+  return new Promise(async (resolve) => {
+    let load = loading();
+    try {
+      const result = await getDokterSelect();
+      resolve(result.data.data);
+    } catch (error) {
+      console.error(error);
+      resolve([]);
+    } finally {
+      load.close();
+    }
+  });
 }

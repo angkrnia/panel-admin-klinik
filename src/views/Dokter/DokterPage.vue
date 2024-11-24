@@ -338,10 +338,9 @@ function changePage(index = 1) {
 }
 
 function onEditDialog(row) {
-    console.log(row)
     row.email = row.user.email
     previewImage.value = row.avatar
-    row.gender = row.gender == 1 ? 'Laki-laki' : 'Perempuan'
+    row.gender = row.gender == 'Laki-laki' ? 'L' : 'P'
     openEditDialog(row);
 }
 

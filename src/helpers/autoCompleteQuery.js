@@ -27,3 +27,7 @@ export const queryPatientList = async (query) => {
     }
   });
 };
+
+// Doctor Master
+export const doctorList = ref([]);
+export const doctorListLoading = ref(false);

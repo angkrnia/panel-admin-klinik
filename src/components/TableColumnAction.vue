@@ -7,6 +7,11 @@
     </template>
     <template #default="{ row }">
       <div class="table-fixed-icon flex items-center justify-center gap-x-2">
+        <el-tooltip v-if="showAmbilAntrian" class="box-item" popper-class="custom-popper" effect="dark" content="Ambil Antrian" placement="top" :enterable="false">
+          <el-icon class="item" @click="handlGetQueue(row)">
+            <Pointer />
+          </el-icon>
+        </el-tooltip>
         <el-tooltip v-if="showEdit" class="box-item" popper-class="custom-popper" effect="dark" content="Ubah" placement="top" :enterable="false">
           <el-icon class="item" @click="handleEdit(row)">
             <edit />
@@ -39,7 +44,7 @@
 </template>
 
 <script setup>
-import { Edit, Delete, ZoomIn, RefreshLeft, InfoFilled, Document } from '@element-plus/icons-vue';
+import { Edit, Delete, ZoomIn, RefreshLeft, InfoFilled, Document, Pointer } from '@element-plus/icons-vue';
 import { toRaw, ref } from 'vue';
 
 const emit = defineEmits([
@@ -100,11 +105,16 @@ const props = defineProps({
   tableHeader: {
     type: Array,
     default: () => [],
+  },
+  showAmbilAntrian: {
+    type: Boolean,
+    default: false,
   }
 });
 const minWidth = ref(null);
 
 const handleEdit = (row) => emit('click-edit', toRaw(row));
+const handlGetQueue = (row) => emit('click-queue', toRaw(row));
 const handleView = (row) => emit('click-view', toRaw(row));
 const handleHistory = (row) => emit('click-history', toRaw(row));
 const handleDelete = (row) => emit('click-delete', toRaw(row));

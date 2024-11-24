@@ -22,14 +22,14 @@
                         {{ scope.row.birthday }} ({{ scope.row.age }} thn)
                     </template>
                 </el-table-column>
-                <el-table-column prop="address" label="Address" />
+                <el-table-column prop="address" label="Alamat" />
                 <el-table-column prop="created_at" label="Dibuat">
                     <template #default="scope">
                         {{ convertDate(scope.row.created_at) }}
                     </template>
                 </el-table-column>
                 <!-- Untuk kolom aksi -->
-                <TableColumnAction show-edit show-delete @click-edit="onEditDialog" @click-delete="onDeleteData" />
+                <TableColumnAction show-edit show-delete show-ambil-antrian @click-queue="onOpenQueue" @click-edit="onEditDialog" @click-delete="onDeleteData" />
             </el-table>
         </div>
         <div class="flex items-center justify-center">
@@ -125,16 +125,59 @@
             <FooterButtonDialog @save-click="onSaveEdit" @cancel-click="cancelEdit" />
         </template>
     </el-dialog>
+
+    <!-- FORM TAMBAH ANTRIAN -->
+    <el-dialog v-model="queueDialog" :width="dialogWidth()" top="5vh">
+        <template #header>
+            <h1 class="border-b pb-5">Tambah Antrian Baru</h1>
+        </template>
+        <el-form label-width="120px" :label-position="labelPosition()" :rules="queueRule" class="space-x-10" :model="queueData" ref="queueForm">
+            <div class="w-full">
+                <el-form-item label="Dokter" prop="doctor_id">
+                    <el-select v-model="queueData.doctor_id" placeholder="Pilih Dokter">
+                        <el-option v-for="item in doctorList" :key="item.id" :label="item.fullname" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Keluhan" prop="complaint">
+                    <el-input show-word-limit maxlength="255" v-model="queueData.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Tekanan Darah" prop="blood_pressure">
+                    <el-input show-word-limit maxlength="10" v-model="queueData.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Berat" prop="weight">
+                    <el-input show-word-limit maxlength="10" type="number" v-model="queueData.weight" placeholder="Berat" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Tinggi" prop="height">
+                    <el-input show-word-limit maxlength="10" type="number" v-model="queueData.height" placeholder="Tinggi" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Suhu" prop="temperature">
+                    <el-input show-word-limit maxlength="10" type="number" v-model="queueData.temperature" placeholder="Suhu" style="width: 100%" />
+                </el-form-item>
+            </div>
+        </el-form>
+        <template #footer>
+            <FooterButtonDialog @save-click="onSaveQueue" @cancel-click="cancelQueue" />
+        </template>
+    </el-dialog>
+
+    <!-- DIALOG NOMOR ANTRIAN -->
+    <el-dialog v-model="isShowQueueInfo" :width="dialogWidth()" top="5vh">
+        <QueueInformation :item="queueInfo" @close-click="isShowQueueInfo = false" />
+    </el-dialog>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { deletePasien, listPasienPagination, tambahPasien, updatePasien } from '../../api/pasienApi';
 import useAddData from '../../composables/useAddData';
 import useDeleteData from '../../composables/useDeleteData';
 import useEditData from '../../composables/useEditData';
 import usePagination from '../../composables/usePagination';
-import { convertDate, dialogWidth, labelPosition } from '../../helpers/utils';
+import { convertDate, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
 import { patientRule } from '../../rules/patientRules';
+import { tambahAntrian } from '../../api/antrianApi';
+import { queueRule } from '../../rules/queueRule';
+import QueueInformation from '../../components/QueueInformation.vue';
 
 const {
     listData,
@@ -149,8 +192,26 @@ const {
     currentPage,
 } = usePagination();
 const { addData, addForm, addDialog, saveAdd, cancelAdd, openDialog } = useAddData();
+const [
+    queueData,
+    queueForm,
+    queueDialog,
+    saveQueue,
+    cancelQueue,
+    requiredLabelLength,
+    openQueueDialog,
+    isLoadingQueue,
+] = useAddData({ returnAsArray: true });
 const { editData, editForm, editDialog, openEditDialog, saveEdit, cancelEdit } = useEditData();
 const { deleteData } = useDeleteData();
+const doctorList = ref([]);
+const isShowQueueInfo = ref(false);
+const queueInfo = ref({
+    queue: 1,
+    status: 'waiting',
+    doctor: 'dr. Friska Yeni Sinamo',
+    patient: 'Jhon',
+});
 
 function doPaginate(index, pSize) {
     getListData(listPasienPagination, index, pSize ? pSize : pageSize.value, search.value, filterData.value);
@@ -183,6 +244,26 @@ function onSaveAdd() {
 
 function onSaveEdit() {
     saveEdit(updatePasien, 'id', () => doPaginate(1));
+}
+
+async function onOpenQueue(row) {
+    const data = await doctorListHelper();
+    const currentDoctor = data.find((item) => item.is_on_duty === true);
+    doctorList.value = data;
+    queueData.value.doctor_id = currentDoctor?.id;
+    queueData.value.patient_id = row.id;
+    queueInfo.value.patient = row.fullname;
+    queueInfo.value.doctor = currentDoctor?.fullname;
+    openQueueDialog(1);
+}
+
+function onSaveQueue() {
+    saveQueue(tambahAntrian, (data) => {
+        queueInfo.value.queue = data.queue;
+        queueInfo.value.status = data.status;
+        isShowQueueInfo.value = true;
+        doPaginate(1)
+    });
 }
 
 doPaginate(pageIndex.value);

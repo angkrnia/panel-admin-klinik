@@ -14,14 +14,25 @@ export function listDokterPagination(
 }
 
 export function tambahDokter(data) {
-  axiosAuth.defaults.headers.common["Content-Type"] = "multipart/form-data";
-  return axiosAuth.post("/doctors", data);
+  return axiosAuth.post("/doctors", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 }
 
 export function updateDokter(id, data) {
-  return axiosAuth.put(`/doctors/${id}`, data);
+  return axiosAuth.put(`/doctors/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 }
 
 export function deleteDokter(id) {
   return axiosAuth.delete(`/doctors/${id}`);
+}
+
+export function getDokterSelect() {
+  return axiosAuth.get("/doctors-list");
 }
