@@ -1,6 +1,6 @@
-import { emailRule, minStringRule, requiredRule } from ".";
+import { minStringRule, requiredRule } from ".";
 
 export const loginRule = {
-  email: [requiredRule(), emailRule()],
+  phone: [requiredRule(), minStringRule(5)],
   password: [requiredRule(), minStringRule(3)],
 };
