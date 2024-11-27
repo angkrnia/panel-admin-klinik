@@ -176,7 +176,7 @@ import useAddData from '../../composables/useAddData';
 import useDeleteData from '../../composables/useDeleteData';
 import useEditData from '../../composables/useEditData';
 import usePagination from '../../composables/usePagination';
-import { convertDate, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
+import { convertDate, dialogWidth, doctorListHelper, labelPosition, messageInfo } from '../../helpers/utils';
 import { patientRule } from '../../rules/patientRules';
 import { tambahAntrian } from '../../api/antrianApi';
 import { queueRule } from '../../rules/queueRule';
@@ -238,7 +238,8 @@ function onEditDialog(row) {
 }
 
 function onDeleteData({ id = 0 }) {
-    deleteData(deletePasien, id, () => doPaginate(1));
+    // deleteData(deletePasien, id, () => doPaginate(1));
+    messageInfo('Hanya administrator yang bisa hapus.', 'warning');
 }
 
 function onSaveAdd() {
