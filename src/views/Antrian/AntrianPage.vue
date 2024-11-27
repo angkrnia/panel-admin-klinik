@@ -133,23 +133,24 @@
                     </el-form-item>
                 </div>
                 <template v-if="editData.status === 'completed' || editData.status === 'done'">
-                    <el-form-item label="Keluhan" prop="history.complaint">
-                        <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
-                    </el-form-item>
                     <el-form-item label="Pemeriksaan" prop="history.pemeriksaan">
-                        <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.pemeriksaan" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                        <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.pemeriksaan" type="textarea" placeholder="Pemeriksaan"
+                            style="width: 100%" />
                     </el-form-item>
                     <el-form-item label="Diagnosa" prop="history.diagnosa">
-                        <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.diagnosa" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                        <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.diagnosa" type="textarea" placeholder="Diagnosa"
+                            style="width: 100%" />
                     </el-form-item>
                     <el-form-item label="Tindakan" prop="history.tindakan">
-                        <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.tindakan" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                        <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.tindakan" type="textarea" placeholder="Tindakan"
+                            style="width: 100%" />
                     </el-form-item>
                     <el-form-item label="Therapy/Obat" prop="history.teraphy">
-                        <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.teraphy" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                        <el-input :rows="5" readonly show-word-limit maxlength="255" v-model="editData.history.teraphy" type="textarea" placeholder="Therapy/Obat"
+                            style="width: 100%" />
                     </el-form-item>
                     <el-form-item label="Saran" prop="history.saran">
-                        <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.saran" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                        <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.saran" type="textarea" placeholder="Saran" style="width: 100%" />
                     </el-form-item>
                 </template>
             </div>
