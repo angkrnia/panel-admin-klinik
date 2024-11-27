@@ -221,3 +221,22 @@ export function doctorListHelper() {
     }
   });
 }
+
+export function convertStatusName(status) {
+  switch (status) {
+    case "on waiting":
+      return "Pemeriksaan Perawat";
+    case "waiting":
+      return "Menunggu Panggilan Dokter";
+    case "on process":
+      return "Diperiksa Dokter";
+    case "done":
+      return "Pengambilan Obat";
+    case "canceled":
+      return "Dibatalkan";
+    case "completed":
+      return "Selesai";
+    default:
+      return status;
+  }
+}

@@ -10,19 +10,19 @@
         </div>
         <div class="py-5">
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
-                <el-table-column type="index" label="No" width="50" />
+                <el-table-column type="index" label="No" min-width="50" />
                 <el-table-column prop="record_no" label="No. Rekam Medis" />
-                <el-table-column prop="fullname" label="Nama Pasien" />
-                <el-table-column prop="gender" label="Jenis Kelamin" width="90" />
-                <el-table-column prop="no_ktp" label="No. KTP" />
-                <el-table-column prop="phone" label="No. HP" />
+                <el-table-column prop="fullname" label="Nama Pasien" min-width="150" />
                 <el-table-column prop="nama_keluarga" label="Nama Keluarga" />
-                <el-table-column prop="birthday" label="Lahir">
+                <el-table-column prop="gender" label="Jenis Kelamin" min-width="90" />
+                <el-table-column prop="no_ktp" label="No. KTP" />
+                <el-table-column prop="phone" label="No. HP" min-width="120" />
+                <el-table-column prop="birthday" label="Umur">
                     <template #default="scope">
                         {{ scope.row.birthday }} ({{ scope.row.age }} thn)
                     </template>
                 </el-table-column>
-                <el-table-column prop="address" label="Alamat" />
+                <el-table-column prop="address" label="Alamat" min-width="180" />
                 <el-table-column prop="created_at" label="Dibuat">
                     <template #default="scope">
                         {{ convertDate(scope.row.created_at) }}
@@ -140,6 +140,9 @@
                 </el-form-item>
                 <el-form-item label="Keluhan" prop="complaint">
                     <el-input show-word-limit maxlength="255" v-model="queueData.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Catatan" prop="note">
+                    <el-input show-word-limit maxlength="255" v-model="queueData.note" type="textarea" placeholder="Catatan" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Tekanan Darah" prop="blood_pressure">
                     <el-input show-word-limit maxlength="10" v-model="queueData.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />

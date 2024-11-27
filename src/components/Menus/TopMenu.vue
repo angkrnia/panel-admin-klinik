@@ -69,6 +69,11 @@ const menuList = [
         hasChildren: false,
     },
     {
+        title: 'Farmasi',
+        path: '/pharmacy',
+        hasChildren: false,
+    },
+    {
         title: 'Master Data',
         path: '/data-pasien',
         hasChildren: true,

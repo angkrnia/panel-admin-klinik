@@ -6,7 +6,7 @@
 
             <div class="flex flex-col items-center justify-center space-y-1">
                 <h1>Pasien: <span class="font-semibold">{{ item.patient }}</span></h1>
-                <h1>Status: <span class="font-semibold">{{ item.status }}</span></h1>
+                <h1>Status: <span class="font-semibold">{{ convertStatusName(item.status) }}</span></h1>
                 <h1>Dokter: <span class="font-semibold">{{ item.doctor }}</span></h1>
             </div>
 
@@ -18,6 +18,8 @@
 </template>
 
 <script setup>
+import { convertStatusName } from '../helpers/utils';
+
 const props = defineProps({
     item: {
         type: Object,

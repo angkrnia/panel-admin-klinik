@@ -8,8 +8,9 @@
     </section>
 
     <section>
-        <p class="text-sm text-gray-500">Tanggal</p>
-        <el-date-picker v-model="filterData.date" type="date" placeholder="Pick a day" />
+        <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
+            <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate" />
+        </div>
         <div>
             <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
                 <template v-for="(item, index) in filters" :key="index">
@@ -17,8 +18,12 @@
                         <div class="py-5">
                             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
                                 <el-table-column prop="queue" min-width="80" align="center" label="Nomor Antrian" />
-                                <el-table-column prop="status" min-width="80" align="center" label="Status" />
-                                <el-table-column prop="patient.fullname" min-width="100" label="Nama Pasien" />
+                                <el-table-column prop="status" min-width="220" align="center" label="Status">
+                                    <template #default="{ row }">
+                                        <el-tag type="success" size="small">{{ convertStatusName(row.status) }}</el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="patient.fullname" min-width="120" label="Nama Pasien" />
                                 <el-table-column prop="patient.nama_keluarga" min-width="120" label="Nama Keluarga" />
                                 <el-table-column prop="patient.age" label="Usia" />
                                 <el-table-column prop="patient.record_no" label="No. Rekam Medis" min-width="120" />
@@ -101,29 +106,52 @@
         </template>
         <el-form label-width="120px" :label-position="labelPosition()" :rules="queueRule" class="space-x-10" :model="editData" ref="editForm">
             <div class="w-full">
-                <el-form-item label="Dokter" prop="doctor_id">
-                    <el-select disabled v-model="editData.doctor_id" placeholder="Pilih Dokter">
-                        <el-option v-for="item in doctorList" :key="item.id" :label="item.fullname" :value="item.id"></el-option>
-                    </el-select>
+                <el-form-item label="Dokter" prop="doctor.fullname">
+                    <el-input disabled v-model="editData.doctor.fullname" />
                 </el-form-item>
-                <el-form-item label="Nama Pasien" prop="patient_id">
-                    <el-patient-select disabled v-model="editData.patient_id" />
+                <el-form-item label="Nama Pasien" prop="patient.fullname">
+                    <el-input disabled v-model="editData.patient.fullname" />
                 </el-form-item>
                 <el-form-item label="Keluhan" prop="complaint">
                     <el-input readonly show-word-limit maxlength="255" v-model="editData.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
                 </el-form-item>
-                <el-form-item label="Tekanan Darah" prop="blood_pressure">
-                    <el-input readonly show-word-limit maxlength="10" v-model="editData.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />
+                <el-form-item label="Catatan" prop="note">
+                    <el-input readonly show-word-limit maxlength="255" v-model="editData.note" type="textarea" placeholder="Catatan" style="width: 100%" />
                 </el-form-item>
-                <el-form-item label="Berat" prop="weight">
-                    <el-input readonly type="number" v-model="editData.weight" placeholder="Berat" style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Tinggi" prop="height">
-                    <el-input readonly type="number" v-model="editData.height" placeholder="Tinggi" style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Suhu" prop="temperature">
-                    <el-input readonly type="number" v-model="editData.temperature" placeholder="Suhu" style="width: 100%" />
-                </el-form-item>
+                <div class="grid grid-cols-2 gap-2">
+                    <el-form-item label="Tekanan Darah" prop="blood_pressure">
+                        <el-input readonly show-word-limit maxlength="10" v-model="editData.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Berat" prop="weight">
+                        <el-input readonly type="number" v-model="editData.weight" placeholder="Berat" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Tinggi" prop="height">
+                        <el-input readonly type="number" v-model="editData.height" placeholder="Tinggi" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Suhu" prop="temperature">
+                        <el-input readonly type="number" v-model="editData.temperature" placeholder="Suhu" style="width: 100%" />
+                    </el-form-item>
+                </div>
+                <template v-if="editData.status === 'completed' || editData.status === 'done'">
+                    <el-form-item label="Keluhan" prop="history.complaint">
+                        <el-input readonly show-word-limit maxlength="255" v-model="editData.history.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Pemeriksaan" prop="history.pemeriksaan">
+                        <el-input readonly show-word-limit maxlength="255" v-model="editData.history.pemeriksaan" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Diagnosa" prop="history.diagnosa">
+                        <el-input readonly show-word-limit maxlength="255" v-model="editData.history.diagnosa" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Tindakan" prop="history.tindakan">
+                        <el-input readonly show-word-limit maxlength="255" v-model="editData.history.tindakan" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Therapy/Obat" prop="history.teraphy">
+                        <el-input readonly show-word-limit maxlength="255" v-model="editData.history.teraphy" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Saran" prop="history.saran">
+                        <el-input readonly show-word-limit maxlength="255" v-model="editData.history.saran" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                    </el-form-item>
+                </template>
             </div>
         </el-form>
     </el-dialog>
@@ -138,7 +166,7 @@ import { ref } from 'vue';
 import usePagination from '../../composables/usePagination';
 import { listAntrianPagination, tambahAntrian } from '../../api/antrianApi';
 import useAddData from '../../composables/useAddData';
-import { convertDate, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
+import { convertDate, convertStatusName, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
 import { queueRule } from '../../rules/queueRule';
 import QueueInformation from '../../components/QueueInformation.vue';
 import useEditData from '../../composables/useEditData';
@@ -151,7 +179,7 @@ const filters = [
         name: "",
     },
     {
-        label: "Pengecekan Awal",
+        label: "Vital Sign",
         name: "on waiting",
     },
     {
@@ -171,8 +199,12 @@ const filters = [
         name: "canceled",
     },
     {
-        label: "Selesai",
+        label: "Pengambilan Obat",
         name: "done",
+    },
+    {
+        label: "Selesai",
+        name: "completed",
     },
 ];
 const isShowQueueInfo = ref(false);
@@ -253,6 +285,7 @@ function onViewDialog(data) {
     data.weight = data.history.weight;
     data.blood_pressure = data.history.blood_pressure;
     data.complaint = data.history.complaint;
+    data.note = data.history.note;
     openEditDialog(data);
 }
 

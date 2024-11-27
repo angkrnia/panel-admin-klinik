@@ -13,6 +13,21 @@ export function listAntrianPagination(
   );
 }
 
+export function pharmacyPagination(
+  pageIndex = 1,
+  pageSize = pageSizeEnv,
+  textSearch = "",
+  newObj = {}
+) {
+  return axiosAuth.get(
+    paramPaging("/queue/pharmacy", pageIndex, pageSize, textSearch, newObj)
+  );
+}
+
+export function detailKunjungan(id) {
+  return axiosAuth.get("/queue/pharmacy/" + id);
+}
+
 export function tambahAntrian(data) {
   return axiosAuth.post("/queue", data);
 }
@@ -23,4 +38,12 @@ export function updateAntrian(id, data) {
 
 export function deleteAntrian(id) {
   return axiosAuth.delete(`/queue/${id}`);
+}
+
+export function insertVitalSign(id, data) {
+  return axiosAuth.put("/queue/" + id + "/vital-sign", data);
+}
+
+export function completedQueue(id, data) {
+  return axiosAuth.put("/queue/" + id + "/completed", data);
 }

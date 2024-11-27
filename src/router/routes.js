@@ -47,6 +47,22 @@ export const routes = [
           title: "Antrian",
         },
       },
+      {
+        path: "/vital-sign",
+        name: "Vital Sign",
+        component: () => import("@/views/VitalSign/VitalSignPage.vue"),
+        meta: {
+          title: "Antrian",
+        },
+      },
+      {
+        path: "/pharmacy",
+        name: "Pengambilan Obat",
+        component: () => import("@/views/Pharmacy/CompletedPage.vue"),
+        meta: {
+          title: "Pengambilan Obat",
+        },
+      },
     ],
   },
 ];
