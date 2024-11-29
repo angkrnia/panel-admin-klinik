@@ -106,7 +106,7 @@ export default function useAddData(
     addDialog.value = false;
   };
 
-  const openDialog = (autoClickElement) => {
+  const openDialog = (autoClickElement = 0) => {
     if (autoClickElement) clickElement.value = autoClickElement;
     addDialog.value = true;
   };

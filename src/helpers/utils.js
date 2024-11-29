@@ -240,3 +240,16 @@ export function convertStatusName(status) {
       return status;
   }
 }
+
+export function copyToClipboard(text) {
+  try {
+    if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text);
+      messageInfo("Text berhasil disalin", "success");
+    } else {
+      messageInfo("Browser tidak mendukupkan fitur salin", "warning");
+    }
+  } catch (error) {
+    messageInfo("Gagal menyalin text", "error");
+  }
+}

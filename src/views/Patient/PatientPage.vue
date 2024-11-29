@@ -2,7 +2,7 @@
     <section>
         <TitleDashboard title="Daftar Pasien">
             <template #btn1>
-                <el-button type="primary" @click="openDialog">Tambah Pasien</el-button>
+                <el-button type="primary" @click="openAddDialog">Tambah Pasien</el-button>
             </template>
         </TitleDashboard>
         <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
@@ -61,10 +61,10 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="Tanggal Lahir" prop="birthday">
-                    <el-date-picker v-model="addData.birthday" type="date" format="YYYY" value-format="YYYY-MM-DD" placeholder="Pilih Tanggal" />
+                    <el-date-picker v-model="addData.birthday" type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" placeholder="Pilih Tanggal" />
                 </el-form-item>
                 <el-form-item label="Umur" prop="age">
-                    <el-input-number :min="1" v-model="addData.age" placeholder="Umur" />
+                    <el-input-number v-model="addData.age" placeholder="Umur" />
                 </el-form-item>
                 <el-form-item label="No. KTP" prop="no_ktp">
                     <el-input type="number" v-model="addData.no_ktp" placeholder="No KTP" />
@@ -105,10 +105,10 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="Tanggal Lahir" prop="birthday">
-                    <el-date-picker v-model="editData.birthday" type="date" format="YYYY" value-format="YYYY-MM-DD" placeholder="Pilih Tanggal" />
+                    <el-date-picker v-model="editData.birthday" type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" placeholder="Pilih Tanggal" />
                 </el-form-item>
                 <el-form-item label="Umur" prop="age">
-                    <el-input-number :min="1" v-model="editData.age" placeholder="Umur" />
+                    <el-input-number v-model="editData.age" placeholder="Umur" />
                 </el-form-item>
                 <el-form-item label="No. KTP" prop="no_ktp">
                     <el-input type="number" v-model="editData.no_ktp" placeholder="No KTP" />
@@ -268,6 +268,10 @@ function onSaveQueue() {
         isShowQueueInfo.value = true;
         doPaginate(1)
     });
+}
+
+async function openAddDialog() {
+    openDialog(0);
 }
 
 doPaginate(pageIndex.value);

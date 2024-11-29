@@ -42,10 +42,37 @@
         </template>
         <el-form label-width="120px" :label-position="labelPosition()" :rules="queueRule" class="space-x-10" :model="editData" ref="editForm">
             <div class="w-full">
-                <el-form-item label="Nama Pasien" prop="patient_id">
-                    <el-input disabled v-model="editData.patient.fullname" />
+                <el-form-item label="No. Rekam Medis" prop="record_no">
+                    <el-input readonly v-model="editData.patient.record_no">
+                        <template #append>
+                            <el-icon @click="copyToClipboard(editData.patient.record_no)" class="cursor-pointer">
+                                <CopyDocument />
+                            </el-icon>
+                        </template>
+                    </el-input>
                 </el-form-item>
-                <el-form-item label="Dokter" prop="doctor_id">
+                <el-form-item label="No. HP" prop="phone">
+                    <el-input readonly v-model="editData.patient.phone">
+                        <template #append>
+                            <el-icon @click="copyToClipboard(editData.patient.phone)" class="cursor-pointer">
+                                <CopyDocument />
+                            </el-icon>
+                        </template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="Nama Pasien" prop="fullname">
+                    <el-input readonly v-model="editData.patient.fullname">
+                        <template #append>
+                            <el-icon @click="copyToClipboard(editData.patient.fullname)" class="cursor-pointer">
+                                <CopyDocument />
+                            </el-icon>
+                        </template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="Nama Keluarga" prop="patient.nama_keluarga">
+                    <el-input disabled v-model="editData.patient.nama_keluarga" />
+                </el-form-item>
+                <el-form-item label="Dokter" prop="doctor.fullname">
                     <el-input disabled v-model="editData.doctor.fullname" />
                 </el-form-item>
                 <el-form-item label="Keluhan" prop="history.complaint">
@@ -98,10 +125,11 @@ import { ref } from 'vue';
 import usePagination from '../../composables/usePagination';
 import { completedQueue, detailKunjungan, insertVitalSign, pharmacyPagination, tambahAntrian } from '../../api/antrianApi';
 import useAddData from '../../composables/useAddData';
-import { convertDate, convertStatusName, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
+import { convertDate, convertStatusName, copyToClipboard, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
 import { queueRule } from '../../rules/queueRule';
 import useEditData from '../../composables/useEditData';
 import useGetData from '../../composables/useGetData';
+import { CopyDocument } from '@element-plus/icons-vue';
 
 const doctorList = ref([]);
 const isShowQueueInfo = ref(false);
