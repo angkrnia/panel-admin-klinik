@@ -246,8 +246,8 @@ const isShowQueueInfo = ref(false);
 const queueInfo = ref({
     queue: 1,
     status: 'waiting',
-    doctor: 'dr. Friska Yeni Sinamo',
-    patient: 'Jhon',
+    doctor: '',
+    patient: '',
     hasAllergy: false,
     allergy: '',
 });
