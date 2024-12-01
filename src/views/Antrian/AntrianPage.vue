@@ -24,9 +24,9 @@
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="patient.fullname" min-width="120" label="Nama Pasien" />
+                                <el-table-column prop="patient.record_no" label="No. Rekam Medis" min-width="120" />
                                 <el-table-column prop="patient.nama_keluarga" min-width="120" label="Nama Keluarga" />
                                 <el-table-column prop="patient.age" label="Usia" />
-                                <el-table-column prop="patient.record_no" label="No. Rekam Medis" min-width="120" />
                                 <el-table-column prop="patient.gender" min-width="50" label="JK" />
                                 <el-table-column prop="patient.phone" min-width="120" label="No. HP" />
                                 <el-table-column prop="patient.address" min-width="120" label="Alamat">
@@ -53,7 +53,7 @@
                                     </template>
                                 </el-table-column>
                                 <!-- Untuk kolom aksi -->
-                                <TableColumnAction show-view @click-view="onViewDialog" />
+                                <TableColumnAction show-view show-edit @click-edit="onEditDialog" @click-view="onViewDialog" />
                             </el-table>
                         </div>
                     </el-tab-pane>
@@ -161,11 +161,54 @@
     <el-dialog v-model="isShowQueueInfo" :width="dialogWidth()" top="5vh">
         <QueueInformation :item="queueInfo" @close-click="isShowQueueInfo = false" />
     </el-dialog>
+
+    <!-- DIALOG EDIT ANTRIAN -->
+    <el-dialog v-model="editAntrianDialog" :width="dialogWidth()" top="5vh">
+        <template #header>
+            <h1 class="border-b pb-5">Edit Antrian</h1>
+        </template>
+        <el-form label-width="120px" :label-position="labelPosition()" :rules="queueRule" class="space-x-10" :model="editAntrian" ref="editAntrianForm">
+            <div class="w-full">
+                <el-form-item label="Nama Pasien" prop="patient_id">
+                    <el-input disabled v-model="editAntrian.patient.fullname" />
+                </el-form-item>
+                <el-form-item label="Dokter" prop="doctor_id">
+                    <el-select v-model="editAntrian.doctor_id" placeholder="Pilih Dokter">
+                        <el-option v-for="item in doctorList" :key="item.id" :label="item.fullname" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Keluhan" prop="complaint">
+                    <el-input show-word-limit maxlength="255" v-model="editAntrian.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Catatan" prop="note">
+                    <el-input show-word-limit maxlength="255" v-model="editAntrian.note" type="textarea" placeholder="Catatan" style="width: 100%" />
+                </el-form-item>
+                <div class="grid grid-cols-2 gap-2">
+                    <el-form-item label="Tekanan Darah" prop="blood_pressure">
+                        <el-input show-word-limit maxlength="10" v-model="editAntrian.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Berat" prop="weight">
+                        <el-input type="number" v-model="editAntrian.weight" placeholder="Berat" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Tinggi" prop="height">
+                        <el-input type="number" v-model="editAntrian.height" placeholder="Tinggi" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Suhu" prop="temperature">
+                        <el-input type="number" v-model="editAntrian.temperature" placeholder="Suhu" style="width: 100%" />
+                    </el-form-item>
+                </div>
+            </div>
+        </el-form>
+
+        <template #footer>
+            <FooterButtonDialog @save-click="onSaveUpdate" save-text="Update" @cancel-click="cancelEditAntrian" />
+        </template>
+    </el-dialog>
 </template>
 <script setup>
 import { ref } from 'vue';
 import usePagination from '../../composables/usePagination';
-import { listAntrianPagination, tambahAntrian } from '../../api/antrianApi';
+import { listAntrianPagination, tambahAntrian, updateVitalSign } from '../../api/antrianApi';
 import useAddData from '../../composables/useAddData';
 import { convertDate, convertStatusName, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
 import { queueRule } from '../../rules/queueRule';
@@ -243,6 +286,14 @@ const {
     saveEdit,
     cancelEdit,
 } = useEditData();
+const [
+    editAntrian,
+    editAntrianForm,
+    editAntrianDialog,
+    openEditAntrianDialog,
+    saveEditAntrian,
+    cancelEditAntrian,
+] = useEditData({ returnAsArray: true });
 
 filterData.value = {
     status: activeName.value,
@@ -302,6 +353,22 @@ async function openQueueDialog() {
 async function firstLoad() {
     const data = await doctorListHelper();
     doctorList.value = data;
+}
+
+function onEditDialog(data) {
+    data.temperature = data.history.temperature;
+    data.height = data.history.height;
+    data.weight = data.history.weight;
+    data.blood_pressure = data.history.blood_pressure;
+    data.complaint = data.history.complaint;
+    data.note = data.history.note;
+    openEditAntrianDialog(data);
+}
+
+function onSaveUpdate() {
+    saveEditAntrian(updateVitalSign, 'id', () => {
+        doPaginate(1);
+    })
 }
 
 firstLoad();

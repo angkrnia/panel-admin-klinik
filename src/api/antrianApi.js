@@ -44,6 +44,10 @@ export function insertVitalSign(id, data) {
   return axiosAuth.put("/queue/" + id + "/vital-sign", data);
 }
 
+export function updateVitalSign(id, data) {
+  return axiosAuth.put("/queue/" + id + "/update-vital-sign", data);
+}
+
 export function completedQueue(id, data) {
   return axiosAuth.put("/queue/" + id + "/completed", data);
 }

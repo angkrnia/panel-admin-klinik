@@ -55,7 +55,10 @@
         <el-form label-width="120px" :label-position="labelPosition()" :rules="queueRule" class="space-x-10" :model="editData" ref="editForm">
             <div class="w-full">
                 <el-form-item label="Nama Pasien" prop="patient_id">
-                    <el-patient-select disabled v-model="editData.patient.fullname" />
+                    <el-input disabled v-model="editData.patient.fullname" />
+                </el-form-item>
+                <el-form-item label="No. Rekam Medis" prop="record_no">
+                    <el-input v-model="editData.record_no" />
                 </el-form-item>
                 <el-form-item label="Dokter" prop="doctor_id">
                     <el-select v-model="editData.doctor_id" placeholder="Pilih Dokter">

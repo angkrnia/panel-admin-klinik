@@ -11,7 +11,7 @@
         <div class="py-5">
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
                 <el-table-column type="index" label="No" min-width="50" />
-                <el-table-column prop="record_no" label="No. Rekam Medis" />
+                <el-table-column prop="record_no" label="No. RM" />
                 <el-table-column prop="fullname" label="Nama Pasien" min-width="150" />
                 <el-table-column prop="nama_keluarga" label="Nama Keluarga" />
                 <el-table-column prop="gender" label="Jenis Kelamin" min-width="90" />
@@ -20,6 +20,11 @@
                 <el-table-column prop="birthday" label="Umur">
                     <template #default="scope">
                         {{ scope.row.birthday }} ({{ scope.row.age }} thn)
+                    </template>
+                </el-table-column>
+                <el-table-column prop="allergy" label="Alergi" min-width="180">
+                    <template #default="scope">
+                        <p class="line-clamp-1">{{ scope.row.allergy || '-' }}</p>
                     </template>
                 </el-table-column>
                 <el-table-column prop="address" label="Alamat" min-width="180" />
@@ -45,8 +50,8 @@
         </template>
         <el-form label-width="150px" :label-position="labelPosition()" class="space-x-10" :model="addData" :rules="patientRule" ref="addForm">
             <div class="w-full">
-                <el-form-item label="No. Rekam Medis" prop="record_no">
-                    <el-input v-model="addData.record_no" placeholder="No. Rekam Medis" style="width: 100%" />
+                <el-form-item label="No. RM" prop="record_no">
+                    <el-input v-model="addData.record_no" placeholder="No. RM" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Nama Pasien" prop="fullname">
                     <el-input v-model="addData.fullname" placeholder="Nama Pasien" style="width: 100%" />
@@ -75,6 +80,13 @@
                 <el-form-item label="Alamat" prop="address">
                     <el-input v-model="addData.address" type="textarea" placeholder="Alamat" style="width: 100%" />
                 </el-form-item>
+                <el-form-item label="Memiliki alergi" prop="has_allergy">
+                    <el-switch v-model="addData.has_allergy" />
+                    <span class="text-sm text-gray-500 ml-3">{{ addData.has_allergy ? 'Ya' : 'Tidak' }}</span>
+                </el-form-item>
+                <el-form-item v-if="addData.has_allergy" label="Alergi" prop="allergy">
+                    <el-input v-model="addData.allergy" type="textarea" placeholder="Alergi" style="width: 100%" />
+                </el-form-item>
             </div>
         </el-form>
         <template #footer>
@@ -89,8 +101,8 @@
         </template>
         <el-form label-width="150px" :label-position="labelPosition()" class="space-x-10" :model="editData" :rules="patientRule" ref="editForm">
             <div class="w-full">
-                <el-form-item label="No. Rekam Medis" prop="record_no">
-                    <el-input v-model="editData.record_no" placeholder="No. Rekam Medis" style="width: 100%" />
+                <el-form-item label="No. RM" prop="record_no">
+                    <el-input v-model="editData.record_no" placeholder="No. RM" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Nama Pasien" prop="fullname">
                     <el-input v-model="editData.fullname" placeholder="Nama Pasien" style="width: 100%" />
@@ -119,6 +131,13 @@
                 <el-form-item label="Alamat" prop="address">
                     <el-input v-model="editData.address" type="textarea" placeholder="Alamat" style="width: 100%" />
                 </el-form-item>
+                <el-form-item label="Memiliki alergi" prop="has_allergy">
+                    <el-switch v-model="editData.has_allergy" />
+                    <span class="text-sm text-gray-500 ml-3">{{ editData.has_allergy ? 'Ya' : 'Tidak' }}</span>
+                </el-form-item>
+                <el-form-item v-if="editData.has_allergy" label="Alergi" prop="allergy">
+                    <el-input v-model="editData.allergy" type="textarea" placeholder="Alergi" style="width: 100%" />
+                </el-form-item>
             </div>
         </el-form>
         <template #footer>
@@ -133,6 +152,20 @@
         </template>
         <el-form label-width="120px" :label-position="labelPosition()" :rules="queueRule" class="space-x-10" :model="queueData" ref="queueForm">
             <div class="w-full">
+                <div v-if="queueInfo.hasAllergy" class="border rounded-lg mb-3 overflow-hidden text-sm shadow-sm">
+                    <div class="flex items-center gap-x-1 p-1 border-b bg-red-300 text-white text-xs">
+                        <el-icon>
+                            <Warning />
+                        </el-icon>
+                        <p class="font-semibold">Pasien Memiliki Alergi</p>
+                    </div>
+                    <div class="p-2 bg-gray-50">
+                        <p class="text-xs">{{ queueInfo.allergy }}</p>
+                    </div>
+                </div>
+                <el-form-item label="Nama Pasien" prop="patient">
+                    <el-input disabled v-model="queueInfo.patient" placeholder="Pasien" style="width: 100%" />
+                </el-form-item>
                 <el-form-item label="Dokter" prop="doctor_id">
                     <el-select v-model="queueData.doctor_id" placeholder="Pilih Dokter">
                         <el-option v-for="item in doctorList" :key="item.id" :label="item.fullname" :value="item.id"></el-option>
@@ -181,6 +214,7 @@ import { patientRule } from '../../rules/patientRules';
 import { tambahAntrian } from '../../api/antrianApi';
 import { queueRule } from '../../rules/queueRule';
 import QueueInformation from '../../components/QueueInformation.vue';
+import { Warning } from '@element-plus/icons-vue';
 
 const {
     listData,
@@ -214,6 +248,8 @@ const queueInfo = ref({
     status: 'waiting',
     doctor: 'dr. Friska Yeni Sinamo',
     patient: 'Jhon',
+    hasAllergy: false,
+    allergy: '',
 });
 
 function doPaginate(index, pSize) {
@@ -234,6 +270,7 @@ function changePage(index = 1) {
 }
 
 function onEditDialog(row) {
+    row.has_allergy = row.has_allergy === 1 ? true : false;
     openEditDialog(row);
 }
 
@@ -258,6 +295,8 @@ async function onOpenQueue(row) {
     queueData.value.patient_id = row.id;
     queueInfo.value.patient = row.fullname;
     queueInfo.value.doctor = currentDoctor?.fullname;
+    queueInfo.value.hasAllergy = row.has_allergy == 1 ? true : false;
+    queueInfo.value.allergy = row.allergy;
     openQueueDialog(1);
 }
 
