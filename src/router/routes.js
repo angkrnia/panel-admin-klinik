@@ -63,6 +63,14 @@ export const routes = [
           title: "Pengambilan Obat",
         },
       },
+      {
+        path: "/histories",
+        name: "Riwayat Kunjunan",
+        component: () => import("@/views/Histories/HistoriesPage.vue"),
+        meta: {
+          title: "Riwayat Kunjunan",
+        },
+      },
     ],
   },
 ];

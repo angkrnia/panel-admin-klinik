@@ -89,7 +89,12 @@ const menuList = [
                 hasChildren: false
             },
         ]
-    }
+    },
+    {
+        title: 'Riwayat Kunjungan',
+        path: '/histories',
+        hasChildren: false,
+    },
 ]
 </script>
 
