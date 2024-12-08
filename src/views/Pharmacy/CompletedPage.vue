@@ -12,10 +12,10 @@
                         <el-tag type="success">{{ convertStatusName(row.status) }}</el-tag>
                     </template>
                 </el-table-column>
+                <el-table-column prop="patient.record_no" label="No. Rekam Medis" min-width="120" />
                 <el-table-column prop="patient.fullname" min-width="150" label="Nama Pasien" />
                 <el-table-column prop="patient.nama_keluarga" min-width="150" label="Nama Keluarga" />
                 <el-table-column prop="patient.age" label="Usia" />
-                <el-table-column prop="patient.record_no" label="No. Rekam Medis" min-width="120" />
                 <el-table-column prop="patient.gender" min-width="50" label="JK" />
                 <el-table-column prop="patient.phone" min-width="120" label="No. HP" />
                 <el-table-column prop="patient.address" min-width="180" label="Alamat">

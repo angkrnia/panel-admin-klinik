@@ -253,3 +253,8 @@ export function copyToClipboard(text) {
     messageInfo("Gagal menyalin text", "error");
   }
 }
+
+export function formatRibuan(value) {
+  if (!value) return 0;
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "apexcharts": "^4.1.0",
     "axios": "^1.7.7",
     "axios-auth-refresh": "^3.3.6",
     "element-plus": "^2.8.1",
@@ -18,7 +19,8 @@
     "jwt-decode": "^4.0.0",
     "pinia": "^2.2.2",
     "vue": "^3.4.37",
-    "vue-router": "^4.4.3"
+    "vue-router": "^4.4.3",
+    "vue3-apexcharts": "^1.8.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.2",
