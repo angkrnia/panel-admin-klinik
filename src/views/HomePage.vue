@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
             <div class="flex-1 border rounded-md overflow-hidden">
                 <div class="px-2 py-1 bg-sky-500 border-b">
                     <h1 class="font-semibold text-sm text-white">JUMLAH PASIEN PER HARI</h1>

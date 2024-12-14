@@ -15,7 +15,11 @@
                 <el-table-column prop="fullname" label="Nama Pasien" min-width="170" />
                 <el-table-column prop="nama_keluarga" label="Nama Keluarga" min-width="170" />
                 <el-table-column prop="gender" label="Gender" min-width="90" />
-                <el-table-column prop="no_ktp" label="No. KTP" />
+                <el-table-column prop="no_ktp" label="No. KTP">
+                    <template #default="scope">
+                        <p class="line-clamp-1">{{ scope.row.no_ktp || '-' }}</p>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="phone" label="No. HP" min-width="150" />
                 <el-table-column prop="birthday" label="Umur" min-width="150">
                     <template #default="scope">

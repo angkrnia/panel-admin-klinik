@@ -236,6 +236,8 @@ export function convertStatusName(status) {
       return "Dibatalkan";
     case "completed":
       return "Selesai";
+    case "skiped":
+      return "Terlewat";
     default:
       return status;
   }
