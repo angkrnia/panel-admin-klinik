@@ -6,24 +6,24 @@
         </div>
         <div class="py-5">
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
-                <el-table-column prop="queue" min-width="80" align="center" label="Nomor Antrian" />
+                <el-table-column prop="queue" align="center" label="No. Antrian" />
                 <el-table-column prop="status" min-width="180" align="center" label="Status">
                     <template #default="{ row }">
                         <el-tag type="success">{{ convertStatusName(row.status) }}</el-tag>
                     </template>
                 </el-table-column>
+                <el-table-column prop="patient.record_no" label="No. RM" />
                 <el-table-column prop="patient.fullname" min-width="150" label="Nama Pasien" />
                 <el-table-column prop="patient.nama_keluarga" min-width="150" label="Nama Keluarga" />
+                <el-table-column prop="doctor.fullname" min-width="150" label="Dokter" />
                 <el-table-column prop="patient.age" label="Usia" />
-                <el-table-column prop="patient.record_no" label="No. Rekam Medis" min-width="120" />
                 <el-table-column prop="patient.gender" min-width="50" label="JK" />
-                <el-table-column prop="patient.phone" min-width="120" label="No. HP" />
+                <el-table-column prop="patient.phone" min-width="130" label="No. HP" />
                 <el-table-column prop="patient.address" min-width="180" label="Alamat">
                     <template #default="scope">
                         <p class="line-clamp-1">{{ scope.row.patient.address }}</p>
                     </template>
                 </el-table-column>
-                <el-table-column prop="doctor.fullname" min-width="100" label="Dokter" />
                 <el-table-column prop="created_at" label="Dibuat">
                     <template #default="scope">
                         {{ convertDate(scope.row.created_at) }}

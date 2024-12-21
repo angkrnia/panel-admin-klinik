@@ -9,13 +9,13 @@ const baseUrl =
 
 export const axiosNoAuth = axios.create({
   baseURL: baseUrl,
-  timeout: 30000,
+  timeout: 60000,
 });
 axiosNoAuth.defaults.headers.common["Content-Type"] = "application/json";
 
 export const axiosAuth = axios.create({
   baseURL: baseUrl,
-  timeout: 30000,
+  timeout: 60000,
   // withCredentials: true,
 });
 axiosAuth.defaults.headers.common["Content-Type"] = "application/json";

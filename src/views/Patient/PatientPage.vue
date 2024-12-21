@@ -12,12 +12,16 @@
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
                 <el-table-column type="index" label="No" min-width="50" />
                 <el-table-column prop="record_no" label="No. RM" />
-                <el-table-column prop="fullname" label="Nama Pasien" min-width="150" />
-                <el-table-column prop="nama_keluarga" label="Nama Keluarga" />
-                <el-table-column prop="gender" label="Jenis Kelamin" min-width="90" />
-                <el-table-column prop="no_ktp" label="No. KTP" />
-                <el-table-column prop="phone" label="No. HP" min-width="120" />
-                <el-table-column prop="birthday" label="Umur">
+                <el-table-column prop="fullname" label="Nama Pasien" min-width="170" />
+                <el-table-column prop="nama_keluarga" label="Nama Keluarga" min-width="170" />
+                <el-table-column prop="gender" label="Gender" min-width="90" />
+                <el-table-column prop="no_ktp" label="No. KTP">
+                    <template #default="scope">
+                        <p class="line-clamp-1">{{ scope.row.no_ktp || '-' }}</p>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="phone" label="No. HP" min-width="150" />
+                <el-table-column prop="birthday" label="Umur" min-width="150">
                     <template #default="scope">
                         {{ scope.row.birthday }} ({{ scope.row.age }} thn)
                     </template>
@@ -28,7 +32,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="address" label="Alamat" min-width="180" />
-                <el-table-column prop="created_at" label="Dibuat">
+                <el-table-column prop="created_at" label="Dibuat" min-width="120">
                     <template #default="scope">
                         {{ convertDate(scope.row.created_at) }}
                     </template>

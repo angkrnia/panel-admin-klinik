@@ -54,7 +54,7 @@ const props = defineProps({
     default: 1,
   },
 });
-const defaultRecord = computed(() => (route.query.pageSize ? route.query.pageSize : import.meta.env.VITE_PAGE_SIZE));
+const defaultRecord = computed(() => (route.query.page ? route.query.page : import.meta.env.VITE_PAGE_SIZE));
 const record = ref(defaultRecord.value);
 const search = ref({ search: null });
 const rules = {

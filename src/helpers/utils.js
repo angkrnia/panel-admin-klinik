@@ -236,6 +236,8 @@ export function convertStatusName(status) {
       return "Dibatalkan";
     case "completed":
       return "Selesai";
+    case "skiped":
+      return "Terlewat";
     default:
       return status;
   }
@@ -252,4 +254,9 @@ export function copyToClipboard(text) {
   } catch (error) {
     messageInfo("Gagal menyalin text", "error");
   }
+}
+
+export function formatRibuan(value) {
+  if (!value) return 0;
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
