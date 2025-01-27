@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { axiosAuth } from "../config/axios";
 import { jwtDecode } from "jwt-decode";
 import { getDokterSelect } from "../api/dokterApi";
+import { APIUploadPhotos } from "../api/apiHelper";
 
 export const isObjectEmpty = (object) => {
   if (!object) return true;
@@ -65,19 +66,14 @@ export const getDifferentObject = (object1, object2) => {
 };
 
 export function replaceNullWithEmptyString(obj) {
-  return Object.fromEntries(
-    Object.entries(obj).map(([key, value]) => [
-      key,
-      value === null ? "" : value,
-    ])
-  );
+  return Object.fromEntries(Object.entries(obj).map(([key, value]) => [key, value === null ? "" : value]));
 }
 
 export function setAuthentication(token, refreshToken) {
   Cookies.set("TOKEN", token, { expires: 1 });
   axiosAuth.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   if (refreshToken) {
-    localStorage.setItem("TOKEN", refreshToken);
+    localStorage.setItem("REFRESH_TOKEN", refreshToken);
   }
 
   const appStore = useAppStore();
@@ -106,7 +102,7 @@ export const getFromLocalStorage = (key) => {
 };
 
 export function getRefreshToken() {
-  return getFromLocalStorage("TOKEN");
+  return getFromLocalStorage("REFRESH_TOKEN");
 }
 
 export function onLogoutHandler() {
@@ -122,20 +118,7 @@ export function convertDate(dateString) {
   const date = new Date(dateString);
 
   // Daftar bulan dalam format singkat
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   // Mendapatkan tanggal, bulan, tahun, dan waktu
   const day = date.getDate();
@@ -158,26 +141,16 @@ export function convertDate(dateString) {
 }
 
 export function labelPosition() {
-  const isMobile = window.matchMedia(
-    "only screen and (max-width: 760px)"
-  ).matches;
+  const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
   if (isMobile) return "top";
   return "left";
 }
 
 export function dialogWidth(params) {
-  const isMobile = window.matchMedia(
-    "only screen and (max-width: 760px)"
-  ).matches;
-  const isTablet = window.matchMedia(
-    "only screen and (min-width: 761px) and (max-width: 1024px)"
-  ).matches;
-  const isLaptop = window.matchMedia(
-    "only screen and (min-width: 1025px) and (max-width: 1440px)"
-  ).matches;
-  const isDesktop = window.matchMedia(
-    "only screen and (min-width: 1441px)"
-  ).matches;
+  const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
+  const isTablet = window.matchMedia("only screen and (min-width: 761px) and (max-width: 1024px)").matches;
+  const isLaptop = window.matchMedia("only screen and (min-width: 1025px) and (max-width: 1440px)").matches;
+  const isDesktop = window.matchMedia("only screen and (min-width: 1441px)").matches;
 
   if (isMobile) return "95%";
   if (isTablet) return "65%";
@@ -254,6 +227,21 @@ export function copyToClipboard(text) {
   } catch (error) {
     messageInfo("Gagal menyalin text", "error");
   }
+}
+
+export function uploadPhotosHelper(imageFiles) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const result = await APIUploadPhotos(imageFiles);
+      if (result.status == 200) {
+        resolve(result.data.data);
+      } else {
+        reject([]);
+      }
+    } catch (error) {
+      resolve([]);
+    }
+  });
 }
 
 export function formatRibuan(value) {

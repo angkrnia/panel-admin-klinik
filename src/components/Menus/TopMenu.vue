@@ -95,6 +95,33 @@ const menuList = [
         path: '/histories',
         hasChildren: false,
     },
+    {
+        title: 'Master Obat',
+        path: '/medicines',
+        hasChildren: false,
+    },
+    {
+        title: 'Inventory',
+        path: '/inventory',
+        hasChildren: true,
+        children: [
+            {
+                title: 'Satuan',
+                path: '/inventory/units',
+                hasChildren: false,
+            },
+            {
+                title: 'Grup',
+                path: '/inventory/groups',
+                hasChildren: false
+            },
+            {
+                title: 'Kategori',
+                path: '/inventory/categories',
+                hasChildren: false
+            },
+        ]
+    },
 ]
 </script>
 

@@ -71,6 +71,21 @@ export const routes = [
           title: "Riwayat Kunjunan",
         },
       },
+      {
+        path: "/inventory",
+        name: "Inventory",
+        component: () => import("@/views/WrapperPage.vue"),
+        children: [
+          {
+            path: "/units",
+            name: "Units",
+            component: () => import("@/views/Inventory/UnitsPage.vue"),
+            meta: {
+              title: "Satuan",
+            },
+          },
+        ],
+      },
     ],
   },
 ];
