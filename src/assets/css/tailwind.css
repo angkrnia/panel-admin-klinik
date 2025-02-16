@@ -10,3 +10,26 @@ body {
 .el-form-item__label {
   line-height: 1rem !important;
 }
+
+.el-pagination.is-background .el-pager li {
+  @apply rounded-lg bg-white transition-all;
+}
+
+.el-pagination.is-background .el-pager li:not(.is-disabled):hover {
+  @apply bg-gray-200;
+}
+
+.el-pagination.is-background .el-pager li.is-active {
+  @apply bg-blue-500 text-white;
+}
+
+.el-pager li {
+  border-radius: 8px !important;
+}
+
+.el-pagination.is-background .btn-prev {
+  border-radius: 8px !important;
+}
+.el-pagination.is-background .btn-next {
+  border-radius: 8px !important;
+}
