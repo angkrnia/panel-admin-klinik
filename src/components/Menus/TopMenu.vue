@@ -96,15 +96,15 @@ const menuList = [
         hasChildren: false,
     },
     {
-        title: 'Master Obat',
-        path: '/medicines',
-        hasChildren: false,
-    },
-    {
         title: 'Inventory',
         path: '/inventory',
         hasChildren: true,
         children: [
+            {
+                title: 'Master Obat',
+                path: '/medicines',
+                hasChildren: false,
+            },
             {
                 title: 'Satuan',
                 path: '/inventory/units',

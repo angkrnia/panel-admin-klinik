@@ -52,3 +52,33 @@ export function APIupdateCategory(id, data) {
 export function APIdeleteCategory(id) {
   return axiosAuth.delete(`/categories/${id}`);
 }
+
+// CRUD MASTER OBAT
+export function listMedicinesPagination(pageIndex = 1, pageSize = pageSizeEnv, textSearch = "", newObj = {}) {
+  return axiosAuth.get(paramPaging("/products", pageIndex, pageSize, textSearch, newObj));
+}
+
+export function APIstoreMedicine(data) {
+  return axiosAuth.post("/products", data);
+}
+
+export function APIupdateMedicine(id, data) {
+  return axiosAuth.put(`/products/${id}`, data);
+}
+
+export function APIdeleteMedicine(id) {
+  return axiosAuth.delete(`/products/${id}`);
+}
+
+// LIST SELECT
+export function APIGetUnitsSelect() {
+  return axiosAuth.get("/units-list");
+}
+
+export function APIGetGroupsSelect() {
+  return axiosAuth.get("/groups-list");
+}
+
+export function APIGetCategoriesSelect() {
+  return axiosAuth.get("/categories-list");
+}

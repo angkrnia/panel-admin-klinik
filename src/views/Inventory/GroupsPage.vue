@@ -1,8 +1,8 @@
 <template>
     <section>
-        <TitleDashboard title="Daftar Satuan">
+        <TitleDashboard title="Daftar Groups">
             <template #btn1>
-                <el-button type="primary" @click="openAddDialog">Tambah Satuan</el-button>
+                <el-button type="primary" @click="openAddDialog">Tambah Groups</el-button>
             </template>
         </TitleDashboard>
         <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
@@ -31,12 +31,12 @@
     <!-- FORM ADD DIALOG -->
     <el-dialog v-model="addDialog" :width="dialogWidth()" top="5vh">
         <template #header>
-            <h1 class="border-b pb-5">Tambah Satuan</h1>
+            <h1 class="border-b pb-5">Tambah Groups</h1>
         </template>
         <el-form label-width="150px" :label-position="labelPosition()" class="space-x-10" :model="addData" :rules="unitsRule" ref="addForm">
             <div class="w-full">
-                <el-form-item label="Nama Satuan" prop="name">
-                    <el-input v-model="addData.name" placeholder="Nama Satuan" style="width: 100%" />
+                <el-form-item label="Nama Groups" prop="name">
+                    <el-input v-model="addData.name" placeholder="Nama Groups" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Deskripsi" prop="description">
                     <el-input type="textarea" show-word-limit maxlength="255" rows="3" v-model="addData.description" placeholder="Deskripsi" style="width: 100%" />
@@ -51,12 +51,12 @@
     <!-- FORM EDIT DIALOG -->
     <el-dialog v-model="editDialog" :width="dialogWidth()" top="5vh">
         <template #header>
-            <h1 class="border-b pb-5">Edit Satuan</h1>
+            <h1 class="border-b pb-5">Edit Groups</h1>
         </template>
         <el-form label-width="150px" :label-position="labelPosition()" class="space-x-10" :model="editData" :rules="unitsRule" ref="editForm">
             <div class="w-full">
-                <el-form-item label="Nama Satuan" prop="name">
-                    <el-input v-model="editData.name" placeholder="Nama Satuan" style="width: 100%" />
+                <el-form-item label="Nama Groups" prop="name">
+                    <el-input v-model="editData.name" placeholder="Nama Groups" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Deskripsi" prop="description">
                     <el-input type="textarea" show-word-limit maxlength="255" rows="3" v-model="editData.description" placeholder="Deskripsi" style="width: 100%" />
@@ -73,8 +73,8 @@
 import useAddData from '../../composables/useAddData';
 import useEditData from '../../composables/useEditData';
 import usePagination from '../../composables/usePagination';
-import { convertDate, dialogWidth, labelPosition } from '../../helpers/utils';
-import { APIdeleteUnit, APIstoreUnit, APIupdateUnit, listUnitsPagination } from '../../api/apiInventory';
+import { convertDate, dialogWidth, labelPosition, messageInfo } from '../../helpers/utils';
+import { APIdeleteGroup, APIstoreGroup, APIupdateGroup, listGroupsPagination } from '../../api/apiInventory';
 import { unitsRule } from '../../rules/inventoryRules';
 import useDeleteData from '../../composables/useDeleteData';
 
@@ -95,7 +95,7 @@ const { editData, editForm, editDialog, openEditDialog, saveEdit, cancelEdit } =
 const { deleteData } = useDeleteData();
 
 function doPaginate(index, pSize) {
-    getListData(listUnitsPagination, index, pSize ? pSize : pageSize.value, search.value, filterData.value);
+    getListData(listGroupsPagination, index, pSize ? pSize : pageSize.value, search.value, filterData.value);
 }
 
 function onSearch(textSearch) {
@@ -116,15 +116,15 @@ function onEditDialog(row) {
 }
 
 function onDeleteData({ id = 0 }) {
-    deleteData(APIdeleteUnit, id, () => doPaginate(1));
+    deleteData(APIdeleteGroup, id, () => doPaginate(1));
 }
 
 function onSaveAdd() {
-    saveAdd(APIstoreUnit, () => doPaginate(1));
+    saveAdd(APIstoreGroup, () => doPaginate(1));
 }
 
 function onSaveEdit() {
-    saveEdit(APIupdateUnit, 'id', () => doPaginate(1));
+    saveEdit(APIupdateGroup, 'id', () => doPaginate(1));
 }
 
 async function openAddDialog() {

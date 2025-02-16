@@ -77,14 +77,38 @@ export const routes = [
         component: () => import("@/views/WrapperPage.vue"),
         children: [
           {
-            path: "/units",
+            path: "units",
             name: "Units",
             component: () => import("@/views/Inventory/UnitsPage.vue"),
             meta: {
               title: "Satuan",
             },
           },
+          {
+            path: "groups",
+            name: "Groups",
+            component: () => import("@/views/Inventory/GroupsPage.vue"),
+            meta: {
+              title: "Satuan",
+            },
+          },
+          {
+            path: "categories",
+            name: "Categories",
+            component: () => import("@/views/Inventory/CategoriesPage.vue"),
+            meta: {
+              title: "Satuan",
+            },
+          },
         ],
+      },
+      {
+        path: "/medicines",
+        name: "Master Obat",
+        component: () => import("@/views/Inventory/MedicinesPage.vue"),
+        meta: {
+          title: "Master Obat",
+        },
       },
     ],
   },

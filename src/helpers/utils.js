@@ -22,7 +22,16 @@ export const messageInfo = (message, type) => {
 export const loading = () => {
   const load = ElLoading.service({
     lock: true,
-    text: "Loading",
+    text: "Tunggu...",
+    background: "rgba(0, 0, 0, 0.7)",
+  });
+  return load;
+};
+
+export const loadingScreen = () => {
+  const load = ElLoading.service({
+    lock: true,
+    text: "Tunggu...",
     background: "rgba(0, 0, 0, 0.7)",
   });
   return load;
@@ -239,6 +248,7 @@ export function uploadPhotosHelper(imageFiles) {
         reject([]);
       }
     } catch (error) {
+      messageInfo(error?.response?.data?.message || "Gagal mengunggah foto", "error");
       resolve([]);
     }
   });
@@ -248,3 +258,24 @@ export function formatRibuan(value) {
   if (!value) return 0;
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
+
+export function isOnMobileOrTablet() {
+  const isMobileOrTablet = (window.matchMedia && window.matchMedia("only screen and (max-width: 1024px)").matches) || window.innerWidth <= 1024;
+
+  return isMobileOrTablet;
+}
+
+export const convertRp = (money) => {
+  if (!money) return "Rp 0";
+  money = parseFloat(money);
+  if (money % 1 !== 0)
+    return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 1, maximumFractionDigits: 2 }).format(money);
+
+  return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(money);
+};
+
+export const dateFormatFull = (date) => {
+  if (!date) return "";
+  const newDate = new Date(date);
+  return `${newDate.getDate()} ${months[newDate.getMonth()]} ${newDate.getFullYear()}`;
+};
