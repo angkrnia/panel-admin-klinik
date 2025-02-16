@@ -28,9 +28,10 @@
                         </div>
                     </template>
                     <div class="mr-2 space-y-2">
-                        <p class="font-semibold hidden lg:block text-sm text-nowrap text-center lg:mr-3">Admin Klinik</p>
-                        <el-tag @click="onUpdatePassword" class="w-full text-sm text-gray-500 cursor-pointer" type="warning">Ubah
-                            Password</el-tag>
+                        <div>
+                            <p class="font-semibold text-sm text-nowrap text-center lg:mr-3">{{ fullname }}</p>
+                            <p class="text-sm text-nowrap text-center lg:mr-3 text-gray-400">({{ role }})</p>
+                        </div>
                         <el-tag @click="onLogoutHandler" class="w-full text-sm text-gray-500 cursor-pointer" type="danger">Logout</el-tag>
                     </div>
                 </el-popover>
@@ -40,12 +41,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { onLogoutHandler } from '../../helpers/utils';
 import { useRoute } from 'vue-router';
+import { useAppStore } from '../../store/appStore';
 
 const route = useRoute();
 const defaultActive = ref(route.path);
+const appStore = useAppStore();
+
+const fullname = computed(() => appStore.profile.fullname);
+const role = computed(() => appStore.profile.role);
 
 function onUpdatePassword() {
 

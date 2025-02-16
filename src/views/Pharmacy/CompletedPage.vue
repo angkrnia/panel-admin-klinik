@@ -40,80 +40,8 @@
         <template #header>
             <h1 class="border-b pb-5">Detail Antrian</h1>
         </template>
-        <el-form label-width="120px" :label-position="labelPosition()" :rules="queueRule" class="space-x-10" :model="editData" ref="editForm">
-            <div class="w-full">
-                <el-form-item label="No. Rekam Medis" prop="record_no">
-                    <el-input readonly v-model="editData.patient.record_no">
-                        <template #append>
-                            <el-icon @click="copyToClipboard(editData.patient.record_no)" class="cursor-pointer">
-                                <CopyDocument />
-                            </el-icon>
-                        </template>
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="No. HP" prop="phone">
-                    <el-input readonly v-model="editData.patient.phone">
-                        <template #append>
-                            <el-icon @click="copyToClipboard(editData.patient.phone)" class="cursor-pointer">
-                                <CopyDocument />
-                            </el-icon>
-                        </template>
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="Nama Pasien" prop="fullname">
-                    <el-input readonly v-model="editData.patient.fullname">
-                        <template #append>
-                            <el-icon @click="copyToClipboard(editData.patient.fullname)" class="cursor-pointer">
-                                <CopyDocument />
-                            </el-icon>
-                        </template>
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="Nama Keluarga" prop="patient.nama_keluarga">
-                    <el-input disabled v-model="editData.patient.nama_keluarga" />
-                </el-form-item>
-                <el-form-item label="Dokter" prop="doctor.fullname">
-                    <el-input disabled v-model="editData.doctor.fullname" />
-                </el-form-item>
-                <el-form-item label="Keluhan" prop="history.complaint">
-                    <el-input readonly show-word-limit maxlength="255" v-model="editData.history.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Catatan" prop="history.note">
-                    <el-input readonly show-word-limit maxlength="255" v-model="editData.history.note" type="textarea" placeholder="Catatan" style="width: 100%" />
-                </el-form-item>
-                <div class="grid grid-cols-2 gap-2">
-                    <el-form-item label="Tekanan Darah" prop="history.blood_pressure">
-                        <el-input readonly show-word-limit maxlength="10" v-model="editData.history.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />
-                    </el-form-item>
-                    <el-form-item label="Berat" prop="history.weight">
-                        <el-input readonly type="number" v-model="editData.history.weight" placeholder="Berat" style="width: 100%" />
-                    </el-form-item>
-                    <el-form-item label="Tinggi" prop="history.height">
-                        <el-input readonly type="number" v-model="editData.history.height" placeholder="Tinggi" style="width: 100%" />
-                    </el-form-item>
-                    <el-form-item label="Suhu" prop="history.temperature">
-                        <el-input readonly type="number" v-model="editData.history.temperature" placeholder="Suhu" style="width: 100%" />
-                    </el-form-item>
-                </div>
-                <el-form-item label="Pemeriksaan" prop="history.pemeriksaan">
-                    <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.pemeriksaan" type="textarea" placeholder="Pemeriksaan"
-                        style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Diagnosa" prop="history.diagnosa">
-                    <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.diagnosa" type="textarea" placeholder="Diagnosa" style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Tindakan" prop="history.tindakan">
-                    <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.tindakan" type="textarea" placeholder="Tindakan" style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Therapy/Obat" prop="history.teraphy">
-                    <el-input :rows="5" readonly show-word-limit maxlength="255" v-model="editData.history.teraphy" type="textarea" placeholder="Therapy/Obat"
-                        style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Saran" prop="history.saran">
-                    <el-input :rows="3" readonly show-word-limit maxlength="255" v-model="editData.history.saran" type="textarea" placeholder="Saran" style="width: 100%" />
-                </el-form-item>
-            </div>
-        </el-form>
+
+        <PatientCard :data="editData" />
 
         <template #footer>
             <FooterButtonDialog @save-click="onSaveUpdate" :useConfirmation="true" save-text="Selesai" @cancel-click="cancelEdit" />
@@ -130,6 +58,7 @@ import { queueRule } from '../../rules/queueRule';
 import useEditData from '../../composables/useEditData';
 import useGetData from '../../composables/useGetData';
 import { CopyDocument } from '@element-plus/icons-vue';
+import PatientCard from './partials/PatientCard.vue';
 
 const doctorList = ref([]);
 const isShowQueueInfo = ref(false);
