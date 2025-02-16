@@ -4,10 +4,22 @@
         <div v-for="medicine in props.medicines" :key="medicine.id" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-full">
             <!-- Product Image -->
             <div class="relative h-48">
-                <img :src="medicine.image" :alt="medicine.name" class="w-full h-full object-cover" />
+                <!-- <img :src="medicine.image" :alt="medicine.name" class="w-full h-full object-cover" /> -->
+                <el-image :src="medicine.image" :alt="medicine.name" class="w-full h-full object-cover" :preview-src-list="[medicine.image]">
+                    <template #placeholder>
+                        <div class="flex items-center justify-center h-full">
+                            <img src="https://pkmciumbuleuit.id//assets/uploads/puskesmas_news/item-7-0.jpg" alt="" class="bg-gray-500/20">
+                        </div>
+                    </template>
+                    <template #error>
+                        <div class="image-slot">
+                            <img src="https://pkmciumbuleuit.id//assets/uploads/puskesmas_news/item-7-0.jpg" alt="" class="bg-gray-500/20">
+                        </div>
+                    </template>
+                </el-image>
                 <div class="absolute top-2 right-2">
                     <span class="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
-                        {{ medicine?.category?.name }}
+                        {{ medicine?.category?.name || 'no category' }}
                     </span>
                 </div>
             </div>
@@ -26,7 +38,7 @@
                 </div>
 
                 <!-- Description -->
-                <p class="text-sm text-gray-600 mb-4 line-clamp-2">{{ medicine.description }}</p>
+                <p class="text-sm text-gray-600 mb-4 line-clamp-2">{{ medicine.description || '-' }}</p>
 
                 <!-- Units & Prices -->
                 <div class="space-y-2 mb-4">
@@ -157,7 +169,7 @@
 import { convertRp, dialogWidth, formatRibuan } from '../../../helpers/utils'
 import useViewData from '../../../composables/useViewData'
 import { ref } from 'vue'
-import { Box, Clock, Paperclip } from '@element-plus/icons-vue'
+import { Box, Clock, Loading, Paperclip, Picture } from '@element-plus/icons-vue'
 
 const props = defineProps({
     medicines: Array
