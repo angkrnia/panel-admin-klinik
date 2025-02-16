@@ -82,3 +82,11 @@ export function APIGetGroupsSelect() {
 export function APIGetCategoriesSelect() {
   return axiosAuth.get("/categories-list");
 }
+
+export function APIProductSelect(textSearch) {
+  const params = new URLSearchParams();
+
+  if (textSearch) params.append("search", textSearch);
+
+  return axiosAuth.get(`/doctor/medicines?${params.toString()}`);
+}

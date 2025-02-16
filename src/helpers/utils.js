@@ -92,6 +92,12 @@ export function setAuthentication(token, refreshToken) {
     appStore.setProfileInfo(decoded);
     appStore.setAuthentication(true);
     appStore.setToken(token);
+
+    if (decoded.role === "admin") {
+      appStore.setMenuList([...allMenus, ...adminMenus]);
+    } else if (decoded.role === "perawat") {
+      appStore.setMenuList(allMenus);
+    }
   } catch (error) {
     appStore.setAuthentication(false);
     appStore.setToken(null);
@@ -279,3 +285,110 @@ export const dateFormatFull = (date) => {
   const newDate = new Date(date);
   return `${newDate.getDate()} ${months[newDate.getMonth()]} ${newDate.getFullYear()}`;
 };
+
+export const allMenus = [
+  {
+    seq: 1,
+    title: "Dashboard",
+    path: "/dashboard",
+    hasChildren: false,
+  },
+  {
+    seq: 2,
+    title: "Antrian",
+    path: "/antrian",
+    hasChildren: false,
+  },
+  {
+    seq: 3,
+    title: "Vital Sign",
+    path: "/vital-sign",
+    hasChildren: false,
+  },
+  {
+    seq: 4,
+    title: "Farmasi",
+    path: "/pharmacy",
+    hasChildren: false,
+  },
+  {
+    seq: 5,
+    title: "Master Data",
+    path: "/data-pasien",
+    hasChildren: true,
+    children: [
+      {
+        seq: 1,
+        title: "Data Pasien",
+        path: "/data-pasien",
+        hasChildren: false,
+      },
+      {
+        seq: 2,
+        title: "Data Dokter",
+        path: "/data-dokter",
+        hasChildren: false,
+      },
+    ],
+  },
+  {
+    seq: 6,
+    title: "Riwayat Kunjungan",
+    path: "/histories",
+    hasChildren: false,
+  },
+];
+export const adminMenus = [
+  {
+    seq: 7,
+    title: "Inventory",
+    path: "/inventory",
+    hasChildren: true,
+    children: [
+      {
+        seq: 1,
+        title: "Master Obat",
+        path: "/medicines",
+        hasChildren: false,
+      },
+      {
+        seq: 2,
+        title: "Satuan",
+        path: "/inventory/units",
+        hasChildren: false,
+      },
+      {
+        seq: 3,
+        title: "Grup",
+        path: "/inventory/groups",
+        hasChildren: false,
+      },
+      {
+        seq: 4,
+        title: "Kategori",
+        path: "/inventory/categories",
+        hasChildren: false,
+      },
+    ],
+  },
+  {
+    seq: 8,
+    title: "Manajemen Stok",
+    path: "/stock",
+    hasChildren: true,
+    children: [
+      {
+        seq: 1,
+        title: "Stok Masuk",
+        path: "/stock/stock-entry",
+        hasChildren: false,
+      },
+      {
+        seq: 2,
+        title: "Stok Opname",
+        path: "/stock/stock-opname",
+        hasChildren: false,
+      },
+    ],
+  },
+];

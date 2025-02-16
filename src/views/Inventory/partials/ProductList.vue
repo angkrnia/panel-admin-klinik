@@ -1,13 +1,13 @@
 <template>
     <!-- Product Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-6">
         <div v-for="medicine in props.medicines" :key="medicine.id" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-full">
             <!-- Product Image -->
             <div class="relative h-48">
                 <img :src="medicine.image" :alt="medicine.name" class="w-full h-full object-cover" />
                 <div class="absolute top-2 right-2">
                     <span class="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
-                        {{ medicine.category.name }}
+                        {{ medicine?.category?.name }}
                     </span>
                 </div>
             </div>

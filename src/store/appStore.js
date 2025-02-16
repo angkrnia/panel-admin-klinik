@@ -10,8 +10,12 @@ export const useAppStore = defineStore("app", {
       email: null,
       role: null,
     },
+    menuList: [],
   }),
   actions: {
+    setMenuList(data) {
+      this.menuList = data.sort((a, b) => a.seq - b.seq);
+    },
     setAuthentication(data) {
       this.isAuthentication = data;
     },

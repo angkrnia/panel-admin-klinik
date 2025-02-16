@@ -58,77 +58,7 @@ function onUpdatePassword() {
 }
 
 
-const menuList = [
-    {
-        title: 'Dashboard',
-        path: '/dashboard',
-        hasChildren: false,
-    },
-    {
-        title: 'Antrian',
-        path: '/antrian',
-        hasChildren: false,
-    },
-    {
-        title: 'Vital Sign',
-        path: '/vital-sign',
-        hasChildren: false,
-    },
-    {
-        title: 'Farmasi',
-        path: '/pharmacy',
-        hasChildren: false,
-    },
-    {
-        title: 'Master Data',
-        path: '/data-pasien',
-        hasChildren: true,
-        children: [
-            {
-                title: 'Data Pasien',
-                path: '/data-pasien',
-                hasChildren: false,
-            },
-            {
-                title: 'Data Dokter',
-                path: '/data-dokter',
-                hasChildren: false
-            },
-        ]
-    },
-    {
-        title: 'Riwayat Kunjungan',
-        path: '/histories',
-        hasChildren: false,
-    },
-    {
-        title: 'Inventory',
-        path: '/inventory',
-        hasChildren: true,
-        children: [
-            {
-                title: 'Master Obat',
-                path: '/medicines',
-                hasChildren: false,
-            },
-            {
-                title: 'Satuan',
-                path: '/inventory/units',
-                hasChildren: false,
-            },
-            {
-                title: 'Grup',
-                path: '/inventory/groups',
-                hasChildren: false
-            },
-            {
-                title: 'Kategori',
-                path: '/inventory/categories',
-                hasChildren: false
-            },
-        ]
-    },
-]
+const menuList = computed(() => appStore.menuList);
 </script>
 
 <style scoped>
