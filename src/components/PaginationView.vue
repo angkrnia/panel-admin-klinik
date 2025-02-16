@@ -4,26 +4,12 @@
       :hide-on-single-page="false"></el-pagination>
   </div>
   <div v-if="total" class="text-center paginate-info">
-    <p class="text-sm text-gray-600 pt-1">Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ ((currentPage * pageSize) > total) ? total : currentPage * pageSize }} from
-      {{ total }} data ({{ Math.ceil(total / pageSize) }} page)</p>
+    <p class="text-sm text-gray-600 pt-1">{{ (currentPage - 1) * pageSize + 1 }} – {{ ((currentPage * pageSize) > total) ? total : currentPage * pageSize }} dari
+      {{ total }} data ({{ Math.ceil(total / pageSize) }} halaman)</p>
   </div>
 </template>
 
 <script setup>
-// defineProps({
-//   total: {
-//     type: Number,
-//     required: true,
-//   },
-//   pageSize: {
-//     type: Number,
-//     required: true,
-//   },
-//   currentPage: {
-//     type: Number,
-//     required: true,
-//   },
-// });
 defineProps(['total', 'pageSize', 'currentPage']);
 function changePage(current) {
   emit('current-change', current);

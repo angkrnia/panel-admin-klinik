@@ -38,7 +38,7 @@
                     </template>
                 </el-table-column>
                 <!-- Untuk kolom aksi -->
-                <TableColumnAction show-edit show-delete show-ambil-antrian @click-queue="onOpenQueue" @click-edit="onEditDialog" @click-delete="onDeleteData" />
+                <TableColumnAction show-edit show-ambil-antrian @click-queue="onOpenQueue" @click-edit="onEditDialog" @click-delete="onDeleteData" />
             </el-table>
         </div>
         <div class="flex items-center justify-center">
@@ -101,7 +101,7 @@
     <!-- FORM EDIT DIALOG -->
     <el-dialog v-model="editDialog" :width="dialogWidth()" top="5vh">
         <template #header>
-            <h1 class="border-b pb-5">Tambah Pasien</h1>
+            <h1 class="border-b pb-5">Edit Pasien</h1>
         </template>
         <el-form label-width="150px" :label-position="labelPosition()" class="space-x-10" :model="editData" :rules="patientRule" ref="editForm">
             <div class="w-full">
@@ -145,7 +145,7 @@
             </div>
         </el-form>
         <template #footer>
-            <FooterButtonDialog @save-click="onSaveEdit" @cancel-click="cancelEdit" />
+            <FooterButtonDialog @save-click="onSaveEdit" @cancel-click="cancelEdit" save-text="Edit" />
         </template>
     </el-dialog>
 
@@ -274,7 +274,7 @@ function changePage(index = 1) {
 }
 
 function onEditDialog(row) {
-    row.has_allergy = row.has_allergy === 1 ? true : false;
+    row.has_allergy = row.has_allergy == "1" ? true : false;
     openEditDialog(row);
 }
 

@@ -10,7 +10,7 @@
         </el-main>
         <el-footer class="h-11 flex justify-between items-center shadow print:hidden">
             <h6 class="text-xs tracking-wide text-gray-500 z-10">Klinik Adiyasa Medika</h6>
-            <h6 class="text-xs tracking-wide text-gray-500 z-10">Version 1.0.0</h6>
+            <h6 class="text-xs tracking-wide text-gray-500 z-10">Version {{ version }}</h6>
         </el-footer>
     </el-container>
     <main v-else>
@@ -20,6 +20,7 @@
 
 <script setup>
 import { useAppStore } from '../store/appStore';
+import version from '../helpers/version';
 
 const appStore = useAppStore();
 </script>
