@@ -70,3 +70,18 @@ export function APIStockOpnameCommitted(id) {
 }
 
 // STOCK OPNAME DETAIL
+export function stockOpnameLinePagination(pageIndex = 1, pageSize = pageSizeEnv, textSearch = "", newObj = {}) {
+  return axiosAuth.get(paramPaging(`/opname/${newObj.headerId}/lines`, pageIndex, pageSize, textSearch, newObj));
+}
+
+export function APIstoreStockOpnameLine(headerId, data) {
+  return axiosAuth.post(`/opname/${headerId}/lines`, data);
+}
+
+export function APIupdateStockOpnameLine(headerId, id, data) {
+  return axiosAuth.put(`/opname/${headerId}/lines/${id}`, data);
+}
+
+export function APIdeleteStockOpnameLine(headerId, id) {
+  return axiosAuth.delete(`/opname/${headerId}/lines/${id}`);
+}

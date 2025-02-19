@@ -64,7 +64,9 @@
                         </el-form-item>
                     </div>
                 </el-form>
-                <el-button class="flex justify-end" type="primary" @click="onSaveAdd">Simpan</el-button>
+                <div class="w-full flex justify-end">
+                    <el-button class="flex justify-end" type="primary" @click="onSaveAdd">Simpan</el-button>
+                </div>
             </div>
         </el-collapse-transition>
 
