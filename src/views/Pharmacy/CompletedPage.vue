@@ -97,6 +97,7 @@ const {
     cancelEdit,
 } = useEditData();
 const [detail, getDetail] = useGetData();
+const { 1: fetchApi } = useGetData();
 
 filterData.value = {
     status: 'vital-sign',
@@ -142,8 +143,9 @@ function onViewDialog(item) {
 }
 
 function onSaveUpdate() {
-    saveEdit(completedQueue, 'id', () => {
+    fetchApi(() => completedQueue(editData.value.id), false, true, (data) => {
         doPaginate(1);
+        editDialog.value = false;
     })
 }
 
