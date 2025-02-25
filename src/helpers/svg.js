@@ -34,12 +34,23 @@ export const backArrow = `<svg xmlns="http://www.w3.org/2000/svg" fill="currentC
         d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
 </svg> `;
 
+export const capsulePill = `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-capsule-pill" viewBox="0 0 16 16">
+  <path d="M11.02 5.364a3 3 0 0 0-4.242-4.243L1.121 6.778a3 3 0 1 0 4.243 4.243l5.657-5.657Zm-6.413-.657 2.878-2.879a2 2 0 1 1 2.829 2.829L7.435 7.536zM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8m-.5 1.042a3 3 0 0 0 0 5.917zm1 5.917a3 3 0 0 0 0-5.917z"/>
+</svg>`;
+
+export const capsule = `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-capsule" viewBox="0 0 16 16">
+  <path d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429z"/>
+</svg>`;
+
 export default {
-  backArrow,
-  people,
-  clockHistory,
-  clipboard,
-  calendar,
-  tag,
-  pencilSquare,
+    capsule,
+    capsulePill,
+    backArrow,
+    people,
+    clockHistory,
+    clipboard,
+    calendar,
+    tag,
+    pencilSquare,
+    capsulePill,
 };

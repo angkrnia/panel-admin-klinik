@@ -44,20 +44,19 @@
         <PatientCard :data="editData" />
 
         <template #footer>
-            <FooterButtonDialog @save-click="onSaveUpdate" :useConfirmation="true" save-text="Selesai" @cancel-click="cancelEdit" />
+            <FooterButtonDialog @save-click="onSaveUpdate" :useConfirmation="true" save-text="Lanjut Pembayaran" @cancel-click="cancelEdit"
+                text-confirm="Pastikan semua data sudah benar?" />
         </template>
     </el-dialog>
 </template>
 <script setup>
 import { ref } from 'vue';
 import usePagination from '../../composables/usePagination';
-import { completedQueue, detailKunjungan, insertVitalSign, pharmacyPagination, tambahAntrian } from '../../api/antrianApi';
+import { completedQueue, detailKunjungan, pharmacyPagination, tambahAntrian } from '../../api/antrianApi';
 import useAddData from '../../composables/useAddData';
-import { convertDate, convertStatusName, copyToClipboard, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
-import { queueRule } from '../../rules/queueRule';
+import { convertDate, convertStatusName, dialogWidth, doctorListHelper } from '../../helpers/utils';
 import useEditData from '../../composables/useEditData';
 import useGetData from '../../composables/useGetData';
-import { CopyDocument } from '@element-plus/icons-vue';
 import PatientCard from './partials/PatientCard.vue';
 
 const doctorList = ref([]);

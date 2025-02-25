@@ -73,7 +73,7 @@ export function APIStockOpnameCommitted(id) {
 export function stockOpnameLinePagination(pageIndex = 1, pageSize = pageSizeEnv, textSearch = "", newObj = {}) {
   return axiosAuth.get(paramPaging(`/opname/${newObj.headerId}/lines`, pageIndex, pageSize, textSearch, newObj));
 }
-
+nv
 export function APIstoreStockOpnameLine(headerId, data) {
   return axiosAuth.post(`/opname/${headerId}/lines`, data);
 }
