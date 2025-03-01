@@ -10,7 +10,11 @@
         </div>
         <div class="py-5">
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
-                <el-table-column type="index" label="No" min-width="50" />
+                <el-table-column label="No" min-width="50">
+                    <template #default="scope">
+                        {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="record_no" label="No. RM" />
                 <el-table-column prop="fullname" label="Nama Pasien" min-width="170" />
                 <el-table-column prop="nama_keluarga" label="Nama Keluarga" min-width="170" />
