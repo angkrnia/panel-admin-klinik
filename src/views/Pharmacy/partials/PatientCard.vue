@@ -104,7 +104,7 @@
                         Daftar Obat
                     </h2>
                     <el-tooltip class="box-item" effect="dark" content="Refresh" placement="top">
-                        <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" :class="{ 'animate-spin': isLoadingGetMedicine }" @click="fetchMedicine" />
+                        <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
                     </el-tooltip>
                 </div>
                 <div class="grid gap-3 md:grid-cols-2">
@@ -196,7 +196,6 @@
     </div>
 </template>
 
-<!-- PatientInfoCard.vue -->
 <script setup>
 import {
     UserCircleIcon,
@@ -213,16 +212,20 @@ import {
 } from '@heroicons/vue/24/outline'
 import { copyToClipboard } from '../../../helpers/utils';
 import { capsule, capsulePill } from '../../../helpers/svg';
-import useGetData from '../../../composables/useGetData';
-import { apiAcceptMedicine, apiListMedicineByQueue } from '../../../api/apiMedicine';
 import { InfoFilled } from '@element-plus/icons-vue';
 
 const props = defineProps({
     data: {
         type: Object,
         required: true
+    },
+    medicineList: {
+        type: Array,
+        required: true
     }
 })
+
+const emit = defineEmits(['accept-medicine', 'refresh-medicine']);
 
 const getStatusColor = (status) => {
     switch (status) {
@@ -241,16 +244,11 @@ const getStatusColor = (status) => {
     }
 };
 
-const [medicineList, getMedicineList, isLoadingGetMedicine] = useGetData();
-const { 1: fetchApi } = useGetData();
+function onAcceptMedicine(medsId) {
+    emit('accept-medicine', medsId);
+}
 
 function fetchMedicine() {
-    getMedicineList(() => apiListMedicineByQueue(props.data.id), true, true);
+    emit('refresh-medicine');
 }
-
-function onAcceptMedicine(medsId) {
-    fetchApi(() => apiAcceptMedicine(props.data.id, medsId, {}), false, true, fetchMedicine);
-}
-
-fetchMedicine();
 </script>

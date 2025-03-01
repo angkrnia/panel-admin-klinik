@@ -41,7 +41,7 @@
             <h1 class="border-b pb-5">Detail Antrian</h1>
         </template>
 
-        <PatientCard :data="editData" />
+        <PatientCard :data="editData" :medicineList="medicineList" @accept-medicine="onAcceptMedicine" @refresh-medicine="fetchMedicine" />
 
         <template #footer>
             <FooterButtonDialog @save-click="onSaveUpdate" :useConfirmation="true" save-text="Lanjut Pembayaran" @cancel-click="cancelEdit"
@@ -58,6 +58,7 @@ import { convertDate, convertStatusName, dialogWidth, doctorListHelper } from '.
 import useEditData from '../../composables/useEditData';
 import useGetData from '../../composables/useGetData';
 import PatientCard from './partials/PatientCard.vue';
+import { apiListMedicineByQueue } from '../../api/apiMedicine';
 
 const doctorList = ref([]);
 const isShowQueueInfo = ref(false);
@@ -97,6 +98,7 @@ const {
 } = useEditData();
 const [detail, getDetail] = useGetData();
 const { 1: fetchApi } = useGetData();
+const [medicineList, getMedicineList, isLoadingGetMedicine] = useGetData();
 
 filterData.value = {
     status: 'vital-sign',
@@ -135,8 +137,17 @@ function handleClick(tab) {
     changeIndex(() => doPaginate(1), 1);
 }
 
+function onAcceptMedicine(medsId) {
+    fetchApi(() => apiAcceptMedicine(editData.value.id, medsId, {}), false, true, fetchMedicine);
+}
+
+function fetchMedicine(id = editData.value.id) {
+    getMedicineList(() => apiListMedicineByQueue(id), false, true);
+}
+
 function onViewDialog(item) {
     getDetail(() => detailKunjungan(item.id), false, true, (data) => {
+        fetchMedicine(item.id);
         openEditDialog(data);
     })
 }
