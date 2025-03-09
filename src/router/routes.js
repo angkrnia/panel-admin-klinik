@@ -71,6 +71,92 @@ export const routes = [
           title: "Riwayat Kunjunan",
         },
       },
+      {
+        path: "/sales",
+        name: "Transaksi Penjualan",
+        component: () => import("@/views/Sales/SalesPage.vue"),
+        meta: {
+          title: "Transaksi Penjualan",
+        },
+      },
+      {
+        path: "/inventory",
+        name: "Inventory",
+        component: () => import("@/views/WrapperPage.vue"),
+        children: [
+          {
+            path: "units",
+            name: "Units",
+            component: () => import("@/views/Inventory/UnitsPage.vue"),
+            meta: {
+              title: "Satuan",
+            },
+          },
+          {
+            path: "groups",
+            name: "Groups",
+            component: () => import("@/views/Inventory/GroupsPage.vue"),
+            meta: {
+              title: "Satuan",
+            },
+          },
+          {
+            path: "categories",
+            name: "Categories",
+            component: () => import("@/views/Inventory/CategoriesPage.vue"),
+            meta: {
+              title: "Satuan",
+            },
+          },
+        ],
+      },
+      {
+        path: "/medicines",
+        name: "Master Obat",
+        component: () => import("@/views/Inventory/MedicinesPage.vue"),
+        meta: {
+          title: "Master Obat",
+        },
+      },
+      {
+        path: "/stock",
+        name: "stock",
+        component: () => import("@/views/WrapperPage.vue"),
+        children: [
+          {
+            path: "stock-entry",
+            name: "stock-entry",
+            component: () => import("@/views/StockEntry/StockEntryPage.vue"),
+            meta: {
+              title: "Stok Masuk",
+            },
+          },
+          {
+            path: "stock-entry/:id",
+            name: "stock-entry-detail",
+            component: () => import("@/views/StockEntry/StockEntryDetail.vue"),
+            meta: {
+              title: "Detail Stok Masuk",
+            },
+          },
+          {
+            path: "stock-opname",
+            name: "stock-opname",
+            component: () => import("@/views/StockOpname/StockOpnamePage.vue"),
+            meta: {
+              title: "Stok Opname",
+            },
+          },
+          {
+            path: "stock-opname/:id",
+            name: "stock-opname-detail",
+            component: () => import("@/views/StockOpname/StockOpnameDetail.vue"),
+            meta: {
+              title: "Detail Stok Opname",
+            },
+          },
+        ],
+      },
     ],
   },
 ];

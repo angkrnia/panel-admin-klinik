@@ -41,24 +41,24 @@
             <h1 class="border-b pb-5">Detail Antrian</h1>
         </template>
 
-        <PatientCard :data="editData" />
+        <PatientCard :data="editData" :medicineList="medicineList" @accept-medicine="onAcceptMedicine" @refresh-medicine="fetchMedicine" />
 
         <template #footer>
-            <FooterButtonDialog @save-click="onSaveUpdate" :useConfirmation="true" save-text="Selesai" @cancel-click="cancelEdit" />
+            <FooterButtonDialog @save-click="onSaveUpdate" :useConfirmation="true" save-text="Lanjut Pembayaran" @cancel-click="cancelEdit"
+                text-confirm="Pastikan semua data sudah benar?" />
         </template>
     </el-dialog>
 </template>
 <script setup>
 import { ref } from 'vue';
 import usePagination from '../../composables/usePagination';
-import { completedQueue, detailKunjungan, insertVitalSign, pharmacyPagination, tambahAntrian } from '../../api/antrianApi';
+import { completedQueue, detailKunjungan, pharmacyPagination, tambahAntrian } from '../../api/antrianApi';
 import useAddData from '../../composables/useAddData';
-import { convertDate, convertStatusName, copyToClipboard, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
-import { queueRule } from '../../rules/queueRule';
+import { convertDate, convertStatusName, dialogWidth, doctorListHelper, messageInfo } from '../../helpers/utils';
 import useEditData from '../../composables/useEditData';
 import useGetData from '../../composables/useGetData';
-import { CopyDocument } from '@element-plus/icons-vue';
 import PatientCard from './partials/PatientCard.vue';
+import { apiAcceptMedicine, apiListMedicineByQueue } from '../../api/apiMedicine';
 
 const doctorList = ref([]);
 const isShowQueueInfo = ref(false);
@@ -98,6 +98,7 @@ const {
 } = useEditData();
 const [detail, getDetail] = useGetData();
 const { 1: fetchApi } = useGetData();
+const [medicineList, getMedicineList, isLoadingGetMedicine] = useGetData();
 
 filterData.value = {
     status: 'vital-sign',
@@ -136,8 +137,19 @@ function handleClick(tab) {
     changeIndex(() => doPaginate(1), 1);
 }
 
+function onAcceptMedicine(medsId) {
+    fetchApi(() => apiAcceptMedicine(editData.value.id, medsId), false, true, () => {
+        fetchMedicine(editData.value.id);
+    });
+}
+
+function fetchMedicine(id = editData.value.id) {
+    getMedicineList(() => apiListMedicineByQueue(id), false, true);
+}
+
 function onViewDialog(item) {
     getDetail(() => detailKunjungan(item.id), false, true, (data) => {
+        fetchMedicine(item.id);
         openEditDialog(data);
     })
 }
@@ -146,6 +158,7 @@ function onSaveUpdate() {
     fetchApi(() => completedQueue(editData.value.id), false, true, (data) => {
         doPaginate(1);
         editDialog.value = false;
+        messageInfo("Berhasil menyelesaikan antrian", 'success');
     })
 }
 

@@ -35,8 +35,9 @@
 import { useRouter } from 'vue-router';
 import { loginApi } from '../api/loginApi';
 import useAddData from '../composables/useAddData';
-import { messageInfo, setAuthentication } from '../helpers/utils';
+import { adminMenus, allMenus, messageInfo, setAuthentication } from '../helpers/utils';
 import { loginRule } from '../rules/loginRules';
+import { useAppStore } from '../store/appStore';
 
 const {
     addData,
@@ -49,11 +50,17 @@ const {
     isLoading,
 } = useAddData();
 const router = useRouter();
+const appStore = useAppStore();
 
 function onLogin() {
     saveAdd(loginApi, (data) => {
         if (data) {
-            const { token, refresh_token } = data;
+            const { token, refresh_token, user } = data;
+            if (user.role === 'admin') {
+                appStore.setMenuList([...allMenus, ...adminMenus]);
+            } else {
+                appStore.setMenuList(allMenus);
+            }
             setAuthentication(token, refresh_token);
             return router.push('/dashboard');
         } else {

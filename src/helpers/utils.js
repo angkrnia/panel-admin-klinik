@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { axiosAuth } from "../config/axios";
 import { jwtDecode } from "jwt-decode";
 import { getDokterSelect } from "../api/dokterApi";
+import { APIUploadPhotos } from "../api/apiHelper";
 
 export const isObjectEmpty = (object) => {
   if (!object) return true;
@@ -21,7 +22,16 @@ export const messageInfo = (message, type) => {
 export const loading = () => {
   const load = ElLoading.service({
     lock: true,
-    text: "Loading",
+    text: "Tunggu...",
+    background: "rgba(0, 0, 0, 0.7)",
+  });
+  return load;
+};
+
+export const loadingScreen = () => {
+  const load = ElLoading.service({
+    lock: true,
+    text: "Tunggu...",
     background: "rgba(0, 0, 0, 0.7)",
   });
   return load;
@@ -65,19 +75,14 @@ export const getDifferentObject = (object1, object2) => {
 };
 
 export function replaceNullWithEmptyString(obj) {
-  return Object.fromEntries(
-    Object.entries(obj).map(([key, value]) => [
-      key,
-      value === null ? "" : value,
-    ])
-  );
+  return Object.fromEntries(Object.entries(obj).map(([key, value]) => [key, value === null ? "" : value]));
 }
 
 export function setAuthentication(token, refreshToken) {
   Cookies.set("TOKEN", token, { expires: 1 });
   axiosAuth.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   if (refreshToken) {
-    localStorage.setItem("TOKEN", refreshToken);
+    localStorage.setItem("REFRESH_TOKEN", refreshToken);
   }
 
   const appStore = useAppStore();
@@ -87,6 +92,12 @@ export function setAuthentication(token, refreshToken) {
     appStore.setProfileInfo(decoded);
     appStore.setAuthentication(true);
     appStore.setToken(token);
+
+    if (decoded.role === "admin") {
+      appStore.setMenuList([...allMenus, ...adminMenus]);
+    } else if (decoded.role === "perawat") {
+      appStore.setMenuList(allMenus);
+    }
   } catch (error) {
     appStore.setAuthentication(false);
     appStore.setToken(null);
@@ -106,7 +117,7 @@ export const getFromLocalStorage = (key) => {
 };
 
 export function getRefreshToken() {
-  return getFromLocalStorage("TOKEN");
+  return getFromLocalStorage("REFRESH_TOKEN");
 }
 
 export function onLogoutHandler() {
@@ -122,20 +133,7 @@ export function convertDate(dateString) {
   const date = new Date(dateString);
 
   // Daftar bulan dalam format singkat
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   // Mendapatkan tanggal, bulan, tahun, dan waktu
   const day = date.getDate();
@@ -158,26 +156,16 @@ export function convertDate(dateString) {
 }
 
 export function labelPosition() {
-  const isMobile = window.matchMedia(
-    "only screen and (max-width: 760px)"
-  ).matches;
+  const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
   if (isMobile) return "top";
   return "left";
 }
 
 export function dialogWidth(params) {
-  const isMobile = window.matchMedia(
-    "only screen and (max-width: 760px)"
-  ).matches;
-  const isTablet = window.matchMedia(
-    "only screen and (min-width: 761px) and (max-width: 1024px)"
-  ).matches;
-  const isLaptop = window.matchMedia(
-    "only screen and (min-width: 1025px) and (max-width: 1440px)"
-  ).matches;
-  const isDesktop = window.matchMedia(
-    "only screen and (min-width: 1441px)"
-  ).matches;
+  const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
+  const isTablet = window.matchMedia("only screen and (min-width: 761px) and (max-width: 1024px)").matches;
+  const isLaptop = window.matchMedia("only screen and (min-width: 1025px) and (max-width: 1440px)").matches;
+  const isDesktop = window.matchMedia("only screen and (min-width: 1441px)").matches;
 
   if (isMobile) return "95%";
   if (isTablet) return "65%";
@@ -256,7 +244,157 @@ export function copyToClipboard(text) {
   }
 }
 
+export function uploadPhotosHelper(imageFiles) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const result = await APIUploadPhotos(imageFiles);
+      if (result.status == 200) {
+        resolve(result.data.data);
+      } else {
+        reject([]);
+      }
+    } catch (error) {
+      messageInfo(error?.response?.data?.message || "Gagal mengunggah foto", "error");
+      resolve([]);
+    }
+  });
+}
+
 export function formatRibuan(value) {
   if (!value) return 0;
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
+
+export function isOnMobileOrTablet() {
+  const isMobileOrTablet = (window.matchMedia && window.matchMedia("only screen and (max-width: 1024px)").matches) || window.innerWidth <= 1024;
+
+  return isMobileOrTablet;
+}
+
+export const convertRp = (money) => {
+  if (!money) return "Rp 0";
+  money = parseFloat(money);
+  if (money % 1 !== 0)
+    return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 1, maximumFractionDigits: 2 }).format(money);
+
+  return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(money);
+};
+
+export const dateFormatFull = (date) => {
+  if (!date) return "";
+  const newDate = new Date(date);
+  return `${newDate.getDate()} ${months[newDate.getMonth()]} ${newDate.getFullYear()}`;
+};
+
+export const allMenus = [
+  {
+    seq: 1,
+    title: "Dashboard",
+    path: "/dashboard",
+    hasChildren: false,
+  },
+  {
+    seq: 2,
+    title: "Antrian",
+    path: "/antrian",
+    hasChildren: false,
+  },
+  {
+    seq: 3,
+    title: "Vital Sign",
+    path: "/vital-sign",
+    hasChildren: false,
+  },
+  {
+    seq: 4,
+    title: "Farmasi",
+    path: "/pharmacy",
+    hasChildren: false,
+  },
+  {
+    seq: 5,
+    title: "Master Data",
+    path: "/data-pasien",
+    hasChildren: true,
+    children: [
+      {
+        seq: 1,
+        title: "Data Pasien",
+        path: "/data-pasien",
+        hasChildren: false,
+      },
+      {
+        seq: 2,
+        title: "Data Dokter",
+        path: "/data-dokter",
+        hasChildren: false,
+      },
+    ],
+  },
+  {
+    seq: 6,
+    title: "Riwayat Kunjungan",
+    path: "/histories",
+    hasChildren: false,
+  },
+  {
+    seq: 7,
+    title: "Transaksi Penjualan",
+    path: "/sales",
+    hasChildren: false,
+  },
+];
+export const adminMenus = [
+  {
+    seq: 7,
+    title: "Inventory",
+    path: "/inventory",
+    hasChildren: true,
+    children: [
+      {
+        seq: 1,
+        title: "Master Obat",
+        path: "/medicines",
+        hasChildren: false,
+      },
+      {
+        seq: 2,
+        title: "Satuan",
+        path: "/inventory/units",
+        hasChildren: false,
+      },
+      {
+        seq: 3,
+        title: "Grup",
+        path: "/inventory/groups",
+        hasChildren: false,
+      },
+      {
+        seq: 4,
+        title: "Kategori",
+        path: "/inventory/categories",
+        hasChildren: false,
+      },
+    ],
+  },
+  {
+    seq: 8,
+    title: "Manajemen Stok",
+    path: "/stock",
+    hasChildren: true,
+    children: [
+      {
+        seq: 1,
+        title: "Stok Masuk",
+        path: "/stock/stock-entry",
+        hasChildren: false,
+      },
+      {
+        seq: 2,
+        title: "Stok Opname",
+        path: "/stock/stock-opname",
+        hasChildren: false,
+      },
+    ],
+  },
+];
