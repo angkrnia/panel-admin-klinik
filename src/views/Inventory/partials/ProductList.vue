@@ -3,16 +3,11 @@
     <div class="grid grid-cols-2 lg:grid-cols-5 gap-6">
         <div v-for="medicine in props.medicines" :key="medicine.id" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-full">
             <!-- Product Image -->
-            <div class="relative h-48">
+            <div class="relative min-h-48">
                 <!-- <img :src="medicine.image" :alt="medicine.name" class="w-full h-full object-cover" /> -->
                 <el-image :src="medicine.image" :alt="medicine.name" class="w-full h-full object-cover" :preview-src-list="[medicine.image]">
                     <template #placeholder>
                         <div class="flex items-center justify-center h-full">
-                            <img src="https://pkmciumbuleuit.id//assets/uploads/puskesmas_news/item-7-0.jpg" alt="" class="bg-gray-500/20">
-                        </div>
-                    </template>
-                    <template #error>
-                        <div class="image-slot">
                             <img src="https://pkmciumbuleuit.id//assets/uploads/puskesmas_news/item-7-0.jpg" alt="" class="bg-gray-500/20">
                         </div>
                     </template>
@@ -25,7 +20,7 @@
             </div>
 
             <!-- Product Info -->
-            <div class="p-4 flex flex-col">
+            <div class="p-2 flex flex-col">
                 <div class="mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">{{ medicine.name }}</h3>
                     <div class="flex items-center gap-2 text-sm text-gray-600">
@@ -38,10 +33,17 @@
                 </div>
 
                 <!-- Description -->
-                <p class="text-sm text-gray-600 mb-4 line-clamp-2">{{ medicine.description || '-' }}</p>
+                <p class="text-sm text-gray-500 mb-4 line-clamp-2">{{ medicine.description || 'Tidak ada deskripsi' }}</p>
+
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-gray-800 text-sm">Base Stok: {{ Math.floor(medicine.base_stock) }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-gray-800 text-sm">Base Price: {{ convertRp(medicine.sell_price) }}</span>
+                </div>
 
                 <!-- Units & Prices -->
-                <div class="space-y-2 mb-4">
+                <div class="space-y-2 mb-4 border rounded py-1 px-2 mt-2" v-if="Array.isArray(medicine.units) && medicine.units.length">
                     <div v-for="(unit, idx) in medicine.units" :key="idx" class="flex justify-between items-center text-sm">
                         <div>
                             <span class="font-medium">{{ unit.name }}</span>
@@ -71,7 +73,7 @@
         </div>
     </div>
 
-    <!-- Vie Dialog -->
+    <!-- View Dialog -->
     <el-dialog v-model="viewDialog" title="Detail Obat" :width="dialogWidth()" top="5vh" @close="closeView">
         <div class="bg-white rounded-lg max-w-2xl w-full">
             <!-- Content -->
@@ -80,7 +82,19 @@
                     <!-- Product Image -->
                     <div class="md:w-1/3">
                         <div class="bg-gray-50 rounded-lg p-4 flex items-center justify-center">
-                            <img :src="viewData.image" :alt="viewData.name" class="w-full h-48 object-contain rounded-lg" />
+                            <!-- <img :src="viewData.image" :alt="viewData.name" class="w-full h-48 object-contain rounded-lg" /> -->
+                            <el-image :src="viewData?.image" :alt="viewData?.name" class="w-full h-48 object-contain rounded-lg" :preview-src-list="[viewData?.image]">
+                                <template #placeholder>
+                                    <div class="flex items-center justify-center h-full">
+                                        <img src="https://pkmciumbuleuit.id//assets/uploads/puskesmas_news/item-7-0.jpg" alt="" class="bg-gray-500/20">
+                                    </div>
+                                </template>
+                                <template #error>
+                                    <div class="flex items-center justify-center h-full">
+                                        <img src="https://pkmciumbuleuit.id//assets/uploads/puskesmas_news/item-7-0.jpg" alt="" class="bg-gray-500/20">
+                                    </div>
+                                </template>
+                            </el-image>
                         </div>
                     </div>
 
@@ -90,13 +104,13 @@
 
                         <div class="flex items-center gap-2 mb-4">
                             <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                                {{ viewData.type.toUpperCase() }}
+                                {{ viewData?.type?.toUpperCase() || '-' }}
                             </span>
                             <span class="text-gray-500 text-sm">SKU: {{ viewData.sku }}</span>
                         </div>
 
                         <!-- Unit Selection -->
-                        <div class="mb-6">
+                        <div class="mb-6" v-if="Array.isArray(viewData.units) && viewData.units.length">
                             <label class="text-sm text-gray-600 mb-2 block">Pilih Satuan</label>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                                 <button v-for="unit in viewData.units" :key="unit.id" @click="selectedUnit = unit" :class="[
@@ -111,44 +125,74 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <div class="flex items-center gap-2">
-                                <el-icon size="20">
-                                    <Box />
-                                </el-icon>
-                                <div>
-                                    <p class="text-sm text-gray-500">Stok</p>
-                                    <p class="font-medium">{{ calculateStock(selectedUnit) }} {{ selectedUnit.name }}</p>
+                        <!-- Jika terdapat satuan -->
+                        <template v-if="Array.isArray(viewData.units) && viewData.units.length">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div class="flex items-center gap-2">
+                                    <el-icon size="20">
+                                        <Box />
+                                    </el-icon>
+                                    <div>
+                                        <p class="text-sm text-gray-500">Stok</p>
+                                        <p class="font-medium">{{ calculateStock(selectedUnit) }} {{ selectedUnit.name }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <el-icon size="20">
+                                        <Paperclip />
+                                    </el-icon>
+                                    <div>
+                                        <p class="text-sm text-gray-500">Kemasan</p>
+                                        <p class="font-medium">{{ selectedUnit.description }}</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <el-icon size="20">
-                                    <Paperclip />
-                                </el-icon>
-                                <div>
-                                    <p class="text-sm text-gray-500">Kemasan</p>
-                                    <p class="font-medium">{{ selectedUnit.pivot.description }}</p>
+                        </template>
+
+                        <!-- Jika tidak ada satuan maka gunakana base_stock -->
+                        <template v-else>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div class="flex items-center gap-2">
+                                    <el-icon size="20">
+                                        <Box />
+                                    </el-icon>
+                                    <div>
+                                        <p class="text-sm text-gray-500">Stok</p>
+                                        <p class="font-medium">{{ viewData.base_stock }}</p>
+                                    </div>
                                 </div>
                             </div>
+                        </template>
+
+                        <div class="flex items-center justify-between bg-blue-50 rounded-lg p-4">
+                            <!-- Jika terdapat satuan -->
+                            <template v-if="Array.isArray(viewData.units) && viewData.units.length">
+                                <div>
+                                    <p class="text-sm text-gray-600">Harga per {{ selectedUnit.name }}</p>
+                                    <p class="text-2xl font-bold text-blue-600">
+                                        {{ convertRp(selectedUnit.pivot.sell_price) }}
+                                    </p>
+                                </div>
+                            </template>
+                            <!-- Jika tidak ada satuan -->
+                            <template v-else>
+                                <div>
+                                    <p class="text-sm text-gray-600">Harga</p>
+                                    <p class="text-2xl font-bold text-blue-600">
+                                        {{ convertRp(viewData.sell_price) }}
+                                    </p>
+                                </div>
+                            </template>
                         </div>
 
-                        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                        <div class="bg-gray-100 rounded-lg p-4 mt-6">
                             <div class="flex items-center gap-2 mb-2">
                                 <el-icon size="16">
                                     <Clock />
                                 </el-icon>
                                 <h4 class="font-medium text-gray-800">Aturan Pakai</h4>
                             </div>
-                            <p class="text-gray-600">{{ viewData.dosage }}</p>
-                        </div>
-
-                        <div class="flex items-center justify-between bg-blue-50 rounded-lg p-4">
-                            <div>
-                                <p class="text-sm text-gray-600">Harga per {{ selectedUnit.name }}</p>
-                                <p class="text-2xl font-bold text-blue-600">
-                                    {{ convertRp(selectedUnit.pivot.sell_price) }}
-                                </p>
-                            </div>
+                            <p class="text-gray-600">{{ viewData.dosage || "-" }}</p>
                         </div>
                     </div>
                 </div>
@@ -157,7 +201,7 @@
                 <div class="mt-8">
                     <h4 class="font-semibold text-gray-800 mb-3">Deskripsi Produk</h4>
                     <div class="bg-gray-50 rounded-lg p-4">
-                        <p class="text-gray-600 leading-relaxed">{{ viewData.description }}</p>
+                        <p class="text-gray-600 leading-relaxed">{{ viewData.description || "-" }}</p>
                     </div>
                 </div>
             </div>
@@ -174,14 +218,14 @@ import { Box, Clock, Loading, Paperclip, Picture } from '@element-plus/icons-vue
 const props = defineProps({
     medicines: Array
 })
+const emits = defineEmits(['edit-data'])
 
 const { viewData, viewDialog, closeView, openViewDialog } = useViewData()
 
 const selectedUnit = ref({})
 
 const handleDetail = (medicine) => {
-    console.log('Detail medicine:', medicine)
-    selectedUnit.value = medicine.units[0]
+    selectedUnit.value = medicine.units?.[0]
     openViewDialog(medicine)
 }
 
@@ -191,7 +235,6 @@ const calculateStock = (unit) => {
 }
 
 const handleEdit = (medicine) => {
-    console.log('Edit medicine:', medicine)
-    // Implement edit logic
+    emits('edit-data', medicine)
 }
 </script>

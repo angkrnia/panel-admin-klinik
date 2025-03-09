@@ -3,7 +3,7 @@
         <TitleDashboard title="Riwayat Kunjungan" />
     </section>
 
-    <section v-if="true">
+    <section>
         <el-collapse>
             <el-collapse-item name="1">
                 <template #title>

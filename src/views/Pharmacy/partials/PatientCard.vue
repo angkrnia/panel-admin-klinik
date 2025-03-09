@@ -137,7 +137,7 @@
                                     <p class="text-gray-500 text-xs">Catatan</p>
                                     <p class="font-semibold">{{ item.notes }}</p>
                                 </div>
-                                <div class="flex items-center gap-x-3">
+                                <div class="flex items-center flex-wrap gap-3">
                                     <!-- Detail Obat -->
                                     <button type="button" class="px-3 py-1 bg-gray-300 text-gray-800 text-xs rounded hover:bg-gray-200 transition-colors">Detail Obat</button>
                                     <!-- Proses Obat -->
@@ -145,9 +145,12 @@
                                         @confirm="onAcceptMedicine(item.id)" content="Hapus">
                                         <template #reference>
                                             <button type="button" class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
-                                                v-if="item.status !== 'accepted'">Proses Obat</button>
+                                                v-if="item.status !== 'accepted' && item.status !== 'rejected'">Proses Obat</button>
                                         </template>
                                     </el-popconfirm>
+                                    <!-- Cancel Obat -->
+                                    <button type="button" class="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-opacity-80 transition-colors"
+                                        @click="onCancelMedicine(item)" v-if="item.status !== 'rejected'">Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -194,6 +197,21 @@
             </div>
         </div>
     </div>
+
+    <!-- Cancel Dialog -->
+    <el-dialog v-model="cancelDialog" title="Cancel Obat" :width="dialogWidth()" top="5vh">
+        <div class="space-y-4">
+            <p>Apakah anda yakin ingin membatalkan obat ini?</p>
+            <el-form ref="cancelForm" :model="cancelData" label-position="top">
+                <el-form-item label="Catatan" prop="note" :rules="[{ required: true }]">
+                    <el-input type="textarea" v-model="cancelData.note" placeholder="Masukan Catatan"></el-input>
+                </el-form-item>
+            </el-form>
+            <div class="flex items-center  justify-end gap-3">
+                <button type="button" class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-opacity-80 transition-colors" @click="onSubmitCancel">Submit</button>
+            </div>
+        </div>
+    </el-dialog>
 </template>
 
 <script setup>
@@ -210,9 +228,11 @@ import {
     PlusCircleIcon,
     ArrowPathIcon,
 } from '@heroicons/vue/24/outline'
-import { copyToClipboard } from '../../../helpers/utils';
+import { copyToClipboard, dialogWidth } from '../../../helpers/utils';
 import { capsule, capsulePill } from '../../../helpers/svg';
 import { InfoFilled } from '@element-plus/icons-vue';
+import useEditData from '../../../composables/useEditData';
+import { apiRejectMedicine } from '../../../api/apiMedicine';
 
 const props = defineProps({
     data: {
@@ -225,6 +245,8 @@ const props = defineProps({
     }
 })
 
+const [cancelData, cancelForm, cancelDialog, openCancelDialog, saveCancel, cancelCancel] = useEditData({ returnAsArray: true })
+
 const emit = defineEmits(['accept-medicine', 'refresh-medicine']);
 
 const getStatusColor = (status) => {
@@ -234,7 +256,7 @@ const getStatusColor = (status) => {
         case 'accepted':
             return 'bg-green-400'; // Warna untuk status Diproses
         case 'rejected':
-            return 'bg-red-400'; // Warna untuk status Ditolak
+            return 'bg-red-400 text-white'; // Warna untuk status Ditolak
         case 'changed':
             return 'bg-yellow-400'; // Warna untuk status Diganti
         case 'done':
@@ -246,6 +268,18 @@ const getStatusColor = (status) => {
 
 function onAcceptMedicine(medsId) {
     emit('accept-medicine', medsId);
+}
+
+function onCancelMedicine(medsId) {
+    const row = {
+        queue_id: props.data.id,
+        medicine_id: medsId.id
+    }
+    openCancelDialog(row);
+}
+
+function onSubmitCancel() {
+    saveCancel(() => apiRejectMedicine(cancelData.value.queue_id, cancelData.value.medicine_id, cancelData.value))
 }
 
 function fetchMedicine() {

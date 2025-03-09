@@ -72,6 +72,14 @@ export const routes = [
         },
       },
       {
+        path: "/sales",
+        name: "Transaksi Penjualan",
+        component: () => import("@/views/Sales/SalesPage.vue"),
+        meta: {
+          title: "Transaksi Penjualan",
+        },
+      },
+      {
         path: "/inventory",
         name: "Inventory",
         component: () => import("@/views/WrapperPage.vue"),

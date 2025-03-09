@@ -337,6 +337,12 @@ export const allMenus = [
     path: "/histories",
     hasChildren: false,
   },
+  {
+    seq: 7,
+    title: "Transaksi Penjualan",
+    path: "/sales",
+    hasChildren: false,
+  },
 ];
 export const adminMenus = [
   {

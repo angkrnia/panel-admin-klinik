@@ -8,7 +8,7 @@
         <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
             <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate" />
         </div>
-        <ProductList :medicines="listData" @edit-data="onEditDialog" @delete-data="onDeleteData" />
+        <ProductList :medicines="listData" @edit-data="onEditDialog" />
     </section>
 
     <!-- FORM ADD DIALOG -->
@@ -26,6 +26,9 @@
                 </el-form-item>
                 <el-form-item label="Stok Dasar" prop="stock">
                     <el-input v-model="addData.stock" type="number" placeholder="Stok Dasar" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Harga Beli Dasar" prop="buy_price">
+                    <ElCurrencyInput v-model="addData.buy_price" placeholder="Harga Beli" style="width: 100%" />
                 </el-form-item>
                 <!-- Multi Satuan -->
                 <el-form-item label="Satuan" prop="unit_id">
@@ -61,15 +64,13 @@
                                 </el-form-item>
                                 <el-form-item class="space-y-2">
                                     <label class="block text-sm font-medium text-gray-700">Harga Jual</label>
-                                    <el-input type="number" v-model="unit.sell_price"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                                        placeholder="Masukkan harga" />
+                                    <ElCurrencyInput v-model="unit.sell_price"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" />
                                 </el-form-item>
                                 <el-form-item class="space-y-2">
                                     <label class="block text-sm font-medium text-gray-700">Harga Jual Baru</label>
-                                    <el-input type="number" v-model="unit.new_price"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                                        placeholder="Masukkan harga baru" />
+                                    <ElCurrencyInput v-model="unit.new_price"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" />
                                 </el-form-item>
                                 <el-form-item class="space-y-2" v-if="!unit.is_base">
                                     <label class="block text-sm font-medium text-gray-700">Konversi Ke Satuan Dasar</label>
@@ -153,12 +154,104 @@
     <!-- FORM EDIT DIALOG -->
     <el-dialog v-model="editDialog" :width="dialogWidth()" top="5vh">
         <template #header>
-            <h1 class="border-b pb-5">Edit Kategori</h1>
+            <h1 class="border-b pb-5">Edit Produk</h1>
         </template>
         <el-form label-width="150px" :label-position="labelPosition()" class="space-x-10" :model="editData" :rules="categoriesRule" ref="editForm">
             <div class="w-full">
                 <el-form-item label="Nama Kategori" prop="name">
                     <el-input v-model="editData.name" placeholder="Nama Kategori" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="SKU" prop="sku">
+                    <el-input v-model="editData.sku" placeholder="SKU" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Stok Dasar" prop="stock">
+                    <el-input v-model="editData.stock" type="number" disabled readonly placeholder="Stok Dasar" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Harga Beli Dasar" prop="buy_price">
+                    <ElCurrencyInput v-model="editData.buy_price" placeholder="Harga Beli" style="width: 100%" />
+                </el-form-item>
+                <!-- Multi Satuan -->
+                <el-form-item label="Satuan" prop="unit_id">
+                    <template v-for="(unit, index) in editData.units" :key="index">
+                        <div class="border p-4 rounded-lg space-y-4 bg-slate-50 mb-2">
+                            <div class="flex justify-between items-center" v-if="unit.is_base">
+                                <h4 class="font-medium">Satuan Dasar</h4>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                    Base Unit
+                                </span>
+                            </div>
+                            <div class="flex justify-end items-center" v-if="index > 0">
+                                <button type="button" @click="removeEditUnit(index)" class="text-red-500 hover:text-red-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <el-form-item class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-700">Satuan</label>
+                                    <el-select v-model="unit.unit_id" placeholder="Pilih Satuan" filterable clearable style="width: 100%" @change="onChangeUnit(unit)">
+                                        <el-option v-for="item in unitList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                                <el-form-item class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                                    <el-input type="text" v-model="unit.description"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                                        placeholder="Contoh: 10 Tablet/Strip" />
+                                </el-form-item>
+                                <el-form-item class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-700">Harga Jual</label>
+                                    <ElCurrencyInput v-model="unit.sell_price"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" />
+                                </el-form-item>
+                                <el-form-item class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-700">Harga Jual Baru</label>
+                                    <ElCurrencyInput v-model="unit.new_price"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" />
+                                </el-form-item>
+                                <el-form-item class="space-y-2" v-if="!unit.is_base">
+                                    <label class="block text-sm font-medium text-gray-700">Konversi Ke Satuan Dasar</label>
+                                    <el-input type="text" v-model="unit.conversion_to_base"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Contoh: 10" />
+                                </el-form-item>
+                            </div>
+                        </div>
+                    </template>
+                    <button type="button" @click="addEditUnit"
+                        class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        Tambah Satuan
+                    </button>
+                </el-form-item>
+                <el-form-item label="Kategori" prop="category_id">
+                    <el-select v-model="editData.category_id" placeholder="Pilih Kategori" filterable clearable style="width: 100%">
+                        <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Grup" prop="group_id">
+                    <el-select v-model="editData.group_id" placeholder="Pilih Grup" filterable clearable style="width: 100%">
+                        <el-option v-for="item in groupList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Tipe" prop="type">
+                    <el-input v-model="editData.type" placeholder="Tipe" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Efel Samping" prop="side_effect">
+                    <el-input v-model="editData.side_effect" placeholder="Efel Samping" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Dosis" prop="dosage">
+                    <el-input v-model="editData.dosage" placeholder="Dosis" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Indikasi" prop="indication">
+                    <el-input v-model="editData.indication" placeholder="Indikasi" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Deskripsi" prop="description">
+                    <el-input type="textarea" show-word-limit maxlength="255" rows="3" v-model="editData.description" placeholder="Deskripsi" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Gambar" prop="image">
                     <div class="flex flex-col items-start justify-start">
@@ -253,8 +346,35 @@ function changePage(index = 1) {
 
 function onEditDialog(row) {
     previewImage.value = row.image;
-    editData.value.id = row.id;
-    openEditDialog(row);
+    editData.value = JSON.parse(JSON.stringify(row));
+    editData.value.stock = row.base_stock;
+    // Jika ada satuan
+    if (Array.isArray(editData.value.units) && editData.value.units.length) {
+        editData.value.units = editData.value.units.map((unit) => ({
+            ...unit,
+            unit_id: unit.id,
+            sell_price: unit?.pivot?.sell_price,
+            new_price: unit?.pivot?.new_price,
+            conversion_to_base: unit?.pivot?.conversion_to_base,
+            is_base: unit?.pivot?.is_base == 1,
+            description: unit?.pivot?.description,
+        }));
+    } else {
+        editData.value.units = [
+            {
+                unit_id: null,
+                sell_price: editData.value.sell_price,
+                new_price: editData.value.sell_price,
+                conversion_to_base: 1,
+                is_base: true,
+                description: "",
+            }
+        ]
+    }
+    getCategoryList(APIGetCategoriesSelect);
+    getUnitList(APIGetUnitsSelect);
+    getGroupList(APIGetGroupsSelect);
+    openEditDialog(editData.value);
 }
 
 function onDeleteData({ id = 0 }) {
@@ -288,6 +408,8 @@ async function onSaveAdd() {
             messageInfo("Gagal menyimpan data", "error");
         }
     } catch (error) {
+        console.log("validasi gagal");
+
         messageInfo(error.response.data.message || "Gagal menyimpan data", "error");
     } finally {
         loading.close();
@@ -297,9 +419,9 @@ async function onSaveAdd() {
 async function onSaveEdit() {
     let loading = loadingScreen();
 
-    if (editData.value.image) {
+    if (editData.value.new_image) {
         // Upload gambar dulu
-        const image = await uploadPhotosHelper(editData.value.image);
+        const image = await uploadPhotosHelper(editData.value.new_image);
         if (image && image.images && image.images.length > 0) {
             editData.value.image = image.images[0].url;
         } else {
@@ -321,7 +443,15 @@ async function onSaveEdit() {
             messageInfo("Gagal mengupdate data", "error");
         }
     } catch (error) {
-        messageInfo(error.response.data.message || "Gagal mengupdate data", "error");
+        if (error.response && error.response.data.errors) {
+            const messages = Object.values(error.response.data.errors)
+                .flat() // Biar array di-flatten kalau ada banyak error
+                .join("\n");
+
+            messageInfo(messages, "error");
+        } else {
+            messageInfo(error.response.data.message || "Terjadi kesalahan.", "error");
+        }
     } finally {
         loading.close();
     }
@@ -369,7 +499,7 @@ async function inputImage(event, type = 'add') {
         const reader = new FileReader();
 
         if (type === 'edit') {
-            editData.value.image = file;
+            editData.value.new_image = file;
         } else {
             addData.value.image = file;
         }
@@ -393,8 +523,24 @@ function addNewUnit() {
     });
 }
 
+function addEditUnit() {
+    editData.value.units.push({
+        id: null,
+        unit_id: null,
+        is_base: false,
+        conversion_to_base: null,
+        sell_price: 0,
+        new_price: 0,
+        description: null,
+    });
+}
+
 function removeUnit(index) {
     addData.value.units.splice(index, 1);
+}
+
+function removeEditUnit(index) {
+    editData.value.units.splice(index, 1);
 }
 
 function onChangeUnit(unit) {

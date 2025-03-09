@@ -48,10 +48,7 @@
                 <el-form label-width="150px" label-position="top" class="space-x-10" :model="addData" ref="addForm" :rules="addProductStockEntryRule">
                     <div class="w-full flex items-center gap-x-3">
                         <el-form-item label="Produk" prop="product_id" class="w-full">
-                            <!-- <ElProductSelect class="w-full" v-model="addData.product_id" /> -->
-                            <el-select v-model="addData.product_id" filterable class="w-full" placeholder="Pilih atau Cari Obat">
-                                <el-option v-for="item in productList" :key="item.id" :label="`${item.name} (stok: ${item.base_stock})`" :value="item.id" />
-                            </el-select>
+                            <ElProductSelect class="w-full" v-model="addData.product_id" />
                         </el-form-item>
                         <el-form-item label="QTY" prop="quantity" class="w-full">
                             <el-input type="number" v-model="addData.quantity" placeholder="QTY" style="width: 100%" />
@@ -245,6 +242,10 @@ function firstLoad() {
             editHeaderData.value = data.data;
         }
     });
+}
+
+function onProductChange(data) {
+    console.log("changed: ", data);
 }
 
 doPaginate(pageIndex.value);

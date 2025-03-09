@@ -54,11 +54,11 @@ import { ref } from 'vue';
 import usePagination from '../../composables/usePagination';
 import { completedQueue, detailKunjungan, pharmacyPagination, tambahAntrian } from '../../api/antrianApi';
 import useAddData from '../../composables/useAddData';
-import { convertDate, convertStatusName, dialogWidth, doctorListHelper } from '../../helpers/utils';
+import { convertDate, convertStatusName, dialogWidth, doctorListHelper, messageInfo } from '../../helpers/utils';
 import useEditData from '../../composables/useEditData';
 import useGetData from '../../composables/useGetData';
 import PatientCard from './partials/PatientCard.vue';
-import { apiListMedicineByQueue } from '../../api/apiMedicine';
+import { apiAcceptMedicine, apiListMedicineByQueue } from '../../api/apiMedicine';
 
 const doctorList = ref([]);
 const isShowQueueInfo = ref(false);
@@ -138,7 +138,9 @@ function handleClick(tab) {
 }
 
 function onAcceptMedicine(medsId) {
-    fetchApi(() => apiAcceptMedicine(editData.value.id, medsId, {}), false, true, fetchMedicine);
+    fetchApi(() => apiAcceptMedicine(editData.value.id, medsId), false, true, () => {
+        fetchMedicine(editData.value.id);
+    });
 }
 
 function fetchMedicine(id = editData.value.id) {
@@ -156,6 +158,7 @@ function onSaveUpdate() {
     fetchApi(() => completedQueue(editData.value.id), false, true, (data) => {
         doPaginate(1);
         editDialog.value = false;
+        messageInfo("Berhasil menyelesaikan antrian", 'success');
     })
 }
 
