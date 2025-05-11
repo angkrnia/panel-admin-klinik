@@ -107,7 +107,7 @@
                         <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
                     </el-tooltip>
                 </div>
-                <div class="grid gap-3 md:grid-cols-2">
+                <div class="grid gap-3 lg:grid-cols-2">
                     <template v-for="(item, index) in medicineList" :key="index">
                         <div class="space-y-3 border rounded-lg p-2">
                             <div class="flex items-center gap-3">
@@ -115,10 +115,21 @@
                                 <p class="text-sm text-gray-700 font-bold">{{ item.is_compound ? item.compound_name : item.product.name }}</p>
                             </div>
                             <div class="text-gray-700 space-y-2">
+                                <div>
+                                    <template v-if="!item.is_compound">
+                                        <h1 class="text-green-600">Harga: {{ convertRp(item?.product?.sell_price) }}</h1>
+                                    </template>
+                                    <template v-if="item.is_compound">
+                                        <h1 class="text-green-600">Harga: {{ convertRp(item?.total_price) }}</h1>
+                                    </template>
+                                </div>
                                 <!-- Label Status -->
                                 <div class="flex items-center gap-x-3">
+                                    <div class="flex" v-if="item.is_compound">
+                                        <h1 class="text-sm  text-white bg-orange-500/50 rounded px-3 py-0.5">Obat Racikan</h1>
+                                    </div>
                                     <div :class="`${getStatusColor(item.status)} rounded px-3 py-0.5`">
-                                        <h1 class="text-xs text-white">{{ item.status_name }}</h1>
+                                        <h1 class="text-sm  text-white">{{ item.status_name }}</h1>
                                     </div>
                                 </div>
                                 <div class="text-sm">
@@ -131,15 +142,18 @@
                                 </div>
                                 <div class="text-sm">
                                     <p class="text-gray-500 text-xs">Penggunaan</p>
-                                    <p class="font-semibold">{{ item.usage_instruction }}</p>
+                                    <p class="font-semibold">{{ item.usage_instruction || '-' }}</p>
                                 </div>
                                 <div class="text-sm">
                                     <p class="text-gray-500 text-xs">Catatan</p>
-                                    <p class="font-semibold">{{ item.notes }}</p>
+                                    <p class="font-semibold">{{ item.notes || '-' }}</p>
                                 </div>
                                 <div class="flex items-center flex-wrap gap-3">
                                     <!-- Detail Obat -->
-                                    <button type="button" class="px-3 py-1 bg-gray-300 text-gray-800 text-xs rounded hover:bg-gray-200 transition-colors">Detail Obat</button>
+                                    <button type="button" @click="onDetailMedicine(item)"
+                                        class="px-3 py-1 bg-gray-300 text-gray-800 text-xs rounded hover:bg-gray-200 transition-colors">{{ item.is_compound ?
+                                            'Detail Racikan'
+                                            : 'Detail Obat' }}</button>
                                     <!-- Proses Obat -->
                                     <el-popconfirm confirm-button-text="Yes" cancel-button-text="No" :icon="InfoFilled" icon-color="red" title="Apakah yakin?"
                                         @confirm="onAcceptMedicine(item.id)" content="Hapus">
@@ -151,6 +165,53 @@
                                     <!-- Cancel Obat -->
                                     <button type="button" class="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-opacity-80 transition-colors"
                                         @click="onCancelMedicine(item)" v-if="item.status !== 'rejected'">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Daftar Tindakan -->
+            <div class="bg-white rounded-lg shadow-md p-4 md:col-span-2">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-x-2">
+                        <h2 class="text-xl font-semibold flex items-center gap-2">
+                            <div v-html="activity" class="size-5 text-indigo-400"></div>
+                            Daftar Tindakan
+                        </h2>
+                        <el-tooltip class="box-item" effect="dark" content="Refresh" placement="top">
+                            <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
+                        </el-tooltip>
+                    </div>
+                    <el-button type="primary" size="small" @click="onAddManualTindakan">Tambah Manual</el-button>
+                </div>
+                <div class="space-y-2">
+                    <!-- Jika tindakan kosong -->
+                    <div class="flex items-center justify-center w-full" v-if="tindakanList.length == 0">
+                        <el-empty description="Belum ada tindakan" :image-size="80"></el-empty>
+                    </div>
+
+                    <template v-for="(item, index) in tindakanList" :key="index">
+                        <div class="p-3 bg-white rounded-xl shadow-sm border">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">
+                                        {{ item.procedure_name }}
+                                    </h3>
+                                    <p class="text-sm text-gray-500">Qty: {{ item.quantity }}</p>
+                                    <p class="text-sm text-gray-500">Catatan: {{ item.notes || '-' }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <div>
+                                        <p class="text-sm text-gray-400">Biaya</p>
+                                        <p class="font-bold text-green-600">{{ convertRp(item.price * item.quantity) }}</p>
+                                    </div>
+                                    <el-popconfirm v-if="profile?.role == item.source" title="Apakah yakin ingin menghapus tindakan ini?" @confirm="onDeleteTindakan(item.id)">
+                                        <template #reference>
+                                            <el-button type="danger" size="small">Hapus</el-button>
+                                        </template>
+                                    </el-popconfirm>
                                 </div>
                             </div>
                         </div>
@@ -179,7 +240,7 @@
                         </div>
                         <p class="whitespace-pre-line">{{ data?.history?.diagnosa || '-' }}</p>
                     </div>
-                    <div class="space-y-1">
+                    <!-- <div class="space-y-1">
                         <div class="flex items-center gap-2">
                             <PlusCircleIcon class="h-4 w-4 text-blue-500" />
                             <p class="text-sm text-gray-500 font-bold">Tindakan</p>
@@ -192,7 +253,7 @@
                             <p class="text-sm text-gray-500 font-bold">Terapi/Obat</p>
                         </div>
                         <p class="whitespace-pre-line">{{ data?.history?.teraphy || '-' }}</p>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -212,6 +273,102 @@
             </div>
         </div>
     </el-dialog>
+
+    <!-- Detail Obat -->
+    <el-dialog v-model="detailObatDialog" :title="detailObat.is_compound ? 'Obat Racikan' : 'Obat Tunggal'" :width="dialogWidth({ onDesktop: '40%' })" top="5vh">
+        <div class="p-3 space-y-4">
+            <!-- Header -->
+            <div class="flex items-center justify-between">
+                <p :class="`${getStatusColor(detailObat.status)} px-3 py-1 rounded-full text-sm text-white`">
+                    {{ detailObat.status_name }}
+                </p>
+            </div>
+
+            <!-- Informasi Umum -->
+            <div class="space-y-2">
+                <div v-if="detailObat.is_compound">
+                    <p class="text-sm text-gray-500">Nama Racikan</p>
+                    <p class="font-semibold text-gray-700">{{ detailObat.compound_name }}</p>
+                </div>
+                <div v-else>
+                    <p class="text-sm text-gray-500">Nama Obat</p>
+                    <p class="font-semibold text-gray-700">{{ detailObat.product?.name ?? '-' }}</p>
+                </div>
+
+                <div>
+                    <p class="text-sm text-gray-500">Dosis</p>
+                    <p class="text-gray-700">{{ detailObat.dosage }}</p>
+                </div>
+
+                <div>
+                    <p class="text-sm text-gray-500">Jumlah</p>
+                    <p class="text-gray-700">{{ detailObat.qty }}</p>
+                </div>
+
+                <div>
+                    <p class="text-sm text-gray-500">Aturan Pakai</p>
+                    <p class="text-gray-700">{{ detailObat.usage_instruction }}</p>
+                </div>
+
+                <div>
+                    <p class="text-sm text-gray-500">Keterangan</p>
+                    <p class="text-gray-700">{{ detailObat.notes }}</p>
+                </div>
+
+                <div v-if="detailObat.is_compound && detailObat.mix_instruction">
+                    <p class="text-sm text-gray-500">Instruksi Pencampuran</p>
+                    <p class="text-gray-700">{{ detailObat.mix_instruction }}</p>
+                </div>
+            </div>
+
+            <!-- Daftar Komposisi Obat Racikan -->
+            <div v-if="detailObat.is_compound">
+                <p class="text-sm font-semibold text-gray-800 mb-2">Komposisi Racikan:</p>
+                <ul class="space-y-2">
+                    <li v-for="(med, index) in detailObat.compound_meds" :key="med.id" class="p-3 bg-gray-50 rounded-lg border">
+                        <div class="flex justify-between">
+                            <p class="font-medium text-gray-700">
+                                {{ med.product?.name ?? 'Nama tidak ditemukan' }}
+                            </p>
+                            <p class="text-gray-600">
+                                {{ med.amount }} {{ med.unit.name }}
+                            </p>
+                        </div>
+                        <p class="text-sm text-gray-400">SKU: {{ med.product?.sku ?? '-' }}</p>
+                        <p class="text-sm text-gray-400">Harga: {{ convertRp(med.product?.sell_price) }}</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </el-dialog>
+
+    <!-- Tambah Tindakan Manual -->
+    <el-dialog v-model="addDialog" title="Tindakan Manual" :width="dialogWidth()" top="5vh">
+        <div class="space-y-4">
+            <el-form ref="addForm" :model="addData" label-position="top">
+                <el-form-item label="Pilih Tindakan" prop="procedure_id">
+                    <el-select @change="handleSelectTindakan" filterable clearable v-model="addData.procedure_id" placeholder="Pilih Tindakan">
+                        <el-option v-for="item in masterTindakan" :key="item.id" :label="`${item.name} - Rp${Number(item.total_fee).toLocaleString('id-ID')}`" :value="item.id" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Nama Tindakan" prop="procedure_name" :rules="[{ required: true }]">
+                    <el-input v-model="addData.procedure_name" placeholder="Masukan Nama Tindakan" />
+                </el-form-item>
+                <el-form-item label="Biaya" prop="price" :rules="[{ required: true }]">
+                    <el-currency-input v-model="addData.price" placeholder="Masukan Biaya Tindakan" />
+                </el-form-item>
+                <el-form-item label="Jumlah" prop="quantity" :rules="[{ required: true }]">
+                    <el-input v-model="addData.quantity" placeholder="Masukan Jumlah" />
+                </el-form-item>
+                <el-form-item label="Catatan" prop="notes">
+                    <el-input type="textarea" v-model="addData.notes" placeholder="Masukan Catatan"></el-input>
+                </el-form-item>
+            </el-form>
+            <div class="flex items-center  justify-end gap-3">
+                <button type="button" class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-opacity-80 transition-colors" @click="onSubmitManualTindakan">Submit</button>
+            </div>
+        </div>
+    </el-dialog>
 </template>
 
 <script setup>
@@ -225,14 +382,22 @@ import {
     UserIcon,
     ClipboardDocumentIcon,
     DocumentTextIcon,
-    PlusCircleIcon,
     ArrowPathIcon,
 } from '@heroicons/vue/24/outline'
-import { copyToClipboard, dialogWidth } from '../../../helpers/utils';
-import { capsule, capsulePill } from '../../../helpers/svg';
+import { convertRp, copyToClipboard, dialogWidth } from '../../../helpers/utils';
+import { activity, capsule, capsulePill } from '../../../helpers/svg';
 import { InfoFilled } from '@element-plus/icons-vue';
 import useEditData from '../../../composables/useEditData';
-import { apiRejectMedicine } from '../../../api/apiMedicine';
+import { apiDeleteTindakan, apiMasterTindakan, apiPostTindakan, apiRejectMedicine } from '../../../api/apiMedicine';
+import useViewData from '../../../composables/useViewData';
+import useAddData from '../../../composables/useAddData';
+import useGetData from '../../../composables/useGetData';
+import { useAppStore } from '../../../store/appStore';
+import { computed } from 'vue';
+import useDeleteData from '../../../composables/useDeleteData';
+
+const appStore = useAppStore();
+const profile = computed(() => appStore.profile);
 
 const props = defineProps({
     data: {
@@ -242,27 +407,43 @@ const props = defineProps({
     medicineList: {
         type: Array,
         required: true
+    },
+    tindakanList: {
+        type: Array,
+        required: true
     }
 })
 
-const [cancelData, cancelForm, cancelDialog, openCancelDialog, saveCancel, cancelCancel] = useEditData({ returnAsArray: true })
+const [cancelData, cancelForm, cancelDialog, openCancelDialog, saveCancel] = useEditData({ returnAsArray: true })
+const [detailObat, detailObatDialog, closeDetailObat, openDetailObatDialog] = useViewData({ returnAsArray: true })
+const [
+    addData,
+    addForm,
+    addDialog,
+    saveAdd,
+    cancelAdd,
+    requiredLabelLength,
+    openDialog,
+] = useAddData({ returnAsArray: true });
+const [masterTindakan, getMasterTindakan] = useGetData();
+const { deleteData } = useDeleteData();
 
-const emit = defineEmits(['accept-medicine', 'refresh-medicine']);
+const emit = defineEmits(['accept-medicine', 'refresh-medicine', 'refresh-tindakan', 'click-detail-racikan']);
 
 const getStatusColor = (status) => {
     switch (status) {
         case 'new':
-            return 'bg-blue-400'; // Warna untuk status Baru
+            return 'bg-blue-400/60'; // Warna untuk status Baru
         case 'accepted':
-            return 'bg-green-400'; // Warna untuk status Diproses
+            return 'bg-green-400/60'; // Warna untuk status Diproses
         case 'rejected':
-            return 'bg-red-400 text-white'; // Warna untuk status Ditolak
+            return 'bg-red-400/60 text-white'; // Warna untuk status Ditolak
         case 'changed':
-            return 'bg-yellow-400'; // Warna untuk status Diganti
+            return 'bg-yellow-400/60'; // Warna untuk status Diganti
         case 'done':
-            return 'bg-gray-400'; // Warna untuk status Selesai
+            return 'bg-gray-400/60'; // Warna untuk status Selesai
         default:
-            return 'bg-gray-200'; // Warna default kalau tidak cocok
+            return 'bg-gray-200/60'; // Warna default kalau tidak cocok
     }
 };
 
@@ -279,10 +460,52 @@ function onCancelMedicine(medsId) {
 }
 
 function onSubmitCancel() {
-    saveCancel(() => apiRejectMedicine(cancelData.value.queue_id, cancelData.value.medicine_id, cancelData.value))
+    saveCancel(() => apiRejectMedicine(cancelData.value.queue_id, cancelData.value.medicine_id, cancelData.value), null, () => {
+        fetchMedicine();
+    });
 }
 
 function fetchMedicine() {
     emit('refresh-medicine');
+}
+
+function fetchTindakan() {
+    emit('refresh-tindakan');
+}
+
+function onDetailMedicine(item) {
+    if (item.is_compound) {
+        emit('click-detail-racikan', item.compound_meds)
+    } else {
+        openDetailObatDialog(item);
+    }
+}
+
+function onAddManualTindakan() {
+    addData.value.quantity = 1
+    getMasterTindakan(apiMasterTindakan);
+    openDialog(0);
+}
+
+const handleSelectTindakan = (id) => {
+    const selected = masterTindakan.value.find(item => item.id === id)
+    if (selected) {
+        addData.value.procedure_name = selected.name
+        addData.value.price = parseFloat(selected.total_fee)
+    } else {
+        addData.value.procedure_name = ''
+        addData.value.price = 0
+    }
+}
+
+function onSubmitManualTindakan() {
+    addData.value.queueId = props.data.id;
+    saveAdd(apiPostTindakan, () => {
+        fetchTindakan();
+    })
+}
+
+function onDeleteTindakan(id) {
+    deleteData(apiDeleteTindakan, { id, queueId: props.data.id }, fetchTindakan);
 }
 </script>

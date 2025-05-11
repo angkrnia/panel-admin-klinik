@@ -1,6 +1,6 @@
 <template>
     <el-container v-if="appStore.isAuthentication">
-        <el-header class="p-0">
+        <el-header class="p-0 print:hidden">
             <slot name="menu"></slot>
         </el-header>
         <el-main class="bg-gray-200 p-2 md:px-5">

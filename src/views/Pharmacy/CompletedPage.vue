@@ -41,12 +41,34 @@
             <h1 class="border-b pb-5">Detail Antrian</h1>
         </template>
 
-        <PatientCard :data="editData" :medicineList="medicineList" @accept-medicine="onAcceptMedicine" @refresh-medicine="fetchMedicine" />
+        <PatientCard :data="editData" :tindakanList="tindakanList" :medicineList="medicineList" @accept-medicine="onAcceptMedicine" @refresh-medicine="fetchMedicine"
+            @refresh-tindakan="fetchTindakan" @click-detail-racikan="onClickDetailRacikan" />
 
         <template #footer>
             <FooterButtonDialog @save-click="onSaveUpdate" :useConfirmation="true" save-text="Lanjut Pembayaran" @cancel-click="cancelEdit"
                 text-confirm="Pastikan semua data sudah benar?" />
         </template>
+    </el-dialog>
+
+    <!-- Daftar Obat Racikan -->
+    <el-dialog v-model="viewDialog" :width="dialogWidth()" top="5vh">
+        <template #header>
+            <h1>Detail Obat Racikan</h1>
+        </template>
+        <section>
+            <el-table :data="viewData" stripe border style="width: 100%">
+                <el-table-column prop="product.name" label="Nama Obat" min-width="150" />
+                <el-table-column prop="product.base_stock" label="Stok" />
+                <el-table-column prop="product.sell_price" label="Harga Satuan" min-width="150">
+                    <template #default="scope">
+                        {{ convertRp(scope.row.product.sell_price) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="amount" label="Jumlah Kebutuhan" min-width="200" />
+                <el-table-column prop="product_unit.unit.name" label="Satuan" />
+                <el-table-column prop="notes" label="Catatan" min-width="200" />
+            </el-table>
+        </section>
     </el-dialog>
 </template>
 <script setup>
@@ -54,11 +76,12 @@ import { ref } from 'vue';
 import usePagination from '../../composables/usePagination';
 import { completedQueue, detailKunjungan, pharmacyPagination, tambahAntrian } from '../../api/antrianApi';
 import useAddData from '../../composables/useAddData';
-import { convertDate, convertStatusName, dialogWidth, doctorListHelper, messageInfo } from '../../helpers/utils';
+import { convertDate, convertRp, convertStatusName, dialogWidth, doctorListHelper, messageInfo } from '../../helpers/utils';
 import useEditData from '../../composables/useEditData';
 import useGetData from '../../composables/useGetData';
 import PatientCard from './partials/PatientCard.vue';
-import { apiAcceptMedicine, apiListMedicineByQueue } from '../../api/apiMedicine';
+import { apiAcceptMedicine, apiListMedicineByQueue, apiListTindakanByQueue } from '../../api/apiMedicine';
+import useViewData from '../../composables/useViewData';
 
 const doctorList = ref([]);
 const isShowQueueInfo = ref(false);
@@ -99,6 +122,8 @@ const {
 const [detail, getDetail] = useGetData();
 const { 1: fetchApi } = useGetData();
 const [medicineList, getMedicineList, isLoadingGetMedicine] = useGetData();
+const [tindakanList, getTindakanList, isLoadingGetTindakan] = useGetData();
+const { viewData, viewDialog, closeView, openViewDialog } = useViewData();
 
 filterData.value = {
     status: 'vital-sign',
@@ -147,11 +172,20 @@ function fetchMedicine(id = editData.value.id) {
     getMedicineList(() => apiListMedicineByQueue(id), false, true);
 }
 
+function fetchTindakan(id = editData.value.id) {
+    getTindakanList(() => apiListTindakanByQueue(id), false, true);
+}
+
 function onViewDialog(item) {
     getDetail(() => detailKunjungan(item.id), false, true, (data) => {
         fetchMedicine(item.id);
+        fetchTindakan(item.id);
         openEditDialog(data);
     })
+}
+
+function onClickDetailRacikan(data) {
+    openViewDialog(data);
 }
 
 function onSaveUpdate() {
