@@ -45,4 +45,6 @@ export const refreshAuthLogic = async () => {
   }
 };
 
+createAuthRefreshInterceptor(axiosAuth, refreshAuthLogic, {});
+
 export default { axiosNoAuth, axiosAuth, refreshAuthLogic };
