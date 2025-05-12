@@ -6,7 +6,7 @@
     <section class="mt-5 space-y-5">
 
         <div class="p-3 rounded-lg bg-orange-100">
-            <h1>Info migrasi server 12 mei 2025, silakan <span class="font-semibold">logout</span><span class="font-semibold">login</span> kembali. Klik <span class="font-semibold">Profile > Logout</span></h1>
+            <h1>Info migrasi server 12 mei 2025, silakan <span class="font-semibold">logout</span> dan <span class="font-semibold">login</span> kembali. Klik <span class="font-semibold">Profile > Logout</span></h1>
             <h1>Harap gunakan aplikasi klinik terbaru. download di sini <a target="_blank" href="https://gitlab.com/angkrnia/klinik-adiyasa/-/raw/main/klinik-adiyasa-v1.5.apk" class="text-blue-500 font-semibold">https://gitlab.com/angkrnia/klinik-adiyasa/-/raw/main/klinik-adiyasa-v1.5.apk</a></h1>
         </div>
 
