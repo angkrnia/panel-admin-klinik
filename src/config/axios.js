@@ -33,6 +33,11 @@ export const refreshAuthLogic = async () => {
     url: baseUrl + "/refresh-token",
   };
 
+  if (!refreshToken) {
+    window.location.href = "/login";
+    return Promise.resolve();
+  }
+
   try {
     const { data } = await axios(options);
     const token = data.data.token;
