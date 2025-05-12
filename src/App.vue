@@ -18,7 +18,6 @@ const router = useRouter();
 (async () => {
   if (!appStore.isAuthentication) {
     const token = Cookies.get("TOKEN");
-    console.log("token:", token)
     if (token) {
       setAuthentication(token);
     } else {
