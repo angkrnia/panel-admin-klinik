@@ -15,24 +15,23 @@ const appStore = useAppStore();
 const route = useRoute();
 const router = useRouter();
 
-onMounted(async () => {
-  await router.isReady()
+(async () => {
   if (!appStore.isAuthentication) {
     const token = Cookies.get("TOKEN");
     console.log("token:", token)
     if (token) {
       setAuthentication(token);
     } else {
-      console.log("route.path:", route.path);
-
       // Jika bukan di route login atau reset password, redirect ke login
+      await router.isReady();
+      Cookies.remove("TOKEN");
+      localStorage.clear();
       if (route.path != "/login") {
-        console.log("kesini?", route.path);
         setTimeout(() => (window.location.href = "/login"), 1000);
       }
     }
   }
-})
+})()
 
 </script>
 
