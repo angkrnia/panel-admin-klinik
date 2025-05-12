@@ -6,17 +6,30 @@ import AppLayout from './layouts/AppLayout.vue';
 import { axiosAuth, refreshAuthLogic } from './config/axios';
 import { useAppStore } from './store/appStore';
 import { setAuthentication } from "./helpers/utils";
+import { useRoute, useRouter } from "vue-router";
+import { onMounted } from "vue";
 
 createAuthRefreshInterceptor(axiosAuth, refreshAuthLogic, {});
 
 const appStore = useAppStore();
+const route = useRoute();
+const router = useRouter();
 
-if (!appStore.isAuthentication) {
-  const token = Cookies.get("TOKEN");
-  if (token) {
-    setAuthentication(token);
+onMounted(async () => {
+  await router.isReady()
+  if (!appStore.isAuthentication) {
+    const token = Cookies.get("TOKEN");
+    if (token) {
+      setAuthentication(token);
+    } else {
+      // Jika bukan di route login atau reset password, redirect ke login
+      if (route.path != "/login" && route.path != "/reset-password") {
+        window.location.href = "/login";
+      }
+    }
   }
-}
+})
+
 </script>
 
 <template>
