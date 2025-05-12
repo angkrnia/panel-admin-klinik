@@ -19,12 +19,13 @@ onMounted(async () => {
   await router.isReady()
   if (!appStore.isAuthentication) {
     const token = Cookies.get("TOKEN");
+    console.log("token:", token)
     if (token) {
       setAuthentication(token);
     } else {
       // Jika bukan di route login atau reset password, redirect ke login
       if (route.path != "/login" && route.path != "/reset-password") {
-        window.location.href = "/login";
+        setTimeout(() => (window.location.href = "/login"), 1000);
       }
     }
   }
