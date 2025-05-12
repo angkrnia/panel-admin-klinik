@@ -24,7 +24,7 @@ onMounted(async () => {
       setAuthentication(token);
     } else {
       // Jika bukan di route login atau reset password, redirect ke login
-      if (route.path != "/login" && route.path != "/reset-password") {
+      if (route.path != "/login" || route.path != "/reset-password") {
         setTimeout(() => (window.location.href = "/login"), 1000);
       }
     }
