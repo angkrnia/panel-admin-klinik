@@ -22,9 +22,10 @@ export const catchError = (fn) => {
   fn()
     .catch((error) => {
       if (error?.status === 444) {
-        Cookies.remove("ACCESS");
-        clearLocalStorage();
-        setTimeout(() => (window.location.href = "/login"), 1000);
+        Cookies.remove('TOKEN')
+        clearLocalStorage()
+        setTimeout(() => (window.location.href = '/login'), 1000)
+        messageInfo('Sesi telah habis, silakan login kembali.', 'warning')
       } else {
         messageInfo(errorMessage(error));
       }
@@ -38,9 +39,10 @@ export const catchErrorFinally = (fn1, fnFinally) => {
   fn1()
     .catch((error) => {
       if (error?.status === 444) {
-        Cookies.remove("ACCESS");
-        clearLocalStorage();
-        setTimeout(() => (window.location.href = "/login"), 1000);
+        Cookies.remove('TOKEN')
+        clearLocalStorage()
+        setTimeout(() => (window.location.href = '/login'), 1000)
+        messageInfo('Sesi telah habis, silakan login kembali.', 'warning')
       } else {
         messageInfo(errorMessage(error));
       }

@@ -81,6 +81,7 @@ export function replaceNullWithEmptyString(obj) {
 export function setAuthentication(token, refreshToken) {
     Cookies.set("TOKEN", token, { expires: 1 });
     axiosAuth.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    axiosDownload.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     if (refreshToken) {
         localStorage.setItem("REFRESH_TOKEN", refreshToken);
     }
@@ -435,3 +436,32 @@ export const adminMenus = [
         ],
     },
 ];
+
+export const getStatusType = (status) => {
+    switch (status) {
+        case "NEW":
+            return "primary";
+        case "COMMITED":
+            return "success";
+        case "CANCEL":
+            return "danger";
+        default:
+            return "info";
+    }
+};
+export const getSalesStatusType = (status) => {
+    switch (status) {
+        case "PROCESSING":
+            return "primary";
+        case "SUCCESS":
+            return "success";
+        case "CANCELED":
+            return "danger";
+        default:
+            return "info";
+    }
+};
+
+export function sanitizeFilename(name) {
+    return name.replace(/[:\s]/g, "-");
+}

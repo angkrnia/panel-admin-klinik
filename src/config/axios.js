@@ -44,4 +44,10 @@ export const refreshAuthLogic = async () => {
   }
 };
 
-export default { axiosNoAuth, axiosAuth, refreshAuthLogic };
+export const axiosDownload = axios.create({
+  baseURL: baseUrl,
+  timeout: 600000,
+  responseType: 'blob',
+})
+
+export default { axiosNoAuth, axiosAuth, axiosDownload, refreshAuthLogic };

@@ -10,22 +10,70 @@
         </div>
         <div class="py-5">
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
-                <el-table-column type="index" label="No" min-width="50" />
-                <el-table-column prop="source" label="Asal" />
+                <el-table-column label="No" min-width="50">
+                    <template #default="scope">
+                        {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="source" label="Asal" min-width="150" />
                 <el-table-column prop="note" label="Catatan" min-width="170">
                     <template #default="scope">
                         <p class="line-clamp-1">{{ scope.row.note || '-' }}</p>
                     </template>
                 </el-table-column>
-                <el-table-column prop="total_products" label="Total Produk" />
-                <el-table-column prop="status" label="Status" />
-                <el-table-column prop="created_at" label="Dibuat" min-width="120">
-                    <template #default="scope">
-                        {{ convertDate(scope.row.created_at) }}
+                <el-table-column label="Ringkasan Belanja" align="center">
+                    <template #header>
+                        <span style="font-weight: bold;">Ringkasan Belanja</span>
+                    </template>
+                    <el-table-column prop="total_products" label="Jmlh Produk" />
+                    <el-table-column prop="total_quantity" label="Total QTY" />
+                    <el-table-column prop="total_buy_price" label="Total Belanja" min-width="120" align="right">
+                        <template #default="scope">
+                            {{ convertRp(scope.row.total_buy_price) }}
+                        </template>
+                    </el-table-column>
+                </el-table-column>
+                <el-table-column prop="status" label="Status" min-width="100">
+                    <template #default="{ row }">
+                        <div class="flex items-center justify-center">
+                            <el-tag effect="dark" round :type="getStatusType(row.status)">
+                                {{ row.status }}
+                            </el-tag>
+                        </div>
                     </template>
                 </el-table-column>
                 <!-- Untuk kolom aksi -->
-                <TableColumnAction show-edit show-delete show-view @click-view="onDetailStock" @click-edit="onEditDialog" @click-delete="onDeleteData" />
+                <el-table-column fixed="right" min-width="100">
+                    <template #header>
+                        <div class="flex gap-3 items-center justify-center">
+                            <p>Aksi</p>
+                        </div>
+                    </template>
+                    <template #default="{ row }">
+                        <div class="flex items-center justify-center w-full gap-x-1.5">
+                            <template v-if="row.status == 'NEW'">
+                                <el-tooltip class="box-item" popper-class="custom-popper" effect="dark" content="Ubah" placement="top" :enterable="false">
+                                    <button type="button" @click="onEditDialog(row)">
+                                        <Edit class="w-5 h-5 text-gray-500" />
+                                    </button>
+                                </el-tooltip>
+                                <el-popconfirm confirm-button-text="Yes" cancel-button-text="No" :icon="InfoFilled" icon-color="red" title="Apakah yakin ingin menghapus data ini?"
+                                    @confirm="onDeleteData(row)" content="Hapus">
+                                    <template #reference>
+                                        <button type="button">
+                                            <Trash2 class="w-5 h-5 text-gray-500" />
+                                        </button>
+                                    </template>
+                                </el-popconfirm>
+                            </template>
+                            <el-tooltip class="box-item" popper-class="custom-popper" effect="dark" content="View" placement="top" :enterable="false">
+                                <button type="button" @click="onDetailStock(row)">
+                                    <ZoomIn class="w-5 h-5 text-gray-500" />
+                                </button>
+                            </el-tooltip>
+                        </div>
+                    </template>
+                </el-table-column>
             </el-table>
         </div>
         <div class="flex items-center justify-center">
@@ -89,11 +137,13 @@
 import useAddData from '../../composables/useAddData';
 import useEditData from '../../composables/useEditData';
 import usePagination from '../../composables/usePagination';
-import { convertDate, dialogWidth, labelPosition } from '../../helpers/utils';
+import { convertDate, convertRp, dialogWidth, getStatusType, labelPosition } from '../../helpers/utils';
 import useDeleteData from '../../composables/useDeleteData';
 import { APIdeleteStockEntry, APIstoreStockEntry, APIupdateStockEntry, stockEntryHeaderPagination } from '../../api/stockApi';
 import { stockEntryHeaderRule } from '../../rules/stockRules';
 import { useRouter } from 'vue-router';
+import { InfoFilled } from '@element-plus/icons-vue';
+import { Edit, Trash2, ZoomIn } from 'lucide-vue-next';
 
 const {
     listData,

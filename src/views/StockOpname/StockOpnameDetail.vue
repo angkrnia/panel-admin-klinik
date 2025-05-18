@@ -9,6 +9,7 @@
             </div>
             <!-- Button save -->
             <div class="flex items-center justify-end">
+                <el-button type="success" @click="onDownloadAllProducts" v-if="editHeaderData.status !== 'COMMITED'">Download All Products</el-button>
                 <el-button type="warning" @click="editHeaderDialog = true" v-if="!editHeaderDialog && editHeaderData.status === 'NEW'">Edit Header</el-button>
                 <el-button type="danger" @click="editHeaderDialog = false" v-if="editHeaderDialog && editHeaderData.status === 'NEW'">Batal</el-button>
                 <el-button type="primary" @click="onSaveHeader" v-if="editHeaderDialog && editHeaderData.status === 'NEW'">Simpan Header</el-button>
@@ -39,6 +40,18 @@
                     <el-input type="textarea" show-word-limit maxlength="255" rows="3" v-model="editHeaderData.note" placeholder="Catatan" style="width: 100%"
                         :disabled="!editHeaderDialog" />
                 </el-form-item>
+                <div class="grid grid-cols-1 lg:grid-cols-3
+                    gap-3">
+                    <el-form-item label="Dibuat Oleh" prop="created_by" class="w-full">
+                        <el-input disabled v-model="editHeaderData.created_by" placeholder="Dibuat Oleh" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Tanggal Dibuat" prop="created_at" class="w-full">
+                        <el-input disabled :value="dateFormatFull(editHeaderData.created_at)" placeholder="Tanggal Dibuat" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Terakhir Diubah" prop="updated_at" class="w-full">
+                        <el-input disabled :value="dateFormatFull(editHeaderData.updated_at)" placeholder="Terakhir Diubat" style="width: 100%" />
+                    </el-form-item>
+                </div>
             </div>
         </el-form>
 
@@ -56,11 +69,12 @@
                         <el-form-item label="Produk" prop="product_id" class="w-full">
                             <!-- <ElProductSelect class="w-full" v-model="addData.product_id" /> -->
                             <el-select v-model="addData.product_id" filterable class="w-full" placeholder="Pilih atau Cari Obat">
-                                <el-option v-for="item in productList" :key="item.id" :label="`${item.name} (stok: ${item.base_stock})`" :value="item.id" />
+                                <el-option v-for="item in productList" :key="item.id"
+                                    :label="`[${item?.units?.find(p => p.pivot.is_base == 1)?.name}, stok: ${item.base_stock}] ${item.name}`" :value="item.id" />
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="QTY Real" prop="qty_real" class="w-full">
-                            <el-input type="number" v-model="addData.qty_real" placeholder="QTY" style="width: 100%" />
+                        <el-form-item label="QTY Real" prop="qty_real" style="width: 100px">
+                            <el-input type="number" v-model="addData.qty_real" placeholder="QTY" style="width: 100px" />
                         </el-form-item>
                         <el-form-item label="Catatan" prop="note" class="w-full">
                             <el-input type="textarea" v-model="addData.note" placeholder="Catatan" style="width: 100%" />
@@ -78,10 +92,14 @@
         </div>
         <div class="py-5">
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
-                <el-table-column type="index" label="No" min-width="50" />
+                <el-table-column label="No" min-width="50">
+                    <template #default="scope">
+                        {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="product.name" label="Produk" min-width="150">
                     <template #default="{ row }">
-                        <div v-if="row.has_transaction" class="bg-red-500 text-white p-0.5 rounded text-center text-xs">Perlu update</div>
+                        <div v-if="row.has_transaction && editHeaderData.status == 'NEW'" class="bg-red-500 text-white p-0.5 rounded text-center text-xs">Perlu update</div>
                         <p>{{ row.product.name }}</p>
                     </template>
                 </el-table-column>
