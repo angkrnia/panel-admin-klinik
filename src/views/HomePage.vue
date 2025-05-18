@@ -4,6 +4,11 @@
     </section>
 
     <section class="mt-5 space-y-5">
+
+        <div class="p-3 rounded-lg bg-orange-100" v-if="false">
+            <h1 class="text-2xl">(Update 19:30 WIB) Mohon informasikan kepada dokter untuk update aplikasi dokter ke versi <span>1.6</span> download di sini <a target="_blank" href="https://gitlab.com/angkrnia/klinik-adiyasa/-/raw/main/klinik-adiyasa-v1.5.apk" class="text-blue-500 font-semibold">https://gitlab.com/angkrnia/klinik-adiyasa/-/raw/main/klinik-adiyasa-v1.6.apk</a></h1>
+        </div>
+
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <div class="flex-1 border rounded-md overflow-hidden">
                 <div class="px-2 py-1 bg-sky-500 border-b">

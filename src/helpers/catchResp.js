@@ -21,10 +21,10 @@ export const catchError = (fn) => {
   const load = loading();
   fn()
     .catch((error) => {
-      if (error?.status === 444) {
-        Cookies.remove('TOKEN')
-        clearLocalStorage()
-        setTimeout(() => (window.location.href = '/login'), 1000)
+      if (error?.status === 444 || error?.status === 401) {
+        Cookies.remove("ACCESS");
+        clearLocalStorage();
+        setTimeout(() => (window.location.href = "/login"), 1000);
         messageInfo('Sesi telah habis, silakan login kembali.', 'warning')
       } else {
         messageInfo(errorMessage(error));
@@ -38,10 +38,10 @@ export const catchError = (fn) => {
 export const catchErrorFinally = (fn1, fnFinally) => {
   fn1()
     .catch((error) => {
-      if (error?.status === 444) {
-        Cookies.remove('TOKEN')
-        clearLocalStorage()
-        setTimeout(() => (window.location.href = '/login'), 1000)
+      if (error?.status === 444 || error?.status === 401) {
+        Cookies.remove("ACCESS");
+        clearLocalStorage();
+        setTimeout(() => (window.location.href = "/login"), 1000);
         messageInfo('Sesi telah habis, silakan login kembali.', 'warning')
       } else {
         messageInfo(errorMessage(error));

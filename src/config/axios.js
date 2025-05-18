@@ -2,10 +2,11 @@ import axios from "axios";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 import { getRefreshToken, setAuthentication } from "../helpers/utils";
 
-const baseUrl =
-  import.meta.env.VITE_API_ENVIRONMENT == "production"
-    ? import.meta.env.VITE_API_URL_PROD
-    : import.meta.env.VITE_API_URL_DEV;
+const baseUrl = "https://api-klinik-adiyasa.adiyasamedicalcenter.com/api"
+// const baseUrl =
+//   import.meta.env.VITE_API_ENVIRONMENT == "production"
+//     ? import.meta.env.VITE_API_URL_PROD
+//     : import.meta.env.VITE_API_URL_DEV;
 
 export const axiosNoAuth = axios.create({
   baseURL: baseUrl,
@@ -31,6 +32,11 @@ export const refreshAuthLogic = async () => {
     data,
     url: baseUrl + "/refresh-token",
   };
+
+  if (!refreshToken) {
+    window.location.href = "/login";
+    return Promise.resolve();
+  }
 
   try {
     const { data } = await axios(options);
