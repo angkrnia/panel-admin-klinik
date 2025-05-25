@@ -1,6 +1,8 @@
 import { useAppStore } from "../store/appStore";
 import { routes } from "./routes";
 import { createRouter, createWebHistory } from "vue-router";
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -21,6 +23,7 @@ const router = createRouter({
 
 //note: App.vue run first before this function
 router.beforeEach(async (to, from, next) => {
+  NProgress.start();
   const appStore = useAppStore();
   const isAuth = appStore.isAuthentication;
 
@@ -39,6 +42,10 @@ router.beforeEach(async (to, from, next) => {
       next();
     }
   }
+});
+
+router.afterEach(() => {
+  NProgress.done();
 });
 
 export default router;

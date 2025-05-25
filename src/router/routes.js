@@ -88,6 +88,29 @@ export const routes = [
                 },
             },
             {
+                path: "/master",
+                name: "Master",
+                component: () => import("@/views/WrapperPage.vue"),
+                children: [
+                    {
+                        path: "tindakan",
+                        name: "Tindakan",
+                        component: () => import("@/views/Inventory/TindakanPage.vue"),
+                        meta: {
+                            title: "Tindakan",
+                        },
+                    },
+                    {
+                        path: "tipe-layanan",
+                        name: "Tipe Layanan",
+                        component: () => import("@/views/Inventory/TipeLayanan.vue"),
+                        meta: {
+                            title: "Tipe Layanan",
+                        },
+                    },
+                ],
+            },
+            {
                 path: "/inventory",
                 name: "Inventory",
                 component: () => import("@/views/WrapperPage.vue"),
@@ -114,14 +137,6 @@ export const routes = [
                         component: () => import("@/views/Inventory/CategoriesPage.vue"),
                         meta: {
                             title: "Categories",
-                        },
-                    },
-                    {
-                        path: "tindakan",
-                        name: "Tindakan",
-                        component: () => import("@/views/Inventory/TindakanPage.vue"),
-                        meta: {
-                            title: "Tindakan",
                         },
                     },
                     {

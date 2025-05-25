@@ -9,13 +9,13 @@
             </div>
             <!-- Button save -->
             <div class="flex items-center justify-end">
-                <el-button type="success" @click="onDownloadAllProducts" v-if="editHeaderData.status !== 'COMMITED'">Download All Products</el-button>
-                <el-button type="warning" @click="editHeaderDialog = true" v-if="!editHeaderDialog && editHeaderData.status === 'NEW'">Edit Header</el-button>
-                <el-button type="danger" @click="editHeaderDialog = false" v-if="editHeaderDialog && editHeaderData.status === 'NEW'">Batal</el-button>
-                <el-button type="primary" @click="onSaveHeader" v-if="editHeaderDialog && editHeaderData.status === 'NEW'">Simpan Header</el-button>
+                <el-button type="success" :icon="Download" @click="onDownloadAllProducts" v-if="editHeaderData.status !== 'COMMITED'">Download All Products</el-button>
+                <el-button type="warning" :icon="PencilLine" @click="editHeaderDialog = true" v-if="!editHeaderDialog && editHeaderData.status === 'NEW'">Edit</el-button>
+                <el-button type="danger" :icon="X" @click="editHeaderDialog = false" v-if="editHeaderDialog && editHeaderData.status === 'NEW'">Batal</el-button>
+                <el-button type="primary" :icon="Save" @click="onSaveHeader" v-if="editHeaderDialog && editHeaderData.status === 'NEW'">Simpan</el-button>
                 <el-popconfirm title="Apakah data sudah sesuai? Setelah di COMMIT, data tidak dapat diubah dan stok akan langsung bertambah" @confirm="onCommittedStockOpname">
                     <template #reference>
-                        <el-button type="info" v-if="editHeaderData.status !== 'COMMITED'">COMMITTED</el-button>
+                        <el-button type="info" :icon="Upload" v-if="editHeaderData.status !== 'COMMITED' && !editHeaderDialog">Publish</el-button>
                     </template>
                 </el-popconfirm>
             </div>
@@ -58,7 +58,7 @@
         <!-- List Products -->
         <div class="block border-b md:flex justify-between my-2 pb-2.5 text-center space-y-2">
             <h1 class="capitalize">Daftar Produk</h1>
-            <el-button v-if="editHeaderData.status === 'NEW'" :type="isAddDataLineForm ? 'danger' : 'primary'" @click="openAddProductLine">
+            <el-button :icon="isAddDataLineForm ? X : Plus" v-if="editHeaderData.status === 'NEW'" :type="isAddDataLineForm ? 'danger' : 'primary'" @click="openAddProductLine">
                 {{ isAddDataLineForm ? 'Batal' : 'Tambah Produk' }}
             </el-button>
         </div>
@@ -82,7 +82,7 @@
                     </div>
                 </el-form>
                 <div class="w-full flex justify-end">
-                    <el-button class="flex justify-end" type="primary" @click="onSaveAdd">Simpan</el-button>
+                    <el-button class="flex justify-end" type="primary" :icon="Save" @click="onSaveAdd">Simpan</el-button>
                 </div>
             </div>
         </el-collapse-transition>
@@ -97,10 +97,10 @@
                         {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="product.name" label="Produk" min-width="150">
+                <el-table-column prop="name" label="Produk" min-width="150">
                     <template #default="{ row }">
                         <div v-if="row.has_transaction && editHeaderData.status == 'NEW'" class="bg-red-500 text-white p-0.5 rounded text-center text-xs">Perlu update</div>
-                        <p>{{ row.product.name }}</p>
+                        <p>{{ row.product.name || '-' }}</p>
                     </template>
                 </el-table-column>
                 <el-table-column prop="product.sku" label="SKU" />
@@ -170,12 +170,13 @@ import useEditData from '../../composables/useEditData';
 import useDeleteData from '../../composables/useDeleteData';
 import { APIdeleteStockOpnameLine, APIStockOpnameCommitted, APIStockOpnameDetail, APIstoreStockOpnameLine, APIupdateStockOpname, APIupdateStockOpnameLine, stockOpnameLinePagination } from '../../api/stockApi';
 import { addProductStockEntryRule, stockEntryHeaderRule, updateProductStockEntryRule } from '../../rules/stockRules';
-import { convertDate, convertRp, dialogWidth, labelPosition, messageInfo } from '../../helpers/utils';
+import { convertDate, convertRp, dialogWidth, labelPosition, messageInfo, dateFormatFull } from '../../helpers/utils';
 import { catchError } from '../../helpers/catchResp';
 import { ref } from 'vue';
 import useGetData from '../../composables/useGetData';
 import { APIProductSelect } from '../../api/apiInventory';
 import ElCurrencyInput from '../../components/ElCurrencyInput.vue';
+import { Download, PencilLine, Plus, Save, Upload, X } from 'lucide-vue-next';
 
 const router = useRouter();
 const route = useRoute();

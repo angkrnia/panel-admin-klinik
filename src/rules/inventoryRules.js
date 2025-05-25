@@ -31,3 +31,10 @@ export const tindakanRule = {
     category: [maxStringRule(50)],
     description: [maxStringRule(255)],
 };
+
+
+export const tipeLayananRule = {
+    name: [requiredRule(), maxStringRule(100)],
+    price: [requiredRule()],
+    description: [requiredRule(),maxStringRule(255)],
+};

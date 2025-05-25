@@ -84,15 +84,23 @@
                 </el-card>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                <!-- Daftar Obat -->
+            <!-- Daftar Obat -->
+            <el-card shadow="never">
+                <template #header>
+                    <div class="font-semibold text-lg text-gray-700">Daftar Obat</div>
+                </template>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <ObatList :medicineList="medicineList" :loadingMedicine="isLoadingGetMedicine" />
+                </div>
+            </el-card>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <!-- Daftar Layanan -->
                 <el-card shadow="never">
                     <template #header>
-                        <div class="font-semibold text-lg text-gray-700">Daftar Obat</div>
+                        <div class="font-semibold text-lg text-gray-700">Daftar Layanan</div>
                     </template>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <ObatList :medicineList="medicineList" />
-                    </div>
+                    <LayananList :layananList="layananList" :loadingLayanan="isLoadingGetLayanan" />
                 </el-card>
 
                 <!-- Daftar Tindakan -->
@@ -100,7 +108,7 @@
                     <template #header>
                         <div class="font-semibold text-lg text-gray-700">Daftar Tindakan</div>
                     </template>
-                    <TindakanList :procedureList="tindakanList" />
+                    <TindakanList :procedureList="tindakanList" :loadingTindakan="isLoadingGetTindakan" />
                 </el-card>
             </div>
 
@@ -133,16 +141,17 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { convertPaymentStatus, convertRp, convertStatusName, dateFormatFull, messageInfo } from '../../helpers/utils';
+import { convertPaymentStatus, convertRp, convertStatusName, dateFormatFull, loading, messageInfo } from '../../helpers/utils';
 import { backArrow } from '../../helpers/svg';
 import { Printer, Wallet } from '@element-plus/icons-vue';
 import useGetData from '../../composables/useGetData';
 import { saleDetailApi } from '../../api/salesApi';
 import InfoItem from './partials/InfoItem.vue';
-import { apiListMedicineByQueue, apiListTindakanByQueue } from '../../api/apiMedicine';
+import { apiListMedicineByQueue, apiListServiceByQueue, apiListTindakanByQueue } from '../../api/apiMedicine';
 import ObatList from './partials/ObatList.vue';
 import TindakanList from './partials/TindakanList.vue';
 import DialogBayar from './partials/DialogBayar.vue';
+import LayananList from './partials/LayananList.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -150,8 +159,9 @@ const qId = computed(() => route.query.qId);
 const dialogBayar = ref(false);
 
 const [data, getData, isLoading] = useGetData();
-const [medicineList, getMedicineList, isLoadingGetMedicine] = useGetData();
-const [tindakanList, getTindakanList, isLoadingGetTindakan] = useGetData();
+const [medicineList, getMedicineList, isLoadingGetMedicine] = useGetData({ defaultLoading: true });
+const [tindakanList, getTindakanList, isLoadingGetTindakan] = useGetData({ defaultLoading: true });
+const [layananList, getLayananList, isLoadingGetLayanan] = useGetData({ defaultLoading: true });
 
 function firstLoad() {
     if (!qId.value) {
@@ -163,6 +173,7 @@ function firstLoad() {
     getData(() => saleDetailApi(qId.value), true, true);
     fetchMedicine(qId.value);
     fetchTindakan(qId.value);
+    fetchLayanan(qId.value);
 }
 
 function onBack() {
@@ -175,6 +186,10 @@ function fetchMedicine(id = qId.value) {
 
 function fetchTindakan(id = qId.value) {
     getTindakanList(() => apiListTindakanByQueue(id), false, true);
+}
+
+function fetchLayanan(id = qId.value) {
+    getLayananList(() => apiListServiceByQueue(id), false, true);
 }
 
 function onClickBayar() {

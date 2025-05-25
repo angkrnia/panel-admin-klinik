@@ -2,7 +2,9 @@
     <TitleDashboard title="Input Vital Sign/Screening" />
     <section>
         <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
-            <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate" />
+            <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate">
+                <el-button :icon="Refresh" @click="doPaginate">Refresh</el-button>
+            </SearchAndPagination2>
         </div>
         <div class="py-5">
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
@@ -101,6 +103,7 @@ import useAddData from '../../composables/useAddData';
 import { convertDate, convertStatusName, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
 import { queueRule } from '../../rules/queueRule';
 import useEditData from '../../composables/useEditData';
+import { Refresh } from '@element-plus/icons-vue';
 
 const doctorList = ref([]);
 const isShowQueueInfo = ref(false);

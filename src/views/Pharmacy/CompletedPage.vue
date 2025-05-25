@@ -2,29 +2,31 @@
     <TitleDashboard title="Pengambilan Obat" />
     <section>
         <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
-            <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate" />
+            <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate">
+                <el-button :icon="Refresh" @click="doPaginate">Refresh</el-button>
+            </SearchAndPagination2>
         </div>
         <div class="py-5">
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
                 <el-table-column prop="queue" align="center" label="No. Antrian" />
-                <el-table-column prop="status" min-width="180" align="center" label="Status">
+                <el-table-column show-overflow-tooltip prop="status" min-width="180" align="center" label="Status">
                     <template #default="{ row }">
                         <el-tag type="success">{{ convertStatusName(row.status) }}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="patient.record_no" label="No. RM" />
-                <el-table-column prop="patient.fullname" min-width="150" label="Nama Pasien" />
-                <el-table-column prop="patient.nama_keluarga" min-width="150" label="Nama Keluarga" />
-                <el-table-column prop="doctor.fullname" min-width="150" label="Dokter" />
-                <el-table-column prop="patient.age" label="Usia" />
-                <el-table-column prop="patient.gender" min-width="50" label="JK" />
-                <el-table-column prop="patient.phone" min-width="130" label="No. HP" />
-                <el-table-column prop="patient.address" min-width="180" label="Alamat">
+                <el-table-column show-overflow-tooltip prop="patient.record_no" label="No. RM" />
+                <el-table-column show-overflow-tooltip prop="patient.fullname" min-width="150" label="Nama Pasien" />
+                <el-table-column show-overflow-tooltip prop="patient.nama_keluarga" min-width="150" label="Nama Keluarga" />
+                <el-table-column show-overflow-tooltip prop="doctor.fullname" min-width="150" label="Dokter" />
+                <el-table-column show-overflow-tooltip prop="patient.age" label="Usia" />
+                <el-table-column show-overflow-tooltip prop="patient.gender" min-width="50" label="JK" />
+                <el-table-column show-overflow-tooltip prop="patient.phone" min-width="130" label="No. HP" />
+                <el-table-column show-overflow-tooltip prop="patient.address" min-width="180" label="Alamat">
                     <template #default="scope">
                         <p class="line-clamp-1">{{ scope.row.patient.address }}</p>
                     </template>
                 </el-table-column>
-                <el-table-column prop="created_at" label="Dibuat">
+                <el-table-column show-overflow-tooltip prop="created_at" label="Dibuat">
                     <template #default="scope">
                         {{ convertDate(scope.row.created_at) }}
                     </template>
@@ -41,8 +43,8 @@
             <h1 class="border-b pb-5">Detail Antrian</h1>
         </template>
 
-        <PatientCard :data="editData" :tindakanList="tindakanList" :medicineList="medicineList" @accept-medicine="onAcceptMedicine" @refresh-medicine="fetchMedicine"
-            @refresh-tindakan="fetchTindakan" @click-detail-racikan="onClickDetailRacikan" />
+        <PatientCard :data="editData" :tindakanList="tindakanList" :loadingTindakan="isLoadingGetTindakan" :medicineList="medicineList" :loadingMedicine="isLoadingGetMedicine"
+            @accept-medicine="onAcceptMedicine" @refresh-medicine="fetchMedicine" @refresh-tindakan="fetchTindakan" @click-detail-racikan="onClickDetailRacikan" />
 
         <template #footer>
             <FooterButtonDialog @save-click="onSaveUpdate" :useConfirmation="true" save-text="Lanjut Pembayaran" @cancel-click="cancelEdit"
@@ -82,6 +84,7 @@ import useGetData from '../../composables/useGetData';
 import PatientCard from './partials/PatientCard.vue';
 import { apiAcceptMedicine, apiListMedicineByQueue, apiListTindakanByQueue } from '../../api/apiMedicine';
 import useViewData from '../../composables/useViewData';
+import { Refresh } from '@element-plus/icons-vue';
 
 const doctorList = ref([]);
 const isShowQueueInfo = ref(false);
@@ -121,8 +124,8 @@ const {
 } = useEditData();
 const [detail, getDetail] = useGetData();
 const { 1: fetchApi } = useGetData();
-const [medicineList, getMedicineList, isLoadingGetMedicine] = useGetData();
-const [tindakanList, getTindakanList, isLoadingGetTindakan] = useGetData();
+const [medicineList, getMedicineList, isLoadingGetMedicine] = useGetData({ defaultLoading: true });
+const [tindakanList, getTindakanList, isLoadingGetTindakan] = useGetData({ defaultLoading: true });
 const { viewData, viewDialog, closeView, openViewDialog } = useViewData();
 
 filterData.value = {
@@ -164,16 +167,16 @@ function handleClick(tab) {
 
 function onAcceptMedicine(medsId) {
     fetchApi(() => apiAcceptMedicine(editData.value.id, medsId), false, true, () => {
-        fetchMedicine(editData.value.id);
+        getMedicineList(() => apiListMedicineByQueue(editData.value.id), true, true);
     });
 }
 
 function fetchMedicine(id = editData.value.id) {
-    getMedicineList(() => apiListMedicineByQueue(id), false, true);
+    getMedicineList(() => apiListMedicineByQueue(id), true, true);
 }
 
 function fetchTindakan(id = editData.value.id) {
-    getTindakanList(() => apiListTindakanByQueue(id), false, true);
+    getTindakanList(() => apiListTindakanByQueue(id), true, true);
 }
 
 function onViewDialog(item) {
@@ -193,6 +196,7 @@ function onSaveUpdate() {
         doPaginate(1);
         editDialog.value = false;
         messageInfo("Berhasil menyelesaikan antrian", 'success');
+        router.push(`/sales/detail?qId=${editData.value.id}`);
     })
 }
 

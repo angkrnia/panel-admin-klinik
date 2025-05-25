@@ -3,13 +3,15 @@
         <el-header class="p-0 print:hidden">
             <slot name="menu"></slot>
         </el-header>
-        <el-main class="bg-gray-200 p-2 md:px-5">
-            <div class="bg-white p-2 md:px-5 rounded shadow-sm min-h-[85vh]">
-                <slot name="main"></slot>
-            </div>
-        </el-main>
-        <el-footer class="h-11 flex justify-between items-center shadow print:hidden">
-            <h6 class="text-xs tracking-wide text-gray-500 z-10">Klinik Adiyasa Medika</h6>
+        <transition name="fade" mode="out-in">
+            <el-main class="bg-gray-200 p-2 md:px-5">
+                <div class="bg-white p-2 md:px-5 rounded shadow-sm min-h-[85vh]">
+                    <slot name="main"></slot>
+                </div>
+            </el-main>
+        </transition>
+        <el-footer class="h-7 flex justify-between items-center shadow-cus print:hidden">
+            <h6 class="text-xs tracking-wide text-gray-500 z-10">© {{ new Date().getFullYear() }} AMC Group</h6>
             <h6 class="text-xs tracking-wide text-gray-500 z-10">Version {{ version }}</h6>
         </el-footer>
     </el-container>

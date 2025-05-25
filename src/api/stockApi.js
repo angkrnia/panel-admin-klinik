@@ -27,6 +27,10 @@ export function APIStockEntryCommitted(id) {
     return axiosAuth.put(`/stock-entries/${id}/commit`);
 }
 
+export function APIStockEntryCanceled(id, data) {
+    return axiosAuth.put(`/stock-entries/${id}/cancel-stock`, data);
+}
+
 // STOCK ENTRY LINE
 export function stockEntryLinePagination(pageIndex = 1, pageSize = pageSizeEnv, textSearch = "", newObj = {}) {
     return axiosAuth.get(paramPaging(`/stock-entries/${newObj.headerId}/lines`, pageIndex, pageSize, textSearch, newObj));

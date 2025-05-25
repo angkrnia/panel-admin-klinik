@@ -1,5 +1,5 @@
 <template>
-  <el-table-column fixed="right" :min-width="minWidth">
+  <el-table-column show-overflow-tooltip fixed="right" :min-width="minWidth">
     <template #header>
       <div class="flex gap-3 items-center justify-center">
         <p>Aksi</p>

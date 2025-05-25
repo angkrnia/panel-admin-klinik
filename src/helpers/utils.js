@@ -1,10 +1,11 @@
 import { ElLoading, ElMessage } from "element-plus";
 import { useAppStore } from "../store/appStore";
 import Cookies from "js-cookie";
-import { axiosAuth } from "../config/axios";
+import { axiosAuth, axiosDownload } from "../config/axios";
 import { jwtDecode } from "jwt-decode";
 import { getDokterSelect } from "../api/dokterApi";
 import { APIUploadPhotos } from "../api/apiHelper";
+import { Activity, Box, BoxSelect, Clipboard, Clock, CreditCard, Database, Droplets, FlaskRound, Flower, HeartPulse, Home, Layers, ListCheck, Package, ShoppingCart, Tag, Upload, User, UserCheck, Users } from "lucide-vue-next";
 
 export const isObjectEmpty = (object) => {
     if (!object) return true;
@@ -318,100 +319,124 @@ export const allMenus = [
         title: "Dashboard",
         path: "/dashboard",
         hasChildren: false,
+        icon: Home,
     },
     {
         seq: 2,
         title: "Antrian",
         path: "/antrian",
         hasChildren: false,
+        icon: ListCheck,
     },
     {
         seq: 3,
         title: "Vital Sign",
         path: "/vital-sign",
         hasChildren: false,
+        icon: HeartPulse,
     },
     {
         seq: 4,
         title: "Farmasi",
         path: "/pharmacy",
         hasChildren: false,
+        icon: FlaskRound,
     },
     {
         seq: 5,
         title: "Master Data",
         path: "/data-pasien",
         hasChildren: true,
+        icon: Database,
         children: [
             {
                 seq: 1,
                 title: "Data Pasien",
                 path: "/data-pasien",
                 hasChildren: false,
+                icon: User,
             },
             {
                 seq: 2,
                 title: "Data Dokter",
                 path: "/data-dokter",
                 hasChildren: false,
+                icon: UserCheck,
             },
+            {
+                seq: 3,
+                title: "Tindakan",
+                path: "/master/tindakan",
+                hasChildren: false,
+                icon: Activity,
+            },
+            {
+                seq: 4,
+                title: "Tipe Layanan",
+                path: "/master/tipe-layanan",
+                hasChildren: false,
+                icon: Flower
+            }
         ],
     },
     {
         seq: 6,
-        title: "Transaksi Penjualan",
+        title: "Transaksi",
         path: "/sales",
         hasChildren: false,
+        icon: CreditCard,
     },
     {
         seq: 7,
         title: "Riwayat Kunjungan",
         path: "/histories",
         hasChildren: false,
+        icon: Clock,
     },
 ];
+
 export const adminMenus = [
     {
         seq: 7,
         title: "Inventory",
         path: "/inventory",
         hasChildren: true,
+        icon: Box,
         children: [
             {
                 seq: 1,
                 title: "Master Obat",
                 path: "/medicines",
                 hasChildren: false,
+                icon: BoxSelect,
             },
             {
                 seq: 2,
                 title: "Satuan",
                 path: "/inventory/units",
                 hasChildren: false,
+                icon: Layers,
             },
             {
                 seq: 3,
                 title: "Grup",
                 path: "/inventory/groups",
                 hasChildren: false,
+                icon: Users,
             },
             {
                 seq: 4,
                 title: "Kategori",
                 path: "/inventory/categories",
                 hasChildren: false,
-            },
-            {
-                seq: 5,
-                title: "Tindakan",
-                path: "/inventory/tindakan",
-                hasChildren: false,
+                icon: Tag,
             },
             {
                 seq: 6,
                 title: "Riwayat Stok",
                 path: "/inventory/riwayat-stok",
                 hasChildren: false,
+                icon: Clock,
             },
         ],
     },
@@ -420,18 +445,21 @@ export const adminMenus = [
         title: "Manajemen Stok",
         path: "/stock",
         hasChildren: true,
+        icon: Package,
         children: [
             {
                 seq: 1,
                 title: "Stok Masuk",
                 path: "/stock/stock-entry",
                 hasChildren: false,
+                icon: Upload,
             },
             {
                 seq: 2,
                 title: "Stok Opname",
                 path: "/stock/stock-opname",
                 hasChildren: false,
+                icon: Clipboard,
             },
         ],
     },

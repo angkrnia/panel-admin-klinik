@@ -8,7 +8,9 @@
         <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
             <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate" />
         </div>
-        <ProductList :medicines="listData" @edit-data="onEditDialog" />
+        <div v-loading="loading">
+            <ProductList :medicines="listData" @edit-data="onEditDialog" />
+        </div>
     </section>
 
     <!-- FORM ADD DIALOG -->

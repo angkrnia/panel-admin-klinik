@@ -2,11 +2,13 @@
     <section>
         <TitleDashboard title="Daftar Pasien">
             <template #btn1>
-                <el-button type="primary" @click="openAddDialog">Tambah Pasien</el-button>
+                <el-button type="primary" @click="openAddDialog" :icon="Plus">Tambah Pasien</el-button>
             </template>
         </TitleDashboard>
         <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
-            <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate" />
+            <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate">
+                <el-button :icon="Refresh" @click="doPaginate">Refresh</el-button>
+            </SearchAndPagination2>
         </div>
         <div class="py-5">
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
@@ -15,28 +17,28 @@
                         {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="record_no" label="No. RM" />
-                <el-table-column prop="fullname" label="Nama Pasien" min-width="170" />
-                <el-table-column prop="nama_keluarga" label="Nama Keluarga" min-width="170" />
-                <el-table-column prop="gender" label="Gender" min-width="90" />
-                <el-table-column prop="no_ktp" label="No. KTP">
+                <el-table-column show-overflow-tooltip prop="record_no" label="No. RM" />
+                <el-table-column show-overflow-tooltip prop="fullname" label="Nama Pasien" min-width="170" />
+                <el-table-column show-overflow-tooltip prop="nama_keluarga" label="Nama Keluarga" min-width="170" />
+                <el-table-column show-overflow-tooltip prop="gender" label="Gender" min-width="90" />
+                <el-table-column show-overflow-tooltip prop="no_ktp" label="No. KTP">
                     <template #default="scope">
                         <p class="line-clamp-1">{{ scope.row.no_ktp || '-' }}</p>
                     </template>
                 </el-table-column>
-                <el-table-column prop="phone" label="No. HP" min-width="150" />
-                <el-table-column prop="birthday" label="Umur" min-width="150">
+                <el-table-column show-overflow-tooltip prop="phone" label="No. HP" min-width="150" />
+                <el-table-column show-overflow-tooltip prop="birthday" label="Umur" min-width="150">
                     <template #default="scope">
                         {{ scope.row.birthday }} ({{ scope.row.age }} thn)
                     </template>
                 </el-table-column>
-                <el-table-column prop="allergy" label="Alergi" min-width="180">
+                <el-table-column show-overflow-tooltip prop="allergy" label="Alergi" min-width="180">
                     <template #default="scope">
                         <p class="line-clamp-1">{{ scope.row.allergy || '-' }}</p>
                     </template>
                 </el-table-column>
-                <el-table-column prop="address" label="Alamat" min-width="180" />
-                <el-table-column prop="created_at" label="Dibuat" min-width="120">
+                <el-table-column show-overflow-tooltip prop="address" label="Alamat" min-width="180" />
+                <el-table-column show-overflow-tooltip prop="created_at" label="Dibuat" min-width="120">
                     <template #default="scope">
                         {{ convertDate(scope.row.created_at) }}
                     </template>
@@ -54,10 +56,10 @@
     <!-- FORM ADD DIALOG -->
     <el-dialog v-model="addDialog" :width="dialogWidth()" top="5vh">
         <template #header>
-            <h1 class="border-b pb-5">Tambah Pasien</h1>
+            <h1 class="border-b pb-5 p-3">Tambah Pasien</h1>
         </template>
         <el-form label-width="150px" :label-position="labelPosition()" class="space-x-10" :model="addData" :rules="patientRule" ref="addForm">
-            <div class="w-full">
+            <div class="w-full p-3">
                 <el-form-item label="No. RM" prop="record_no">
                     <el-input v-model="addData.record_no" placeholder="No. RM" style="width: 100%" />
                 </el-form-item>
@@ -79,7 +81,7 @@
                 <el-form-item label="Umur" prop="age">
                     <el-input-number v-model="addData.age" placeholder="Umur" />
                 </el-form-item>
-                <el-form-item label="No. KTP" prop="no_ktp">
+                <el-form-item label="No. KTP" prop="no_ktp" min-width="150">
                     <el-input type="number" v-model="addData.no_ktp" placeholder="No KTP" />
                 </el-form-item>
                 <el-form-item label="No. HP" prop="phone">
@@ -88,7 +90,7 @@
                 <el-form-item label="Alamat" prop="address">
                     <el-input v-model="addData.address" type="textarea" placeholder="Alamat" style="width: 100%" />
                 </el-form-item>
-                <el-form-item label="Memiliki alergi" prop="has_allergy">
+                <el-form-item label="Alergi?" prop="has_allergy">
                     <el-switch v-model="addData.has_allergy" />
                     <span class="text-sm text-gray-500 ml-3">{{ addData.has_allergy ? 'Ya' : 'Tidak' }}</span>
                 </el-form-item>
@@ -105,10 +107,10 @@
     <!-- FORM EDIT DIALOG -->
     <el-dialog v-model="editDialog" :width="dialogWidth()" top="5vh">
         <template #header>
-            <h1 class="border-b pb-5">Edit Pasien</h1>
+            <h1 class="border-b pb-5 p-3">Edit Pasien</h1>
         </template>
         <el-form label-width="150px" :label-position="labelPosition()" class="space-x-10" :model="editData" :rules="patientRule" ref="editForm">
-            <div class="w-full">
+            <div class="w-full p-3">
                 <el-form-item label="No. RM" prop="record_no">
                     <el-input v-model="editData.record_no" placeholder="No. RM" style="width: 100%" />
                 </el-form-item>
@@ -139,7 +141,7 @@
                 <el-form-item label="Alamat" prop="address">
                     <el-input v-model="editData.address" type="textarea" placeholder="Alamat" style="width: 100%" />
                 </el-form-item>
-                <el-form-item label="Memiliki alergi" prop="has_allergy">
+                <el-form-item label="Alergi?" prop="has_allergy">
                     <el-switch v-model="editData.has_allergy" />
                     <span class="text-sm text-gray-500 ml-3">{{ editData.has_allergy ? 'Ya' : 'Tidak' }}</span>
                 </el-form-item>
@@ -156,10 +158,10 @@
     <!-- FORM TAMBAH ANTRIAN -->
     <el-dialog v-model="queueDialog" :width="dialogWidth()" top="5vh">
         <template #header>
-            <h1 class="border-b pb-5">Tambah Antrian Baru</h1>
+            <h1 class="border-b pb-5 p-3">Tambah Antrian Baru</h1>
         </template>
         <el-form label-width="120px" :label-position="labelPosition()" :rules="queueRule" class="space-x-10" :model="queueData" ref="queueForm">
-            <div class="w-full">
+            <div class="w-full p-3">
                 <div v-if="queueInfo.hasAllergy" class="border rounded-lg mb-3 overflow-hidden text-sm shadow-sm">
                     <div class="flex items-center gap-x-1 p-1 border-b bg-red-300 text-white text-xs">
                         <el-icon>
@@ -179,28 +181,35 @@
                         <el-option v-for="item in doctorList" :key="item.id" :label="item.fullname" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="Layanan" prop="service_type_id">
+                    <el-select filterable searchable v-model="queueData.service_type_id" placeholder="Pilih Layanan">
+                        <el-option v-for="item in tipeLayanan" :key="item.id" :label="`${item.name} - ${convertRp(item.price)}`" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="Keluhan" prop="complaint">
                     <el-input show-word-limit maxlength="255" v-model="queueData.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Catatan" prop="note">
                     <el-input show-word-limit maxlength="255" v-model="queueData.note" type="textarea" placeholder="Catatan" style="width: 100%" />
                 </el-form-item>
-                <el-form-item label="Tekanan Darah" prop="blood_pressure">
-                    <el-input show-word-limit maxlength="10" v-model="queueData.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Berat" prop="weight">
-                    <el-input show-word-limit maxlength="10" type="number" v-model="queueData.weight" placeholder="Berat" style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Tinggi" prop="height">
-                    <el-input show-word-limit maxlength="10" type="number" v-model="queueData.height" placeholder="Tinggi" style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Suhu" prop="temperature">
-                    <el-input show-word-limit maxlength="10" type="number" v-model="queueData.temperature" placeholder="Suhu" style="width: 100%" />
-                </el-form-item>
+                <div class="grid grid-cols-2 gap-x-8">
+                    <el-form-item label="Tensi" prop="blood_pressure">
+                        <el-input show-word-limit maxlength="10" v-model="queueData.blood_pressure" placeholder="Tensi" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Suhu" prop="temperature">
+                        <el-input show-word-limit maxlength="10" type="number" v-model="queueData.temperature" placeholder="Suhu" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Berat" prop="weight">
+                        <el-input show-word-limit maxlength="10" type="number" v-model="queueData.weight" placeholder="Berat" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Tinggi" prop="height">
+                        <el-input show-word-limit maxlength="10" type="number" v-model="queueData.height" placeholder="Tinggi" style="width: 100%" />
+                    </el-form-item>
+                </div>
             </div>
         </el-form>
         <template #footer>
-            <FooterButtonDialog @save-click="onSaveQueue" @cancel-click="cancelQueue" />
+            <FooterButtonDialog @save-click="onSaveQueue" save-text="Buat Antrian" @cancel-click="cancelQueue" />
         </template>
     </el-dialog>
 
@@ -217,12 +226,15 @@ import useAddData from '../../composables/useAddData';
 import useDeleteData from '../../composables/useDeleteData';
 import useEditData from '../../composables/useEditData';
 import usePagination from '../../composables/usePagination';
-import { convertDate, dialogWidth, doctorListHelper, labelPosition, messageInfo } from '../../helpers/utils';
+import { convertDate, convertRp, dialogWidth, doctorListHelper, labelPosition, messageInfo } from '../../helpers/utils';
 import { patientRule } from '../../rules/patientRules';
 import { tambahAntrian } from '../../api/antrianApi';
 import { queueRule } from '../../rules/queueRule';
 import QueueInformation from '../../components/QueueInformation.vue';
-import { Warning } from '@element-plus/icons-vue';
+import { Refresh, Warning } from '@element-plus/icons-vue';
+import { Plus } from 'lucide-vue-next';
+import useGetData from '../../composables/useGetData';
+import { APISelectTipeLayanan } from '../../api/apiHelper';
 
 const {
     listData,
@@ -248,6 +260,7 @@ const [
     isLoadingQueue,
 ] = useAddData({ returnAsArray: true });
 const { editData, editForm, editDialog, openEditDialog, saveEdit, cancelEdit } = useEditData();
+const [tipeLayanan, getTipeLayanan] = useGetData();
 const { deleteData } = useDeleteData();
 const doctorList = ref([]);
 const isShowQueueInfo = ref(false);
@@ -296,6 +309,7 @@ function onSaveEdit() {
 }
 
 async function onOpenQueue(row) {
+    getTipeLayanan(APISelectTipeLayanan, true, false);
     const data = await doctorListHelper();
     const currentDoctor = data.find((item) => item.is_on_duty === true);
     doctorList.value = data;
@@ -309,6 +323,7 @@ async function onOpenQueue(row) {
 }
 
 function onSaveQueue() {
+    queueInfo.value.doctor = doctorList.value.find((item) => item.id === queueData?.value?.doctor_id)?.fullname;
     saveQueue(tambahAntrian, (data) => {
         queueInfo.value.queue = data.queue;
         queueInfo.value.status = data.status;

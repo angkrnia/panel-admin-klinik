@@ -29,7 +29,7 @@ export function detailKunjungan(id) {
 }
 
 export function tambahAntrian(data) {
-  return axiosAuth.post("/queue", data);
+  return axiosAuth.post("/queue-v2", data);
 }
 
 export function updateAntrian(id, data) {
@@ -45,9 +45,9 @@ export function insertVitalSign(id, data) {
 }
 
 export function updateVitalSign(id, data) {
-  return axiosAuth.put("/queue/" + id + "/update-vital-sign", data);
+  return axiosAuth.put("/queue/" + id + "/update-vital-sign-v2", data);
 }
 
 export function completedQueue(id, data) {
-  return axiosAuth.put("/queue/" + id + "/completed", data);
+  return axiosAuth.put("/queue/" + id + "/completed-v2", data);
 }

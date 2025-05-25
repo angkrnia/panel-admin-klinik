@@ -2,7 +2,8 @@
     <section>
         <TitleDashboard title="Daftar Antrian">
             <template #btn1>
-                <el-button type="primary" @click="openQueueDialog">Buat Antrian</el-button>
+                <el-button :icon="Refresh" @click="doPaginate">Refresh</el-button>
+                <el-button type="primary" @click="openQueueDialog" :icon="Plus">Buat Antrian</el-button>
             </template>
         </TitleDashboard>
     </section>
@@ -14,40 +15,33 @@
         <div>
             <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
                 <template v-for="(item, index) in filters" :key="index">
-                    <el-tab-pane :label="item.label" :name="item.name">
+                    <el-tab-pane :name="item.name">
+                        <template #label>
+                            <component :is="item.icon" class="size-4 mr-1" v-if="item.icon"></component>
+                            <span class="capitalize">{{ item.label }}</span>
+                        </template>
                         <div class="py-5">
                             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
                                 <el-table-column prop="queue" min-width="80" align="center" label="Nomor Antrian" />
-                                <el-table-column prop="status" min-width="220" align="center" label="Status">
+                                <el-table-column show-overflow-tooltip prop="status" min-width="220" align="center" label="Status">
                                     <template #default="{ row }">
                                         <el-tag type="success" size="small">{{ convertStatusName(row.status) }}</el-tag>
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="patient.fullname" min-width="120" label="Nama Pasien" />
-                                <el-table-column prop="patient.record_no" label="No. Rekam Medis" min-width="120" />
-                                <el-table-column prop="patient.nama_keluarga" min-width="120" label="Nama Keluarga" />
-                                <el-table-column prop="patient.age" label="Usia" />
-                                <el-table-column prop="patient.gender" min-width="50" label="JK" />
-                                <el-table-column prop="patient.phone" min-width="120" label="No. HP" />
-                                <el-table-column prop="patient.address" min-width="120" label="Alamat">
+                                <el-table-column show-overflow-tooltip prop="patient.record_no" label="No. RM" min-width="80" />
+                                <el-table-column show-overflow-tooltip prop="patient.fullname" min-width="180" label="Nama Pasien" />
+                                <el-table-column show-overflow-tooltip prop="patient.nama_keluarga" min-width="180" label="Nama Keluarga" />
+                                <el-table-column show-overflow-tooltip prop="patient.age" label="Usia" />
+                                <el-table-column show-overflow-tooltip prop="patient.gender" min-width="50" label="JK" />
+                                <el-table-column show-overflow-tooltip prop="patient.phone" min-width="120" label="No. HP" />
+                                <el-table-column show-overflow-tooltip prop="patient.address" min-width="120" label="Alamat">
                                     <template #default="scope">
                                         <p class="line-clamp-1">{{ scope.row.patient.address }}</p>
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="doctor.fullname" min-width="100" label="Dokter" />
-                                <el-table-column prop="history.complaint" min-width="120" label="Keluhan">
-                                    <template #default="scope">
-                                        <el-popover trigger="hover" placement="top">
-                                            <template #default>
-                                                <p>{{ scope.row.history.complaint }}</p>
-                                            </template>
-                                            <template #reference>
-                                                <p class="cursor-pointer line-clamp-1">{{ scope.row.history.complaint }}</p>
-                                            </template>
-                                        </el-popover>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column prop="created_at" label="Dibuat">
+                                <el-table-column show-overflow-tooltip prop="doctor.fullname" min-width="100" label="Dokter" />
+                                <el-table-column show-overflow-tooltip prop="history.complaint" min-width="120" label="Keluhan"></el-table-column>
+                                <el-table-column show-overflow-tooltip prop="created_at" label="Dibuat">
                                     <template #default="scope">
                                         {{ convertDate(scope.row.created_at) }}
                                     </template>
@@ -63,7 +57,7 @@
     </section>
 
     <!-- FORM ADD DIALOG -->
-    <el-dialog v-model="addDialog" :width="dialogWidth()" top="5vh">
+    <el-dialog v-model="addDialog" :width="dialogWidth()">
         <template #header>
             <h1 class="border-b pb-5">Tambah Antrian Baru</h1>
         </template>
@@ -77,30 +71,37 @@
                 <el-form-item label="Nama Pasien" prop="patient_id">
                     <el-patient-select v-model="addData.patient_id" />
                 </el-form-item>
+                <el-form-item label="Layanan" prop="service_type_id">
+                    <el-select filterable searchable v-model="addData.service_type_id" placeholder="Pilih Layanan">
+                        <el-option v-for="item in tipeLayanan" :key="item.id" :label="`${item.name} - ${convertRp(item.price)}`" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="Keluhan" prop="complaint">
                     <el-input show-word-limit maxlength="255" v-model="addData.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
                 </el-form-item>
-                <el-form-item label="Tekanan Darah" prop="blood_pressure">
-                    <el-input show-word-limit maxlength="10" v-model="addData.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Berat" prop="weight">
-                    <el-input type="number" v-model="addData.weight" placeholder="Berat" style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Tinggi" prop="height">
-                    <el-input type="number" v-model="addData.height" placeholder="Tinggi" style="width: 100%" />
-                </el-form-item>
-                <el-form-item label="Suhu" prop="temperature">
-                    <el-input type="number" v-model="addData.temperature" placeholder="Suhu" style="width: 100%" />
-                </el-form-item>
+                <div class="grid grid-cols-2 gap-x-8">
+                    <el-form-item label="Tensi" prop="blood_pressure">
+                        <el-input show-word-limit maxlength="10" v-model="addData.blood_pressure" placeholder="Tensi" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Suhu" prop="temperature">
+                        <el-input type="number" v-model="addData.temperature" placeholder="Suhu" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Berat" prop="weight">
+                        <el-input type="number" v-model="addData.weight" placeholder="Berat" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Tinggi" prop="height">
+                        <el-input type="number" v-model="addData.height" placeholder="Tinggi" style="width: 100%" />
+                    </el-form-item>
+                </div>
             </div>
         </el-form>
         <template #footer>
-            <FooterButtonDialog @save-click="onSaveAdd" @cancel-click="cancelAdd" />
+            <FooterButtonDialog @save-click="onSaveAdd" save-text="Buat Antrian" @cancel-click="cancelAdd" />
         </template>
     </el-dialog>
 
     <!-- FORM VIEW DIALOG -->
-    <el-dialog v-model="editDialog" :width="dialogWidth()" top="5vh">
+    <el-dialog v-model="editDialog" :width="dialogWidth()">
         <template #header>
             <h1 class="border-b pb-5">Detail Antrian</h1>
         </template>
@@ -112,24 +113,27 @@
                 <el-form-item label="Nama Pasien" prop="patient.fullname">
                     <el-input disabled v-model="editData.patient.fullname" />
                 </el-form-item>
+                <el-form-item label="Layanan" prop="service[0].service_type_name">
+                    <el-input readonly show-word-limit maxlength="255" v-model="editData.service[0].service_type_name" placeholder="Layanan" style="width: 100%" />
+                </el-form-item>
                 <el-form-item label="Keluhan" prop="complaint">
                     <el-input readonly show-word-limit maxlength="255" v-model="editData.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Catatan" prop="note">
                     <el-input readonly show-word-limit maxlength="255" v-model="editData.note" type="textarea" placeholder="Catatan" style="width: 100%" />
                 </el-form-item>
-                <div class="grid grid-cols-2 gap-2">
-                    <el-form-item label="Tekanan Darah" prop="blood_pressure">
-                        <el-input readonly show-word-limit maxlength="10" v-model="editData.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />
+                <div class="grid grid-cols-2 gap-x-8">
+                    <el-form-item label="Tensi" prop="blood_pressure">
+                        <el-input readonly show-word-limit maxlength="10" v-model="editData.blood_pressure" placeholder="Tensi" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Suhu" prop="temperature">
+                        <el-input readonly type="number" v-model="editData.temperature" placeholder="Suhu" style="width: 100%" />
                     </el-form-item>
                     <el-form-item label="Berat" prop="weight">
                         <el-input readonly type="number" v-model="editData.weight" placeholder="Berat" style="width: 100%" />
                     </el-form-item>
                     <el-form-item label="Tinggi" prop="height">
                         <el-input readonly type="number" v-model="editData.height" placeholder="Tinggi" style="width: 100%" />
-                    </el-form-item>
-                    <el-form-item label="Suhu" prop="temperature">
-                        <el-input readonly type="number" v-model="editData.temperature" placeholder="Suhu" style="width: 100%" />
                     </el-form-item>
                 </div>
                 <template v-if="editData.status === 'completed' || editData.status === 'done'">
@@ -158,12 +162,12 @@
     </el-dialog>
 
     <!-- DIALOG NOMOR ANTRIAN -->
-    <el-dialog v-model="isShowQueueInfo" :width="dialogWidth()" top="5vh">
+    <el-dialog v-model="isShowQueueInfo" :width="dialogWidth()">
         <QueueInformation :item="queueInfo" @close-click="isShowQueueInfo = false" />
     </el-dialog>
 
     <!-- DIALOG EDIT ANTRIAN -->
-    <el-dialog v-model="editAntrianDialog" :width="dialogWidth()" top="5vh">
+    <el-dialog v-model="editAntrianDialog" :width="dialogWidth()">
         <template #header>
             <h1 class="border-b pb-5">Edit Antrian</h1>
         </template>
@@ -177,24 +181,29 @@
                         <el-option v-for="item in doctorList" :key="item.id" :label="item.fullname" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="Layanan" prop="service_type_id">
+                    <el-select filterable searchable v-model="editAntrian.service_type_id" placeholder="Pilih Layanan">
+                        <el-option v-for="item in tipeLayanan" :key="item.id" :label="`${item.name} - ${convertRp(item.price)}`" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="Keluhan" prop="complaint">
                     <el-input show-word-limit maxlength="255" v-model="editAntrian.complaint" type="textarea" placeholder="Keluhan" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Catatan" prop="note">
                     <el-input show-word-limit maxlength="255" v-model="editAntrian.note" type="textarea" placeholder="Catatan" style="width: 100%" />
                 </el-form-item>
-                <div class="grid grid-cols-2 gap-2">
-                    <el-form-item label="Tekanan Darah" prop="blood_pressure">
-                        <el-input show-word-limit maxlength="10" v-model="editAntrian.blood_pressure" placeholder="Tekanan Darah" style="width: 100%" />
+                <div class="grid grid-cols-2 gap-x-8">
+                    <el-form-item label="Tensi" prop="blood_pressure">
+                        <el-input show-word-limit maxlength="10" v-model="editAntrian.blood_pressure" placeholder="Tensi" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Suhu" prop="temperature">
+                        <el-input type="number" v-model="editAntrian.temperature" placeholder="Suhu" style="width: 100%" />
                     </el-form-item>
                     <el-form-item label="Berat" prop="weight">
                         <el-input type="number" v-model="editAntrian.weight" placeholder="Berat" style="width: 100%" />
                     </el-form-item>
                     <el-form-item label="Tinggi" prop="height">
                         <el-input type="number" v-model="editAntrian.height" placeholder="Tinggi" style="width: 100%" />
-                    </el-form-item>
-                    <el-form-item label="Suhu" prop="temperature">
-                        <el-input type="number" v-model="editAntrian.temperature" placeholder="Suhu" style="width: 100%" />
                     </el-form-item>
                 </div>
             </div>
@@ -210,10 +219,14 @@ import { ref } from 'vue';
 import usePagination from '../../composables/usePagination';
 import { listAntrianPagination, tambahAntrian, updateVitalSign } from '../../api/antrianApi';
 import useAddData from '../../composables/useAddData';
-import { convertDate, convertStatusName, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
+import { convertDate, convertRp, convertStatusName, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
 import { queueRule } from '../../rules/queueRule';
 import QueueInformation from '../../components/QueueInformation.vue';
 import useEditData from '../../composables/useEditData';
+import { Ban, CheckCircle, Clock, HeartPulse, PackageCheck, Plus, SkipForward, Stethoscope } from 'lucide-vue-next';
+import { Menu, Refresh } from '@element-plus/icons-vue';
+import useGetData from '../../composables/useGetData';
+import { APISelectTipeLayanan } from '../../api/apiHelper';
 
 const activeName = ref('');
 const doctorList = ref([]);
@@ -221,34 +234,42 @@ const filters = [
     {
         label: "Semua",
         name: "",
+        icon: Menu,
     },
     {
         label: "Vital Sign",
         name: "on waiting",
+        icon: HeartPulse,
     },
     {
         label: "Menunggu",
         name: "waiting",
+        icon: Clock,
     },
     {
         label: "Diperiksa",
         name: "on process",
+        icon: Stethoscope,
     },
     {
         label: "Terlewat",
         name: "skiped",
+        icon: SkipForward,
     },
     {
         label: "Batal",
         name: "canceled",
+        icon: Ban,
     },
     {
         label: "Pengambilan Obat",
         name: "done",
+        icon: PackageCheck,
     },
     {
         label: "Selesai",
         name: "completed",
+        icon: CheckCircle,
     },
 ];
 const isShowQueueInfo = ref(false);
@@ -294,6 +315,7 @@ const [
     saveEditAntrian,
     cancelEditAntrian,
 ] = useEditData({ returnAsArray: true });
+const [tipeLayanan, getTipeLayanan] = useGetData();
 
 filterData.value = {
     status: activeName.value,
@@ -346,8 +368,10 @@ function onSaveEdit() {
 }
 
 async function openQueueDialog() {
-    addData.value.doctor_id = doctorList.value.find((item) => item.is_on_duty === true)?.id;
-    openDialog(1);
+    getTipeLayanan(APISelectTipeLayanan, false, true, () => {
+        addData.value.doctor_id = doctorList.value.find((item) => item.is_on_duty === true)?.id;
+        openDialog(1);
+    });
 }
 
 async function firstLoad() {
@@ -356,13 +380,16 @@ async function firstLoad() {
 }
 
 function onEditDialog(data) {
-    data.temperature = data.history.temperature;
-    data.height = data.history.height;
-    data.weight = data.history.weight;
-    data.blood_pressure = data.history.blood_pressure;
-    data.complaint = data.history.complaint;
-    data.note = data.history.note;
-    openEditAntrianDialog(data);
+    getTipeLayanan(APISelectTipeLayanan, false, true, () => {
+        data.temperature = data.history.temperature;
+        data.height = data.history.height;
+        data.weight = data.history.weight;
+        data.blood_pressure = data.history.blood_pressure;
+        data.complaint = data.history.complaint;
+        data.note = data.history.note;
+        data.service_type_id = data.service?.[0]?.service_type_id;
+        openEditAntrianDialog(data);
+    });
 }
 
 function onSaveUpdate() {

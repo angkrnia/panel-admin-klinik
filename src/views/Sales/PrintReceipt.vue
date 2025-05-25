@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white mx-auto receipt-container max-w-[7.9cm] w-full rounded-lg overflow-hidden text-xs">
+    <div v-loading="isLoading" class="bg-white mx-auto receipt-container max-w-[7.9cm] w-full rounded-lg overflow-hidden text-xs">
         <!-- Logo and pharmacy name -->
         <div class="pt-6 pb-4 flex flex-col items-center">
             <img src="/images/logo.png" alt="Logo" width="80" />
@@ -27,6 +27,15 @@
 
         <!-- Item details -->
         <div>
+            <div class="px-6 py-1" v-for="(item, index) in data?.sale_services" :key="index">
+                <div class="flex justify-between">
+                    <div class="font-semibold text-gray-800">{{ item.service_type_name }}</div>
+                </div>
+                <div class="flex justify-between text-gray-700">
+                    <div>{{ item.quantity }} x {{ convertRp(item.service_type_price) }}</div>
+                    <div>{{ convertRp(item.total_price) }}</div>
+                </div>
+            </div>
             <div class="px-6 py-1" v-for="(item, index) in data?.sale_tindakans" :key="index">
                 <div class="flex justify-between">
                     <div class="font-semibold text-gray-800">{{ item.tindakan_name }}</div>
@@ -97,7 +106,7 @@ import { apiSalePrint } from '../../api/salesApi';
 import { convertDate, convertRp, messageInfo } from '../../helpers/utils';
 import useGetData from '../../composables/useGetData';
 
-const [data, getData] = useGetData();
+const [data, getData, isLoading] = useGetData({ defaultLoading: true });
 const route = useRoute();
 const trxId = computed(() => route.query.trxId)
 
@@ -105,7 +114,7 @@ function firstLoad() {
     if (!trxId.value) {
         messageInfo('Data tidak valid!')
     } else {
-        getData(() => apiSalePrint(trxId.value))
+        getData(() => apiSalePrint(trxId.value), true, true);
     }
 }
 

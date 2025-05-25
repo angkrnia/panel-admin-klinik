@@ -1,6 +1,10 @@
 <template>
     <section>
-        <TitleDashboard title="Riwayat Transaksi" />
+        <TitleDashboard title="Riwayat Transaksi">
+            <template #btn1>
+                <el-button :icon="Refresh" @click="doPaginate">Refresh</el-button>
+            </template>
+        </TitleDashboard>
     </section>
 
     <section>
@@ -36,7 +40,7 @@
     </section>
 
     <section class="mt-5 space-y-3">
-        <div v-for="(item, index) in listData" :key="index" class="bg-white shadow overflow-hidden rounded-lg">
+        <div v-for="(item, index) in listData" :key="index" class="bg-white shadow-sm border overflow-hidden rounded-lg">
             <div class="p-4 sm:px-6">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
@@ -94,17 +98,25 @@
                 </div>
             </div>
 
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-between items-center">
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-between items-center border-t">
                 <div class="flex space-x-3">
-                    <button @click="onDetailSale(item)" class="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center"><i class="fas fa-edit mr-1"></i>
-                        Detail</button>
-                    <button class="text-sm text-green-600 hover:text-green-800 font-medium flex items-center"><i class="fas fa-print mr-1"></i> Cetak</button>
+                    <el-button type="primary" :icon="View" @click="onDetailSale(item)" class="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center"><i
+                            class="fas fa-edit mr-1"></i>
+                        Detail</el-button>
+                    <el-button type="success" plain :icon="Printer" @click="onPrint(item)" class="text-sm text-green-600 hover:text-green-800 font-medium flex items-center"><i
+                            class="fas fa-print mr-1"></i>
+                        Cetak</el-button>
                 </div>
                 <div class="text-right">
                     <p class="text-sm text-gray-500">Total Pembayaran</p>
                     <p class="text-lg font-bold text-gray-900">{{ convertRp(item.grand_total || 0) }}</p>
                 </div>
             </div>
+        </div>
+
+        <!-- Jika belum ada transaksi -->
+        <div class="flex items-center justify-center w-full" v-if="listData?.length == 0">
+            <el-empty description="Belum ada transaksi" :image-size="80"></el-empty>
         </div>
     </section>
 </template>
@@ -115,9 +127,48 @@ import { saleHeaderPagination } from '../../api/salesApi';
 import useListDataPaginate from '../../composables/usePagination';
 import { people } from '../../helpers/svg';
 import { convertDate, convertPaymentStatus, convertRp, convertStatusName, dateFormatFull } from '../../helpers/utils';
+import { Printer, View } from 'lucide-vue-next';
+import { Refresh } from '@element-plus/icons-vue';
+import useGetData from '../../composables/useGetData';
 
 const router = useRouter();
 const { listData, rowTotal, pageIndex, pageSize, getListData, changeIndex, loading, filterData, search } = useListDataPaginate();
+const [doctorList, getDoctorList] = useGetData();
+
+const filters = [
+    {
+        label: "Semua",
+        name: "",
+    },
+    {
+        label: "Vital Sign",
+        name: "on waiting",
+    },
+    {
+        label: "Menunggu",
+        name: "waiting",
+    },
+    {
+        label: "Diperiksa",
+        name: "on process",
+    },
+    {
+        label: "Terlewat",
+        name: "skiped",
+    },
+    {
+        label: "Batal",
+        name: "canceled",
+    },
+    {
+        label: "Pengambilan Obat",
+        name: "done",
+    },
+    {
+        label: "Selesai",
+        name: "completed",
+    },
+];
 
 function doPaginate(index, pSize) {
     getListData(saleHeaderPagination, index, pSize ? pSize : pageSize.value, search.value, filterData.value);
@@ -138,6 +189,10 @@ function changePage(index = 1) {
 
 function onDetailSale(sale) {
     router.push({ name: 'sales-detail', query: { qId: sale.queue.id } });
+}
+
+function onPrint(item) {
+    window.open('/sales/print?trxId=' + item.receipt_number, '_blank');
 }
 
 doPaginate();

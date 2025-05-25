@@ -63,12 +63,12 @@
 
             <!-- Actions -->
             <div class="flex gap-2 mt-auto p-3">
-                <button class="flex-1 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors" @click="handleDetail(medicine)">
+                <el-button type="primary" :icon="View" class="flex-1 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors" @click="handleDetail(medicine)">
                     Detail
-                </button>
-                <button class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200 transition-colors" @click="handleEdit(medicine)">
+                </el-button>
+                <el-button type="primary" plain :icon="PencilLine" class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200 transition-colors" @click="handleEdit(medicine)">
                     Edit
-                </button>
+                </el-button>
             </div>
         </div>
     </div>
@@ -214,6 +214,7 @@ import { convertRp, dialogWidth, formatRibuan } from '../../../helpers/utils'
 import useViewData from '../../../composables/useViewData'
 import { ref } from 'vue'
 import { Box, Clock, Loading, Paperclip, Picture } from '@element-plus/icons-vue'
+import { PencilLine, View } from 'lucide-vue-next'
 
 const props = defineProps({
     medicines: Array

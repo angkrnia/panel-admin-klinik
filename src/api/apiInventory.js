@@ -103,3 +103,16 @@ export function APIstoreTindakan(data) {
 export function APIupdateTindakan(id, data) {
     return axiosAuth.put(`/tindakan/${id}`, data);
 }
+
+// CRUD TIPE LAYANAN
+export function listTipeLayananPagination(pageIndex = 1, pageSize = pageSizeEnv, textSearch = "", newObj = {}) {
+    return axiosAuth.get(paramPaging("/service-types", pageIndex, pageSize, textSearch, newObj));
+}
+
+export function APIstoreTipeLayanan(data) {
+    return axiosAuth.post("/service-types", data);
+}
+
+export function APIupdateTipeLayanan(id, data) {
+    return axiosAuth.put(`/service-types/${id}`, data);
+}

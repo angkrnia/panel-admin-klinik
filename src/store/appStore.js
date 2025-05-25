@@ -7,7 +7,7 @@ export const useAppStore = defineStore("app", {
     profile: {
       id: null,
       fullname: null,
-      email: null,
+      phone: null,
       role: null,
     },
     menuList: [],
@@ -26,7 +26,7 @@ export const useAppStore = defineStore("app", {
       this.profile = {
         id: data?.id,
         fullname: data?.fullname,
-        email: data?.email,
+        phone: data?.phone,
         role: data?.role,
       };
     },

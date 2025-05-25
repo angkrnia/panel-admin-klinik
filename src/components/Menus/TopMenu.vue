@@ -1,23 +1,39 @@
 <template>
     <nav class="fixed z-50 bg-primary w-full">
-        <div class="flex items-start justify-between overflow-hidden h-full w-full">
-            <el-menu background-color="#2563eb" text-color="#f8fafc" active-text-color="#cbd5e1" :default-active="defaultActive" class="el-menu-demo" mode="horizontal" ellipsis>
+        <div class="flex items-start justify-between overflow-hidden h-full w-full shadow-lg">
+            <el-menu background-color="#2563eb" text-color="#f8fafc" active-text-color="#cbd5e1" :default-active="defaultActive" class="el-menu-demo" mode="horizontal" ellipsis
+                :ellipsis-icon="Menu">
                 <template v-for="(item, index) in menuList" :key="index">
                     <template v-if="item.hasChildren">
                         <el-sub-menu :index="item.path">
-                            <template #title>{{ item.title }}</template>
+                            <template #title>
+                                <div class="flex items-center gap-1">
+                                    <component :is="item.icon" class="size-4" />
+                                    <p>{{ item.title }}</p>
+                                </div>
+                            </template>
                             <template v-for="(child, idx) in item.children" :key="idx">
-                                <el-menu-item @click="$router.push(child.path)" :index="child.path">{{ child.title }}</el-menu-item>
+                                <el-menu-item @click="$router.push(child.path)" :index="child.path">
+                                    <div class="flex items-center gap-1">
+                                        <component :is="child.icon" class="size-4" />
+                                        <p>{{ child.title }}</p>
+                                    </div>
+                                </el-menu-item>
                             </template>
                         </el-sub-menu>
                     </template>
                     <template v-else>
-                        <el-menu-item @click="$router.push(item.path)" :index="item.path">{{ item.title }}</el-menu-item>
+                        <el-menu-item @click="$router.push(item.path)" :index="item.path">
+                            <div class="flex items-center gap-1">
+                                <component :is="item.icon" class="size-4" />
+                                <p>{{ item.title }}</p>
+                            </div>
+                        </el-menu-item>
                     </template>
                 </template>
             </el-menu>
 
-            <div class="px-3 bg-white h-full py-[17px]">
+            <div class="px-3 bg-[#2563eb] text-white h-full py-[17px]">
                 <el-popover class="flex items-center justify-center cursor-pointer bg-primary" placement="bottom-end" :width="200" trigger="click">
                     <template #reference>
                         <div class="flex items-center cursor-pointer w-full justify-around gap-x-2" id="profile">
@@ -45,6 +61,7 @@ import { computed, ref } from 'vue';
 import { onLogoutHandler } from '../../helpers/utils';
 import { useRoute } from 'vue-router';
 import { useAppStore } from '../../store/appStore';
+import { Menu } from 'lucide-vue-next';
 
 const route = useRoute();
 const defaultActive = ref(route.path);

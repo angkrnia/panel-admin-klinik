@@ -2,13 +2,14 @@ import { ref } from "vue";
 import { isObjectEmpty } from "../helpers/utils";
 import { catchError, catchErrorFinally } from "../helpers/catchResp";
 
-export default function useGetData() {
+export default function useGetData(params = { defaultLoading: false }) {
   const dataRef = ref([]);
-  const isLoading = ref(false);
+  const isLoading = ref(params.defaultLoading || false);
 
   const getData = (apiURL, isLoadingInside, isForceCallAndSave, callBack) => {
     async function callAndSave() {
       const { data } = await apiURL();
+      isLoading.value = false;
       if (callBack) {
         callBack(data.data);
       }

@@ -16,3 +16,7 @@ export function APIUploadPhotos(imageFiles) {
     timeout: 600000,
   });
 }
+
+export function APISelectTipeLayanan() {
+  return axiosAuth.get("/service-types-list");
+}

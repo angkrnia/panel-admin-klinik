@@ -5,11 +5,13 @@
   </div>
   <div v-if="total" class="text-center paginate-info">
     <p class="text-sm text-gray-600 pt-1">{{ (currentPage - 1) * pageSize + 1 }} – {{ ((currentPage * pageSize) > total) ? total : currentPage * pageSize }} dari
-      {{ total }} data ({{ Math.ceil(total / pageSize) }} halaman)</p>
+      {{ formatRibuan(total) }} data ({{ formatRibuan(Math.ceil(total / pageSize)) }} halaman)</p>
   </div>
 </template>
 
 <script setup>
+import { formatRibuan } from '../helpers/utils';
+
 defineProps(['total', 'pageSize', 'currentPage']);
 function changePage(current) {
   emit('current-change', current);
