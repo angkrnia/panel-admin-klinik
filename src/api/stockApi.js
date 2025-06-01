@@ -89,3 +89,13 @@ export function APIupdateStockOpnameLine(headerId, id, data) {
 export function APIdeleteStockOpnameLine(headerId, id) {
     return axiosAuth.delete(`/opname/${headerId}/lines/${id}`);
 }
+
+// STOCK MOVEMENT ALL PRODUCT
+export function stockMovementPagination(pageIndex = 1, pageSize = pageSizeEnv, textSearch = "", newObj = {}) {
+    return axiosAuth.get(paramPaging("/stock-movements", pageIndex, pageSize, textSearch, newObj));
+}
+
+// STOCK MOVEMENT SINGLE PRODUCT
+export function stockMovementProductPagination(pageIndex = 1, pageSize = pageSizeEnv, textSearch = "", newObj = {}) {
+    return axiosAuth.get(paramPaging(`/stock-movements/${newObj?.id}`, pageIndex, pageSize, textSearch, newObj));
+}
