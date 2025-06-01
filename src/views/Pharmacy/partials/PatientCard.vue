@@ -119,6 +119,7 @@
                                     <div>
                                         <template v-if="!item.is_compound">
                                             <h1 class="text-green-600">Harga: {{ convertRp(item?.product?.sell_price) }}</h1>
+                                            <p>Stok: {{ item.product.base_stock || 0 }}</p>
                                         </template>
                                         <template v-if="item.is_compound">
                                             <h1 class="text-green-600">Harga: {{ convertRp(item?.total_price) }}</h1>
@@ -344,34 +345,40 @@
                     <p class="text-sm text-gray-500">Nama Racikan</p>
                     <p class="font-semibold text-gray-700">{{ detailObat.compound_name }}</p>
                 </div>
-                <div v-else>
-                    <p class="text-sm text-gray-500">Nama Obat</p>
-                    <p class="font-semibold text-gray-700">{{ detailObat.product?.name ?? '-' }}</p>
-                </div>
+                <template v-else>
+                    <div>
+                        <p class="text-sm text-gray-500">Nama Obat</p>
+                        <p class="font-semibold text-gray-700">{{ detailObat.product?.name ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Stok Dasar</p>
+                        <p class="font-medium text-gray-700">{{ detailObat.product?.base_stock ?? 0 }}</p>
+                    </div>
+                </template>
 
                 <div>
                     <p class="text-sm text-gray-500">Dosis</p>
-                    <p class="text-gray-700">{{ detailObat.dosage }}</p>
+                    <p class="text-gray-700 font-medium">{{ detailObat.dosage }}</p>
                 </div>
 
                 <div>
                     <p class="text-sm text-gray-500">Jumlah</p>
-                    <p class="text-gray-700">{{ detailObat.qty }}</p>
+                    <p class="text-gray-700 font-medium">{{ detailObat.qty }}</p>
                 </div>
 
                 <div>
                     <p class="text-sm text-gray-500">Aturan Pakai</p>
-                    <p class="text-gray-700">{{ detailObat.usage_instruction }}</p>
+                    <p class="text-gray-700 font-medium">{{ detailObat.usage_instruction || '-' }}</p>
                 </div>
 
                 <div>
                     <p class="text-sm text-gray-500">Keterangan</p>
-                    <p class="text-gray-700">{{ detailObat.notes }}</p>
+                    <p class="text-gray-700 font-medium">{{ detailObat.notes || '-' }}</p>
                 </div>
 
                 <div v-if="detailObat.is_compound && detailObat.mix_instruction">
                     <p class="text-sm text-gray-500">Instruksi Pencampuran</p>
-                    <p class="text-gray-700">{{ detailObat.mix_instruction }}</p>
+                    <p class="text-gray-700 font-medium">{{ detailObat.mix_instruction || '-' }}</p>
                 </div>
             </div>
 
@@ -609,7 +616,7 @@ function onSubmitManualTindakan() {
     })
 }
 
-function onSubmitManualLayanan()  {
+function onSubmitManualLayanan() {
     addDataService.value.queueId = props.data.id;
     saveAddService(apiPostService, () => {
         fetchService();

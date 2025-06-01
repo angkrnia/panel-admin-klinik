@@ -116,7 +116,7 @@
                 <p class="text-xs">Tanggal: {{ convertDate(data.created_at) }}</p>
             </div>
             <div>
-                <p>Dokter: {{ data.created_by }}</p>
+                <p>Dokter: {{ data.doctor_name }}</p>
             </div>
         </div>
 
