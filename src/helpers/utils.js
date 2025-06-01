@@ -132,28 +132,30 @@ export function onLogoutHandler() {
 }
 
 export function convertDate(dateString) {
+    // Cek apakah dateString kemungkinan UTC
+    const isUTC = dateString.endsWith("Z") || /[+-]\d{2}:\d{2}$/.test(dateString);
+
+    // Parse date dari string (otomatis dianggap UTC jika ada Z atau offset)
     const date = new Date(dateString);
 
-    // Daftar bulan dalam format singkat
+    // Jika UTC, kita konversi ke local manual
+    const localDate = isUTC
+        ? new Date(date.getTime() + date.getTimezoneOffset() * 60000)
+        : date;
+
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-    // Mendapatkan tanggal, bulan, tahun, dan waktu
-    const day = date.getDate();
-    const month = months[date.getMonth()];
-    const year = date.getFullYear();
+    const day = localDate.getDate();
+    const month = months[localDate.getMonth()];
+    const year = localDate.getFullYear();
 
-    // Mendapatkan jam, menit, dan detik
-    let hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    const seconds = date.getSeconds().toString().padStart(2, "0");
+    let hours = localDate.getHours();
+    const minutes = localDate.getMinutes().toString().padStart(2, "0");
+    const seconds = localDate.getSeconds().toString().padStart(2, "0");
 
-    // Menentukan AM atau PM
     const ampm = hours >= 12 ? "PM" : "AM";
-
-    // Konversi jam ke format 12-jam
     hours = hours % 12 || 12;
 
-    // Menggabungkan hasil dalam format yang diinginkan
     return `${day} ${month} ${year}, ${hours}:${minutes}:${seconds} ${ampm}`;
 }
 
