@@ -169,7 +169,7 @@ function onInputPayment(amount) {
 
 function onClickComplete(redirect = 'completed') {
     if (redirect === 'print') {
-        window.open('/transaction/print?receipt_number=' + viewData.value?.receipt_number, '_blank');
+        window.open('/sales/print?receipt_number=' + viewData.value?.receipt_number, '_blank');
     } else {
         modelValue.value = false;
         closeView();

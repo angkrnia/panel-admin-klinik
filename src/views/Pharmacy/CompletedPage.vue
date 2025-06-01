@@ -68,6 +68,11 @@
                 </el-table-column>
                 <el-table-column prop="amount" label="Jumlah Kebutuhan" min-width="200" />
                 <el-table-column prop="product_unit.unit.name" label="Satuan" />
+                <el-table-column prop="price" label="Total Harga" min-width="150">
+                    <template #default="scope">
+                        {{ convertRp(scope.row.price) }}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="notes" label="Catatan" min-width="200" />
             </el-table>
         </section>
