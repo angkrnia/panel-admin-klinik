@@ -197,7 +197,7 @@ function onClickBayar() {
 }
 
 function onPrint(item) {
-    window.open('/sales/print?trxId=' + item.receipt_number, '_blank');
+    window.open('/sales/print?receipt_number=' + item.receipt_number, '_blank');
 }
 
 firstLoad()

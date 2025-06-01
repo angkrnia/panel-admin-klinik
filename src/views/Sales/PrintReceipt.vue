@@ -1,5 +1,103 @@
 <template>
-    <div v-loading="isLoading" class="bg-white mx-auto receipt-container max-w-[7.9cm] w-full rounded-lg overflow-hidden text-xs">
+    <template v-if="isLoading">
+        <div class="bg-white mx-auto receipt-container max-w-[7.9cm] w-full rounded-lg shadow-sm">
+            <!-- Header with Logo -->
+            <div class="text-center mb-6">
+                <div class="skeleton w-12 h-12 rounded-full mx-auto mb-3"></div>
+                <div class="skeleton h-5 w-48 mx-auto mb-2 rounded"></div>
+                <div class="skeleton h-4 w-56 mx-auto mb-1 rounded"></div>
+                <div class="skeleton h-4 w-32 mx-auto rounded"></div>
+            </div>
+
+            <!-- Dotted Separator -->
+            <div class="border-t-2 border-dotted border-gray-300 my-4"></div>
+
+            <!-- Transaction Details -->
+            <div class="space-y-2 mb-4">
+                <div class="flex justify-between">
+                    <div class="skeleton h-4 w-16 rounded"></div>
+                    <div class="skeleton h-4 w-8 rounded"></div>
+                </div>
+                <div class="flex justify-between">
+                    <div class="skeleton h-4 w-20 rounded"></div>
+                    <div class="skeleton h-4 w-32 rounded"></div>
+                </div>
+                <div class="flex justify-between">
+                    <div class="skeleton h-4 w-16 rounded"></div>
+                    <div class="skeleton h-4 w-40 rounded"></div>
+                </div>
+                <div class="flex justify-between">
+                    <div class="skeleton h-4 w-20 rounded"></div>
+                    <div class="skeleton h-4 w-28 rounded"></div>
+                </div>
+            </div>
+
+            <!-- Dotted Separator -->
+            <div class="border-t-2 border-dotted border-gray-300 my-4"></div>
+
+            <!-- Items List -->
+            <div class="space-y-3 mb-4">
+                <!-- Item 1 -->
+                <div>
+                    <div class="flex justify-between items-start mb-1">
+                        <div class="skeleton h-4 w-32 rounded"></div>
+                        <div class="skeleton h-4 w-20 rounded"></div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <div class="skeleton h-3 w-24 rounded"></div>
+                        <div class="skeleton h-3 w-20 rounded"></div>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div>
+                    <div class="flex justify-between items-start mb-1">
+                        <div class="skeleton h-4 w-28 rounded"></div>
+                        <div class="skeleton h-4 w-20 rounded"></div>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <div class="skeleton h-3 w-24 rounded"></div>
+                        <div class="skeleton h-3 w-20 rounded"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dotted Separator -->
+            <div class="border-t-2 border-dotted border-gray-300 my-4"></div>
+
+            <!-- Totals -->
+            <div class="space-y-2 mb-4">
+                <div class="flex justify-between">
+                    <div class="skeleton h-4 w-20 rounded"></div>
+                    <div class="skeleton h-4 w-20 rounded"></div>
+                </div>
+                <div class="flex justify-between font-semibold">
+                    <div class="skeleton h-5 w-12 rounded"></div>
+                    <div class="skeleton h-5 w-24 rounded"></div>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <div class="skeleton h-3 w-24 rounded"></div>
+                    <div class="skeleton h-3 w-24 rounded"></div>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <div class="skeleton h-3 w-16 rounded"></div>
+                    <div class="skeleton h-3 w-16 rounded"></div>
+                </div>
+            </div>
+
+            <!-- Dotted Separator -->
+            <div class="border-t-2 border-dotted border-gray-300 my-4"></div>
+
+            <!-- Footer Message -->
+            <div class="text-center space-y-2">
+                <div class="skeleton h-4 w-40 mx-auto rounded"></div>
+                <div class="skeleton h-3 w-48 mx-auto rounded"></div>
+                <div class="skeleton h-3 w-32 mx-auto rounded"></div>
+            </div>
+        </div>
+    </template>
+
+    <div v-else v-loading="isLoading" class="bg-white mx-auto receipt-container max-w-[7.9cm] w-full rounded-lg overflow-hidden text-xs">
         <!-- Logo and pharmacy name -->
         <div class="pt-6 pb-4 flex flex-col items-center">
             <img src="/images/logo.png" alt="Logo" width="80" />
@@ -108,7 +206,7 @@ import useGetData from '../../composables/useGetData';
 
 const [data, getData, isLoading] = useGetData({ defaultLoading: true });
 const route = useRoute();
-const trxId = computed(() => route.query.trxId)
+const trxId = computed(() => route.query.receipt_number || route.query.trxId)
 
 function firstLoad() {
     if (!trxId.value) {
@@ -145,5 +243,21 @@ firstLoad()
     * {
         font-size: 12px !important;
     }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
 }
 </style>
