@@ -85,7 +85,9 @@ import PatientCard from './partials/PatientCard.vue';
 import { apiAcceptMedicine, apiListMedicineByQueue, apiListTindakanByQueue } from '../../api/apiMedicine';
 import useViewData from '../../composables/useViewData';
 import { Refresh } from '@element-plus/icons-vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const doctorList = ref([]);
 const isShowQueueInfo = ref(false);
 const queueInfo = ref({
