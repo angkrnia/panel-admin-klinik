@@ -47,7 +47,7 @@
                         <div v-html="people" class="size-5"></div>
                         <div class="ml-3">
                             <span class="text-sm font-medium text-gray-900">{{ item.patient_name }}</span>
-                            <span class="ml-2 text-xs text-gray-500">({{ item.record_no || '-' }})</span>
+                            <span class="ml-2 text-xs text-gray-500">({{ item.patient_record_no || '-' }})</span>
                         </div>
                         <span class="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">{{ convertPaymentStatus(item.status)
                         }}</span>
