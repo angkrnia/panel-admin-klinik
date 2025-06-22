@@ -64,8 +64,8 @@
         </el-table>
     </div>
 
-    <el-dialog v-model="viewDialog" :width="dialogWidth()" top="5vh">
-        <div class="space-y-2">
+    <el-dialog v-model="editDialog" :width="dialogWidth()" top="5vh">
+        <div class="space-y-2" v-if="false">
             <section class="grid grid-cols-1 lg:grid-cols-2 gap-2">
                 <div class="border rounded-md overflow-hidden">
                     <div class="p-2 bg-blue-500">
@@ -216,17 +216,42 @@
                 </div>
             </section>
         </div>
+
+        <template #header>
+            <h1 class="border-b pb-5">Riwayat Kunjungan</h1>
+        </template>
+
+        <PatientCard :hide-action="true" :data="editData" :tindakanList="tindakanList" :loadingTindakan="isLoadingGetTindakan" :medicineList="medicineList"
+            :loadingMedicine="isLoadingGetMedicine" />
+
+        <div class="bg-white rounded-lg shadow-md p-4 md:col-span-2">
+            <div class="grid gap-6 md:grid-cols-2">
+                <div class="leading-5">
+                    <p class="font-semibold">Tindakan</p>
+                    <p>{{ editData?.history?.tindakan || '-' }}</p>
+                </div>
+                <div class="leading-5">
+                    <p class="font-semibold">Terapi/Obat</p>
+                    <div v-html="formattedTherapy(editData?.history?.teraphy)"></div>
+                </div>
+            </div>
+        </div>
     </el-dialog>
 </template>
 
 <script setup>
 import { useRoute } from 'vue-router';
 import { riwayatKunjunganPagination } from '../../api/apiRiwayatKunjungan';
+import { apiListMedicineByQueue, apiListTindakanByQueue } from '../../api/apiMedicine';
+import { detailKunjungan } from '../../api/antrianApi';
 import ElDateRangeInput from '../../components/ElDateRangeInput.vue';
 import useListDataPaginate from '../../composables/usePagination';
 import useViewData from '../../composables/useViewData';
+import useGetData from '../../composables/useGetData';
+import useEditData from '../../composables/useEditData';
 import { convertDate, convertStatusName, dialogWidth, doctorListHelper } from '../../helpers/utils';
 import { ref } from 'vue';
+import PatientCard from '../Pharmacy/partials/PatientCard.vue';
 
 const route = useRoute();
 const doctorList = ref([]);
@@ -267,6 +292,18 @@ const filters = [
 
 const { listData, rowTotal, pageIndex, pageSize, getListData, changeIndex, loading, filterData, search } = useListDataPaginate();
 const { viewData, viewDialog, closeView, openViewDialog } = useViewData();
+const {
+    editData,
+    editForm,
+    editDialog,
+    openEditDialog,
+    saveEdit,
+    cancelEdit,
+} = useEditData();
+const [detail, getDetail] = useGetData();
+const { 1: fetchApi } = useGetData();
+const [medicineList, getMedicineList, isLoadingGetMedicine] = useGetData({ defaultLoading: true });
+const [tindakanList, getTindakanList, isLoadingGetTindakan] = useGetData({ defaultLoading: true });
 
 if (route.query.page) {
     filterData.value.page = parseInt(route.query.page);
@@ -312,8 +349,20 @@ function changePage(index = 1) {
     changeIndex(() => doPaginate(index), index);
 }
 
+function fetchMedicine(id = editData.value.id) {
+    getMedicineList(() => apiListMedicineByQueue(id), true, true);
+}
+
+function fetchTindakan(id = editData.value.id) {
+    getTindakanList(() => apiListTindakanByQueue(id), true, true);
+}
+
 function onViewDialog(data) {
-    openViewDialog(data);
+    getDetail(() => detailKunjungan(data.queue_id), false, true, (result) => {
+        fetchMedicine(data.id);
+        fetchTindakan(data.id);
+        openEditDialog(result);
+    })
 }
 
 function formattedTherapy(text) {

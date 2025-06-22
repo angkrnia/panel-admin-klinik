@@ -103,9 +103,11 @@
                         <div v-html="capsulePill" class="size-5 text-indigo-400"></div>
                         Daftar Obat
                     </h2>
-                    <el-tooltip class="box-item" effect="dark" content="Refresh" placement="top">
-                        <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
-                    </el-tooltip>
+                    <template v-if="!hideAction">
+                        <el-tooltip class="box-item" effect="dark" content="Refresh" placement="top">
+                            <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
+                        </el-tooltip>
+                    </template>
                 </div>
                 <div class="grid gap-3 lg:grid-cols-2">
                     <template v-if="!loadingMedicine">
@@ -156,17 +158,19 @@
                                             class="px-3 py-1 bg-gray-300 text-gray-800 text-xs rounded hover:bg-gray-200 transition-colors">{{ item.is_compound ?
                                                 'Detail Racikan'
                                                 : 'Detail Obat' }}</button>
-                                        <!-- Proses Obat -->
-                                        <el-popconfirm confirm-button-text="Yes" cancel-button-text="No" :icon="InfoFilled" icon-color="red" title="Apakah yakin?"
-                                            @confirm="onAcceptMedicine(item.id)" content="Hapus">
-                                            <template #reference>
-                                                <button type="button" class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
-                                                    v-if="item.status !== 'accepted' && item.status !== 'rejected'">Proses Obat</button>
-                                            </template>
-                                        </el-popconfirm>
-                                        <!-- Cancel Obat -->
-                                        <button type="button" class="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-opacity-80 transition-colors"
-                                            @click="onCancelMedicine(item)" v-if="item.status !== 'rejected'">Cancel</button>
+                                        <template v-if="!hideAction">
+                                            <!-- Proses Obat -->
+                                            <el-popconfirm confirm-button-text="Yes" cancel-button-text="No" :icon="InfoFilled" icon-color="red" title="Apakah yakin?"
+                                                @confirm="onAcceptMedicine(item.id)" content="Hapus">
+                                                <template #reference>
+                                                    <button type="button" class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
+                                                        v-if="item.status !== 'accepted' && item.status !== 'rejected'">Proses Obat</button>
+                                                </template>
+                                            </el-popconfirm>
+                                            <!-- Cancel Obat -->
+                                            <button type="button" class="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-opacity-80 transition-colors"
+                                                @click="onCancelMedicine(item)" v-if="item.status !== 'rejected'">Cancel</button>
+                                        </template>
                                     </div>
                                 </div>
                             </div>
@@ -176,6 +180,11 @@
                     <!-- Loading Obat -->
                     <div class="flex items-center justify-center w-full col-span-2" v-if="loadingMedicine">
                         <h1 class="font-semibold text-sm text-center">Loading...</h1>
+                    </div>
+
+                    <!-- Jika tidak ada obat dan berhenti loading -->
+                    <div class="flex items-center justify-center w-full col-span-2" v-if="!loadingMedicine && medicineList.length === 0">
+                        <h1 class="font-semibold text-sm text-center">Tidak ada obat</h1>
                     </div>
                 </div>
             </div>
@@ -188,16 +197,17 @@
                             <Stethoscope class="size-5 text-indigo-400" />
                             Tipe Layanan
                         </h2>
-                        <el-tooltip class="box-item" effect="dark" content="Refresh" placement="top">
-                            <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
-                        </el-tooltip>
+                        <template v-if="!hideAction">
+                            <el-tooltip class="box-item" effect="dark" content="Refresh" placement="top">
+                                <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
+                            </el-tooltip>
+                        </template>
                     </div>
-                    <el-button type="primary" size="small" @click="onAddManualService">Tambah Manual</el-button>
+                    <el-button v-if="!hideAction" type="primary" size="small" @click="onAddManualService">Tambah Manual</el-button>
                 </div>
                 <div class="space-y-2">
-                    <!-- Jika tindakan kosong -->
-                    <div class="flex items-center justify-center w-full" v-if="serviceList.length == 0 && !isLoadingGetService">
-                        <el-empty description="Belum ada tindakan" :image-size="80"></el-empty>
+                    <div class="flex items-center justify-center w-full col-span-2" v-if="serviceList.length == 0 && !isLoadingGetService">
+                        <h1 class="font-semibold text-sm text-center">Tidak ada layanan</h1>
                     </div>
 
                     <template v-if="!isLoadingGetService">
@@ -216,11 +226,13 @@
                                             <p class="text-sm text-gray-400">Biaya</p>
                                             <p class="font-bold text-green-600">{{ convertRp(item.total_price) }}</p>
                                         </div>
-                                        <el-popconfirm title="Apakah yakin ingin menghapus layanan ini?" @confirm="onDeleteService(item.id)">
-                                            <template #reference>
-                                                <el-button type="danger" size="small">Hapus</el-button>
-                                            </template>
-                                        </el-popconfirm>
+                                        <template v-if="!hideAction">
+                                            <el-popconfirm title="Apakah yakin ingin menghapus layanan ini?" @confirm="onDeleteService(item.id)">
+                                                <template #reference>
+                                                    <el-button type="danger" size="small">Hapus</el-button>
+                                                </template>
+                                            </el-popconfirm>
+                                        </template>
                                     </div>
                                 </div>
                             </div>
@@ -242,16 +254,18 @@
                             <div v-html="activity" class="size-5 text-indigo-400"></div>
                             Daftar Tindakan
                         </h2>
-                        <el-tooltip class="box-item" effect="dark" content="Refresh" placement="top">
-                            <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
-                        </el-tooltip>
+                        <template v-if="!hideAction">
+                            <el-tooltip class="box-item" effect="dark" content="Refresh" placement="top">
+                                <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
+                            </el-tooltip>
+                        </template>
                     </div>
-                    <el-button type="primary" size="small" @click="onAddManualTindakan">Tambah Manual</el-button>
+                    <el-button v-if="!hideAction" type="primary" size="small" @click="onAddManualTindakan">Tambah Manual</el-button>
                 </div>
                 <div class="space-y-2">
                     <!-- Jika tindakan kosong -->
-                    <div class="flex items-center justify-center w-full" v-if="tindakanList.length == 0 && !loadingTindakan">
-                        <el-empty description="Belum ada tindakan" :image-size="80"></el-empty>
+                    <div class="flex items-center justify-center w-full col-span-2" v-if="tindakanList.length == 0 && !loadingTindakan">
+                        <h1 class="font-semibold text-sm text-center">Tidak ada tindakan</h1>
                     </div>
 
                     <template v-if="!loadingTindakan">
@@ -270,11 +284,14 @@
                                             <p class="text-sm text-gray-400">Biaya</p>
                                             <p class="font-bold text-green-600">{{ convertRp(item.price * item.quantity) }}</p>
                                         </div>
-                                        <el-popconfirm v-if="profile?.role == item.source" title="Apakah yakin ingin menghapus tindakan ini?" @confirm="onDeleteTindakan(item.id)">
-                                            <template #reference>
-                                                <el-button type="danger" size="small">Hapus</el-button>
-                                            </template>
-                                        </el-popconfirm>
+                                        <template v-if="!hideAction">
+                                            <el-popconfirm v-if="profile?.role == item.source" title="Apakah yakin ingin menghapus tindakan ini?"
+                                                @confirm="onDeleteTindakan(item.id)">
+                                                <template #reference>
+                                                    <el-button type="danger" size="small">Hapus</el-button>
+                                                </template>
+                                            </el-popconfirm>
+                                        </template>
                                     </div>
                                 </div>
                             </div>
@@ -452,6 +469,32 @@
             </div>
         </div>
     </el-dialog>
+
+    <!-- Daftar Obat Racikan -->
+    <el-dialog v-model="viewDialog" :width="dialogWidth()" top="5vh">
+        <template #header>
+            <h1>Detail Obat Racikan</h1>
+        </template>
+        <section>
+            <el-table :data="viewData" stripe border style="width: 100%">
+                <el-table-column prop="product.name" label="Nama Obat" min-width="150" />
+                <el-table-column prop="product.base_stock" label="Stok" />
+                <el-table-column prop="product.sell_price" label="Harga Satuan" min-width="150">
+                    <template #default="scope">
+                        {{ convertRp(scope.row.product.sell_price) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="amount" label="Jumlah Kebutuhan" min-width="200" />
+                <el-table-column prop="product_unit.unit.name" label="Satuan" />
+                <el-table-column prop="price" label="Total Harga" min-width="150">
+                    <template #default="scope">
+                        {{ convertRp(scope.row.price) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="notes" label="Catatan" min-width="200" />
+            </el-table>
+        </section>
+    </el-dialog>
 </template>
 
 <script setup>
@@ -505,6 +548,10 @@ const props = defineProps({
         type: Boolean,
         required: true
     },
+    hideAction: {
+        type: Boolean,
+        default: false
+    }
 })
 
 const [cancelData, cancelForm, cancelDialog, openCancelDialog, saveCancel] = useEditData({ returnAsArray: true })
@@ -530,6 +577,7 @@ const [
 const [masterTindakan, getMasterTindakan] = useGetData();
 const [masterLayanan, getMasterLayanan] = useGetData();
 const [serviceList, getServiceList, isLoadingGetService] = useGetData();
+const { viewData, viewDialog, closeView, openViewDialog } = useViewData();
 
 const { deleteData } = useDeleteData();
 
@@ -546,7 +594,9 @@ const getStatusColor = (status) => {
         case 'changed':
             return 'bg-yellow-400/60'; // Warna untuk status Diganti
         case 'done':
-            return 'bg-gray-400/60'; // Warna untuk status Selesai
+            return 'bg-orange-500/60'; // Warna untuk status Selesai
+        case 'completed':
+            return 'bg-orange-500/60';
         default:
             return 'bg-gray-200/60'; // Warna default kalau tidak cocok
     }
@@ -580,7 +630,8 @@ function fetchTindakan() {
 
 function onDetailMedicine(item) {
     if (item.is_compound) {
-        emit('click-detail-racikan', item.compound_meds)
+        openViewDialog(item.compound_meds)
+        // emit('click-detail-racikan', item.compound_meds)
     } else {
         openDetailObatDialog(item);
     }
@@ -636,4 +687,11 @@ function fetchService() {
 }
 
 fetchService();
+
+watch(
+    () => props.data,
+    () => {
+        fetchService();
+    }
+);
 </script>

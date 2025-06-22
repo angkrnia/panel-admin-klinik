@@ -13,7 +13,7 @@
                 <el-table-column type="index" label="No" width="50" />
                 <el-table-column prop="avatar" label="Foto">
                     <template #default="scope">
-                        <el-image :src="scope.row.avatar">
+                        <el-image :src="scope.row.avatar" class="h-20 object-cover rounded" alt="Foto Dokter">
                             <template #error>
                                 <div class="image-slot">
                                     <el-icon>
@@ -32,9 +32,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="fullname" label="Nama Dokter" />
-                <el-table-column prop="gender" label="Jenis Kelamin" />
                 <el-table-column prop="phone" label="No. HP" />
-                <el-table-column prop="user.email" label="Email" />
                 <el-table-column prop="description" label="Deskripsi">
                     <template #default="scope">
                         <el-popover trigger="hover" placement="top">
@@ -47,12 +45,12 @@
                         </el-popover>
                     </template>
                 </el-table-column>
-                <el-table-column prop="start_day" label="Hari">
+                <el-table-column prop="schedule" label="Jadwal">
                     <template #default="scope">
-                        <p class="capitalize">{{ scope.row.start_day }} - {{ scope.row.end_day }}</p>
+                        <p class="capitalize">{{ scope.row.schedule }}</p>
                     </template>
                 </el-table-column>
-                <el-table-column prop="start_time" label="Jam">
+                <!-- <el-table-column prop="start_time" label="Jam">
                     <template #default="scope">
                         <p class="capitalize">{{ scope.row.start_time }} - {{ scope.row.end_time }}</p>
                     </template>
@@ -61,9 +59,9 @@
                     <template #default="scope">
                         {{ convertDate(scope.row.created_at) }}
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <!-- Untuk kolom aksi -->
-                <TableColumnAction show-edit show-delete @click-edit="onEditDialog" @click-delete="onDeleteData" />
+                <!-- <TableColumnAction show-edit show-delete @click-edit="onEditDialog" @click-delete="onDeleteData" /> -->
             </el-table>
         </div>
         <div class="flex items-center justify-center">
