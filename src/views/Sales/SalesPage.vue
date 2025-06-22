@@ -39,7 +39,11 @@
         </el-collapse>
     </section>
 
-    <section class="mt-5 space-y-3">
+    <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
+        <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate" />
+    </div>
+
+    <section class="mt-5 space-y-3" v-loading="loading">
         <div v-for="(item, index) in listData" :key="index" class="bg-white shadow-sm border overflow-hidden rounded-lg">
             <div class="p-4 sm:px-6">
                 <div class="flex items-center justify-between">
@@ -50,7 +54,7 @@
                             <span class="ml-2 text-xs text-gray-500">({{ item.patient_record_no || '-' }})</span>
                         </div>
                         <span class="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">{{ convertPaymentStatus(item.status)
-                        }}</span>
+                            }}</span>
                     </div>
                     <div class="text-right">
                         <div class="text-sm text-gray-500">Nomor Transaksi: <span class="font-medium text-blue-600">{{ item.receipt_number }}</span></div>
