@@ -19,7 +19,7 @@ const getPrice = (item) => {
             return total + (parseFloat(med.product?.sell_price || 0) * parseFloat(med.amount))
         }, 0)
     }
-    return parseFloat(item.product?.sell_price || 0) * item.qty
+    return (parseFloat(item.product?.sell_price || 0) * item.qty)
 }
 
 const totalHarga = computed(() => {
@@ -37,11 +37,11 @@ const totalHarga = computed(() => {
         <div v-for="(item, index) in medicineList" :key="index" class="border border-gray-200 rounded-xl p-4 shadow-sm bg-white flex flex-col">
             <!-- Konten utama -->
             <div class="flex-1">
-                <span class="text-sm px-3 py-1 rounded-lg font-bold" :class="{
+                <!-- <span class="text-sm px-3 py-1 rounded-lg font-bold" :class="{
                     'bg-orange-200 text-orange-600': item.status === 'completed',
                     'bg-red-400 text-white': item.status === 'rejected',
                     'bg-green-200 text-green-600': item.status === 'pending',
-                }">{{ item.status_name || '-' }}</span>
+                }">{{ item.status_name || '-' }}</span> -->
                 <h2 class="text-lg font-semibold mb-1 mt-2 text-gray-800">
                     {{ item.is_compound ? item.compound_name : item.product?.name }}
                 </h2>
@@ -71,9 +71,21 @@ const totalHarga = computed(() => {
             </div>
 
             <!-- Harga di bawah -->
-            <div class="mt-4 border-t pt-2 flex justify-between text-sm font-semibold text-gray-700">
-                <span>Total</span>
-                <span>{{ convertRp(getPrice(item)) }}</span>
+            <div class="mt-4 border-t pt-2 w-full text-sm font-semibold text-gray-700">
+                <div class="flex items-center justify-between">
+                    <span>Harga obat</span>
+                    <span>{{ convertRp(item.unit_price) }}</span>
+                </div>
+                <template v-if="item.additional_price">
+                    <div class="flex items-center justify-between">
+                        <span>Biaya tambahan</span>
+                        <span>{{ convertRp(item.additional_price) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span>Total harga</span>
+                        <span>{{ convertRp(Number(item.total_price) + Number(item.additional_price)) }}</span>
+                    </div>
+                </template>
             </div>
         </div>
     </template>

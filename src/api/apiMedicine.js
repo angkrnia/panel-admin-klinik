@@ -39,3 +39,7 @@ export function apiDeleteService(data) {
 export function apiMasterTindakan() {
     return axiosAuth.get(`/tindakan-list`);
 }
+
+export function apiMedicineChangePrice(queueId, medsId, data) {
+    return axiosAuth.put(`/queue/${queueId}/medicines/${medsId}/change-price`, data);
+}

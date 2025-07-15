@@ -64,7 +64,7 @@
         </el-table>
     </div>
 
-    <el-dialog v-model="editDialog" :width="dialogWidth()" top="5vh">
+    <el-dialog v-model="editDialog" :width="dialogWidth({ onDesktop: '60%' })" top="5vh">
         <div class="space-y-2" v-if="false">
             <section class="grid grid-cols-1 lg:grid-cols-2 gap-2">
                 <div class="border rounded-md overflow-hidden">

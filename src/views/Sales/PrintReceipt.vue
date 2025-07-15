@@ -1,9 +1,9 @@
 <template>
     <template v-if="isLoading">
-        <div class="bg-white mx-auto receipt-container max-w-[7.9cm] w-full rounded-lg shadow-sm">
+        <div class="bg-white mx-auto receipt-container max-w-[7.9cm] w-full rounded-lg shadow-sm relative">
             <!-- Header with Logo -->
             <div class="text-center mb-6">
-                <div class="skeleton w-12 h-12 rounded-full mx-auto mb-3"></div>
+                <!-- <div class="skeleton w-12 h-12 rounded-full mx-auto mb-3"></div> -->
                 <div class="skeleton h-5 w-48 mx-auto mb-2 rounded"></div>
                 <div class="skeleton h-4 w-56 mx-auto mb-1 rounded"></div>
                 <div class="skeleton h-4 w-32 mx-auto rounded"></div>
@@ -97,10 +97,10 @@
         </div>
     </template>
 
-    <div v-else v-loading="isLoading" class="bg-white mx-auto receipt-container max-w-[7.9cm] w-full rounded-lg overflow-hidden text-xs">
+    <div v-else v-loading="isLoading" class="b bg-white mx-auto receipt-container max-w-[7.9cm] w-full rounded-lg overflow-hidden text-xs">
         <!-- Logo and pharmacy name -->
         <div class="pt-6 pb-4 flex flex-col items-center">
-            <img src="/images/logo.png" alt="Logo" width="80" />
+            <!-- <img src="/images/logo.png" alt="Logo" width="80" /> -->
             <h1 class="text-sm font-bold text-gray-800 leading-4">KLINIK ADIYASA MEDIKA</h1>
             <p class="text-xs text-gray-600 mt-1 px-8 text-center leading-4">Jl. Raya Cisoka - Adiyasa, Kel. Cikuya, Kec. Solear, Kabupaten Tangerang, Banten </p>
         </div>
@@ -243,6 +243,16 @@ firstLoad()
     * {
         font-size: 12px !important;
     }
+
+    .receipt-container::before {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
 }
 
 @keyframes shimmer {
@@ -259,5 +269,26 @@ firstLoad()
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200px 100%;
     animation: shimmer 1.5s infinite;
+}
+
+.receipt-container {
+    position: relative;
+    z-index: 1;
+}
+
+.receipt-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    background-image: url('/images/logo.png');
+    background-size: contain;
+    background-repeat: repeat;
+    opacity: 0.2;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
 }
 </style>

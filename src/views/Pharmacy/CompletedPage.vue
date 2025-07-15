@@ -38,15 +38,19 @@
     </section>
 
     <!-- FORM VIEW DIALOG -->
-    <el-dialog v-model="editDialog" :width="dialogWidth()" top="5vh">
+    <el-dialog v-model="editDialog" :width="dialogWidth({ onDesktop: '60%' })" top="5vh">
         <template #header>
             <h1 class="border-b pb-5">Detail Antrian</h1>
         </template>
 
         <PatientCard :data="editData" :tindakanList="tindakanList" :loadingTindakan="isLoadingGetTindakan" :medicineList="medicineList" :loadingMedicine="isLoadingGetMedicine"
-            @accept-medicine="onAcceptMedicine" @refresh-medicine="fetchMedicine" @refresh-tindakan="fetchTindakan" @click-detail-racikan="onClickDetailRacikan" />
+            @accept-medicine="onAcceptMedicine" @refresh-medicine="fetchMedicine" @refresh-tindakan="fetchTindakan" @click-detail-racikan="onClickDetailRacikan"
+            @refresh="onViewDialog" />
 
         <template #footer>
+            <div class="text-end mb-1">
+                <p class="text-sm text-gray-500">Total Estimasi: <span class="font-bold text-green-500">{{ convertRp(editData.estimate_price_total) }}</span></p>
+            </div>
             <FooterButtonDialog @save-click="onSaveUpdate" :useConfirmation="true" save-text="Lanjut Pembayaran" @cancel-click="cancelEdit"
                 text-confirm="Pastikan semua data sudah benar?" />
         </template>

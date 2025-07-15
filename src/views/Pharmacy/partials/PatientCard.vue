@@ -109,70 +109,134 @@
                         </el-tooltip>
                     </template>
                 </div>
-                <div class="grid gap-3 lg:grid-cols-2">
+                <div class="space-y-2">
                     <template v-if="!loadingMedicine">
                         <template v-for="(item, index) in medicineList" :key="index">
-                            <div class="space-y-3 border rounded-lg p-2">
-                                <div class="flex items-center gap-3">
-                                    <div v-html="capsule" class="size-4 flex-shrink-0"></div>
-                                    <p class="text-sm text-gray-700 font-bold">{{ item.is_compound ? item.compound_name : item.product.name }}</p>
-                                </div>
-                                <div class="text-gray-700 space-y-2">
-                                    <div>
+                            <!-- NEW -->
+                            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 relative overflow-hidden">
+                                <template v-if="item.status == 'rejected'">
+                                    <div class="absolute w-full h-full top-0 bottom-0 left-0 right-0 flex items-center justify-center bg-gray-300/80 z-10">
+                                        <div class="bg-red-400 rounded-full py-2 px-6">
+                                            <p class="text-sm text-white">{{ item.status_name }}</p>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <div class="flex items-start justify-between h-full">
+                                    <div class="flex-1 space-y-2">
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="font-semibold text-gray-800 text-sm">{{ item.is_compound ? item.compound_name : item.product.name }}</h3>
+                                            <span v-if="item.is_compound" class="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded-full">PUYER</span>
+                                        </div>
                                         <template v-if="!item.is_compound">
-                                            <h1 class="text-green-600">Harga: {{ convertRp(item?.product?.sell_price) }}</h1>
-                                            <p>Stok: {{ item.product.base_stock || 0 }}</p>
+                                            <div class="flex flex-wrap items-center gap-3 text-xs text-gray-600">
+                                                <Poper content="Kode Obat">
+                                                    <div class="flex items-center gap-0.5">
+                                                        <ScanBarcode class="shrink-0 h-4 w-4 text-gray-400" />
+                                                        <span>SKU: <strong>{{ item.product.sku || '-' }}</strong></span>
+                                                    </div>
+                                                </Poper>
+                                                <Poper content="Satuan obat">
+                                                    <div class="flex items-center gap-0.5">
+                                                        <Package class="shrink-0 h-4 w-4 text-gray-400" />
+                                                        <span>Satuan: <strong>{{ item?.product_unit?.name || '-' }}</strong></span>
+                                                    </div>
+                                                </Poper>
+                                                <Poper content="Stok">
+                                                    <div class="flex items-center gap-0.5">
+                                                        <Warehouse class="shrink-0 h-4 w-4 text-gray-400" />
+                                                        <span>Stok: <strong>{{ item.product.base_stock || 0 }}</strong></span>
+                                                    </div>
+                                                </Poper>
+                                            </div>
                                         </template>
-                                        <template v-if="item.is_compound">
-                                            <h1 class="text-green-600">Harga: {{ convertRp(item?.total_price) }}</h1>
-                                        </template>
-                                    </div>
-                                    <!-- Label Status -->
-                                    <div class="flex items-center gap-x-3">
-                                        <div class="flex" v-if="item.is_compound">
-                                            <h1 class="text-sm  text-white bg-orange-500/50 rounded px-3 py-0.5">Obat Racikan</h1>
+                                        <div class="flex flex-wrap items-center gap-3 text-xs text-gray-600">
+                                            <Poper content="Jumlah obat">
+                                                <div class="flex items-center gap-0.5">
+                                                    <Boxes class="shrink-0 h-4 w-4 text-gray-400" />
+                                                    <span>Qty: <strong>{{ item.qty }}</strong></span>
+                                                </div>
+                                            </Poper>
+                                            <Poper content="Dosis">
+                                                <div class="flex items-center gap-0.5">
+                                                    <Clock class="shrink-0 h-4 w-4 text-gray-400" />
+                                                    <span>Dosis: <strong>{{ item.dosage }}</strong></span>
+                                                </div>
+                                            </Poper>
+                                            <Poper content="Instruksi pemakaian">
+                                                <div class="flex items-center gap-0.5">
+                                                    <GlassWater class="shrink-0 h-4 w-4 text-gray-400" />
+                                                    <span>{{ item.usage_instruction || '-' }}</span>
+                                                </div>
+                                            </Poper>
+                                            <Poper content="Catatan">
+                                                <div class="flex items-center gap-0.5">
+                                                    <Notebook class="shrink-0 h-4 w-4 text-gray-400" />
+                                                    <span>{{ item.notes || '-' }}</span>
+                                                </div>
+                                            </Poper>
                                         </div>
-                                        <div :class="`${getStatusColor(item.status)} rounded px-3 py-0.5`">
-                                            <h1 class="text-sm  text-white">{{ item.status_name }}</h1>
+                                    </div>
+                                    <!-- layout kolom kanan -->
+                                    <div class="flex flex-col gap-3 justify-between items-end h-full text-right">
+                                        <!-- Harga di atas -->
+                                        <div class="text-xs">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <p>Harga: <span class="font-semibold text-sm text-green-500">{{ convertRp(item.total_price) }}</span></p>
+                                                <Poper content="Edit harga obat">
+                                                    <PencilLine class="text-xs size-4 cursor-pointer" />
+                                                </Poper>
+                                            </div>
+                                            <template v-if="item.additional_price">
+                                                <p class="text-xs text-nowrap font-normal border-b text-gray-500">Biaya Tambahan: <span
+                                                        class="font-semibold text-sm text-gray-500">{{
+                                                            convertRp(item.additional_price) }}</span></p>
+                                                <p class="text-xs text-nowrap font-normal text-gray-500">Total Harga: <span class="font-semibold text-sm text-green-500">{{
+                                                    convertRp(Number(item.additional_price) + Number(item.total_price)) }}</span></p>
+                                            </template>
                                         </div>
-                                    </div>
-                                    <div class="text-sm">
-                                        <p class="text-gray-500 text-xs">Jumlah</p>
-                                        <p class="font-semibold">{{ item.qty }}</p>
-                                    </div>
-                                    <div class="text-sm">
-                                        <p class="text-gray-500 text-xs">Dosis</p>
-                                        <p class="font-semibold">{{ item.dosage }}</p>
-                                    </div>
-                                    <div class="text-sm">
-                                        <p class="text-gray-500 text-xs">Penggunaan</p>
-                                        <p class="font-semibold">{{ item.usage_instruction || '-' }}</p>
-                                    </div>
-                                    <div class="text-sm">
-                                        <p class="text-gray-500 text-xs">Catatan</p>
-                                        <p class="font-semibold">{{ item.notes || '-' }}</p>
-                                    </div>
-                                    <div class="flex items-center flex-wrap gap-3">
-                                        <!-- Detail Obat -->
-                                        <button type="button" @click="onDetailMedicine(item)"
-                                            class="px-3 py-1 bg-gray-300 text-gray-800 text-xs rounded hover:bg-gray-200 transition-colors">{{ item.is_compound ?
-                                                'Detail Racikan'
-                                                : 'Detail Obat' }}</button>
-                                        <template v-if="!hideAction">
-                                            <!-- Proses Obat -->
-                                            <el-popconfirm confirm-button-text="Yes" cancel-button-text="No" :icon="InfoFilled" icon-color="red" title="Apakah yakin?"
-                                                @confirm="onAcceptMedicine(item.id)" content="Hapus">
-                                                <template #reference>
-                                                    <button type="button" class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
-                                                        v-if="item.status !== 'accepted' && item.status !== 'rejected'">Proses Obat</button>
-                                                </template>
-                                            </el-popconfirm>
-                                            <!-- Cancel Obat -->
-                                            <button type="button" class="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-opacity-80 transition-colors"
-                                                @click="onCancelMedicine(item)" v-if="item.status !== 'rejected'">Cancel</button>
-                                        </template>
+                                        <div class="flex">
+                                            <el-button type="primary" size="small" :icon="Info" @click="onDetailMedicine(item)">Detail</el-button>
+                                            <template v-if="!hideAction && item.status !== 'rejected'">
+                                                <el-button type="danger" size="small" :icon="Close" @click="onCancelMedicine(item)">Cancel</el-button>
+                                            </template>
+                                        </div>
                                     </div>
                                 </div>
+                                <template v-if="item.is_compound">
+                                    <div class="flex flex-wrap items-center text-xs text-gray-600">
+                                        <h1 class="font-medium text-gray-800 text-sm mb-1">Daftar Obat Racikan:</h1>
+                                        <el-table :data="item.compound_meds" stripe border style="width: 100%" size="small">
+                                            <el-table-column prop="product.name" min-width="150" label="Obat" />
+                                            <el-table-column prop="product.sku" label="SKU" />
+                                            <el-table-column prop="amount" label="Jumlah" align="center" min-width="100">
+                                                <template #default="{ row }">
+                                                    <span class="font-bold">{{ row.amount }} {{ row?.product_unit?.unit.name ? row.product_unit.unit.name : '' }}</span>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column prop="notes" label="Catatan">
+                                                <template #default="{ row }">
+                                                    <span>{{ row.notes ? row.notes : '-' }}</span>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column prop="product.sell_price" label="Harga Satuan">
+                                                <template #default="{ row }">
+                                                    {{ convertRp(row?.product?.sell_price) }}
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column prop="product.base_stock" label="Stok" align="center">
+                                                <template #default="{ row }">
+                                                    <span>{{ row?.product?.base_stock }}</span>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column prop="price" label="Total Harga" fixed="right" min-width="100" align="right">
+                                                <template #default="{ row }">
+                                                    <span class="font-semibold">{{ convertRp(row.price) }}</span>
+                                                </template>
+                                            </el-table-column>
+                                        </el-table>
+                                    </div>
+                                </template>
                             </div>
                         </template>
                     </template>
@@ -199,11 +263,11 @@
                         </h2>
                         <template v-if="!hideAction">
                             <el-tooltip class="box-item" effect="dark" content="Refresh" placement="top">
-                                <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
+                                <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchService" />
                             </el-tooltip>
                         </template>
                     </div>
-                    <el-button v-if="!hideAction" type="primary" size="small" @click="onAddManualService">Tambah Manual</el-button>
+                    <el-button v-if="!hideAction" type="primary" size="small" :icon="Plus" @click="onAddManualService">Tambah Manual</el-button>
                 </div>
                 <div class="space-y-2">
                     <div class="flex items-center justify-center w-full col-span-2" v-if="serviceList.length == 0 && !isLoadingGetService">
@@ -212,24 +276,33 @@
 
                     <template v-if="!isLoadingGetService">
                         <template v-for="(item, index) in serviceList" :key="index">
-                            <div class="p-3 bg-white rounded-xl shadow-sm border">
+                            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
                                 <div class="flex items-start justify-between">
-                                    <div>
-                                        <h3 class="font-semibold text-gray-800">
-                                            {{ item.service_type_name }}
-                                        </h3>
-                                        <p class="text-sm text-gray-500">Qty: {{ item.quantity }}</p>
-                                        <p class="text-sm text-gray-500">Catatan: {{ item.notes || '-' }}</p>
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <Info class="size-5 text-indigo-400" />
+                                            <h3 class="font-semibold text-gray-800 text-sm">{{ item.service_type_name }}</h3>
+                                        </div>
+                                        <div class="flex items-center gap-4 text-xs text-gray-600">
+                                            <div class="flex items-center gap-0.5">
+                                                <Boxes class="shrink-0 h-4 w-4 text-gray-400" />
+                                                <span>Qty: <strong>{{ item.quantity }}</strong></span>
+                                            </div>
+                                            <div class="flex items-center gap-0.5">
+                                                <Notebook class="shrink-0 h-4 w-4 text-gray-400" />
+                                                <span>{{ item.notes || '-' }}</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="text-right">
+                                    <div class="text-right flex flex-col gap-3">
                                         <div>
-                                            <p class="text-sm text-gray-400">Biaya</p>
-                                            <p class="font-bold text-green-600">{{ convertRp(item.total_price) }}</p>
+                                            <div class="text-xs text-gray-500">@{{ convertRp(item.service_type_price) }}</div>
+                                            <div class="font-bold text-green-600">{{ convertRp(item.total_price) }}</div>
                                         </div>
                                         <template v-if="!hideAction">
                                             <el-popconfirm title="Apakah yakin ingin menghapus layanan ini?" @confirm="onDeleteService(item.id)">
                                                 <template #reference>
-                                                    <el-button type="danger" size="small">Hapus</el-button>
+                                                    <el-button type="danger" size="small" :icon="Trash2">Hapus</el-button>
                                                 </template>
                                             </el-popconfirm>
                                         </template>
@@ -256,11 +329,11 @@
                         </h2>
                         <template v-if="!hideAction">
                             <el-tooltip class="box-item" effect="dark" content="Refresh" placement="top">
-                                <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
+                                <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchTindakan" />
                             </el-tooltip>
                         </template>
                     </div>
-                    <el-button v-if="!hideAction" type="primary" size="small" @click="onAddManualTindakan">Tambah Manual</el-button>
+                    <el-button v-if="!hideAction" type="primary" size="small" :icon="Plus" @click="onAddManualTindakan">Tambah Manual</el-button>
                 </div>
                 <div class="space-y-2">
                     <!-- Jika tindakan kosong -->
@@ -270,7 +343,41 @@
 
                     <template v-if="!loadingTindakan">
                         <template v-for="(item, index) in tindakanList" :key="index">
-                            <div class="p-3 bg-white rounded-xl shadow-sm border">
+                            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <Info class="size-5 text-indigo-400" />
+                                            <h3 class="font-semibold text-gray-800 text-sm">{{ item.procedure_name }}</h3>
+                                        </div>
+                                        <div class="flex items-center gap-4 text-xs text-gray-600">
+                                            <div class="flex items-center gap-0.5">
+                                                <Boxes class="shrink-0 h-4 w-4 text-gray-400" />
+                                                <span>Qty: <strong>{{ item.quantity }}</strong></span>
+                                            </div>
+                                            <div class="flex items-center gap-0.5">
+                                                <Notebook class="shrink-0 h-4 w-4 text-gray-400" />
+                                                <span>{{ item.notes || '-' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right flex flex-col gap-3">
+                                        <div>
+                                            <div class="text-xs text-gray-500">@{{ convertRp(item.price) }}</div>
+                                            <div class="text-sm font-bold text-green-600">{{ convertRp(item.price * item.quantity) }}</div>
+                                        </div>
+                                        <template v-if="!hideAction">
+                                            <el-popconfirm v-if="profile?.role == item.source" title="Apakah yakin ingin menghapus tindakan ini?"
+                                                @confirm="onDeleteTindakan(item.id)">
+                                                <template #reference>
+                                                    <el-button type="danger" size="small">Hapus</el-button>
+                                                </template>
+                                            </el-popconfirm>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl shadow-sm border" v-if="false">
                                 <div class="flex items-start justify-between">
                                     <div>
                                         <h3 class="font-semibold text-gray-800">
@@ -349,15 +456,8 @@
     <!-- Detail Obat -->
     <el-dialog v-model="detailObatDialog" :title="detailObat.is_compound ? 'Obat Racikan' : 'Obat Tunggal'" :width="dialogWidth({ onDesktop: '40%' })" top="5vh">
         <div class="p-3 space-y-4">
-            <!-- Header -->
-            <div class="flex items-center justify-between">
-                <p :class="`${getStatusColor(detailObat.status)} px-3 py-1 rounded-full text-sm text-white`">
-                    {{ detailObat.status_name }}
-                </p>
-            </div>
-
             <!-- Informasi Umum -->
-            <div class="space-y-2">
+            <div class="space-y-2" v-if="false">
                 <div v-if="detailObat.is_compound">
                     <p class="text-sm text-gray-500">Nama Racikan</p>
                     <p class="font-semibold text-gray-700">{{ detailObat.compound_name }}</p>
@@ -397,6 +497,15 @@
                     <p class="text-sm text-gray-500">Instruksi Pencampuran</p>
                     <p class="text-gray-700 font-medium">{{ detailObat.mix_instruction || '-' }}</p>
                 </div>
+            </div>
+
+            <div class="space-y-4 text-sm text-gray-700">
+                <InfoRow icon="pill" label="Nama Obat" :value="detailObat.product?.name ?? '-'" />
+                <InfoRow icon="database" label="Stok Dasar" :value="detailObat.product?.base_stock ?? 0" />
+                <InfoRow icon="circle-dot" label="Dosis" :value="detailObat.dosage" />
+                <InfoRow icon="package" label="Jumlah" :value="detailObat.qty" />
+                <InfoRow icon="glass-water" label="Aturan Pakai" :value="detailObat.usage_instruction || '-'" />
+                <InfoRow icon="sticky-note" label="Keterangan" :value="detailObat.notes || '-'" />
             </div>
 
             <!-- Daftar Komposisi Obat Racikan -->
@@ -479,14 +588,14 @@
             <el-table :data="viewData" stripe border style="width: 100%">
                 <el-table-column prop="product.name" label="Nama Obat" min-width="150" />
                 <el-table-column prop="product.base_stock" label="Stok" />
-                <el-table-column prop="product.sell_price" label="Harga Satuan" min-width="150">
+                <el-table-column prop="product.sell_price" label="Harga Satuan" align="right" min-width="130">
                     <template #default="scope">
                         {{ convertRp(scope.row.product.sell_price) }}
                     </template>
                 </el-table-column>
                 <el-table-column prop="amount" label="Jumlah Kebutuhan" min-width="200" />
                 <el-table-column prop="product_unit.unit.name" label="Satuan" />
-                <el-table-column prop="price" label="Total Harga" min-width="150">
+                <el-table-column prop="price" fixed="right" label="Total Harga" align="right" min-width="130">
                     <template #default="scope">
                         {{ convertRp(scope.row.price) }}
                     </template>
@@ -512,7 +621,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import { convertRp, copyToClipboard, dialogWidth } from '../../../helpers/utils';
 import { activity, capsule, capsulePill } from '../../../helpers/svg';
-import { InfoFilled } from '@element-plus/icons-vue';
+import { Close } from '@element-plus/icons-vue';
 import useEditData from '../../../composables/useEditData';
 import { apiDeleteService, apiDeleteTindakan, apiListServiceByQueue, apiMasterTindakan, apiPostService, apiPostTindakan, apiRejectMedicine } from '../../../api/apiMedicine';
 import useViewData from '../../../composables/useViewData';
@@ -521,8 +630,10 @@ import useGetData from '../../../composables/useGetData';
 import { useAppStore } from '../../../store/appStore';
 import { watch, computed } from 'vue';
 import useDeleteData from '../../../composables/useDeleteData';
-import { Stethoscope } from 'lucide-vue-next';
+import { Boxes, Clock, GlassWater, Info, Notebook, Package, PencilLine, Plus, ScanBarcode, Stethoscope, Trash2, User, Warehouse } from 'lucide-vue-next';
 import { APISelectTipeLayanan } from '../../../api/apiHelper';
+import Poper from '../../../components/Poper.vue';
+import InfoRow from '../../../components/InfoRow.vue';
 
 const appStore = useAppStore();
 const profile = computed(() => appStore.profile);
@@ -581,7 +692,7 @@ const { viewData, viewDialog, closeView, openViewDialog } = useViewData();
 
 const { deleteData } = useDeleteData();
 
-const emit = defineEmits(['accept-medicine', 'refresh-medicine', 'refresh-tindakan', 'click-detail-racikan']);
+const emit = defineEmits(['accept-medicine', 'refresh-medicine', 'refresh-tindakan', 'click-detail-racikan', 'refresh']);
 
 const getStatusColor = (status) => {
     switch (status) {
@@ -615,9 +726,7 @@ function onCancelMedicine(medsId) {
 }
 
 function onSubmitCancel() {
-    saveCancel(() => apiRejectMedicine(cancelData.value.queue_id, cancelData.value.medicine_id, cancelData.value), null, () => {
-        fetchMedicine();
-    });
+    saveCancel(() => apiRejectMedicine(cancelData.value.queue_id, cancelData.value.medicine_id, cancelData.value), null, () => emit('refresh', props.data));
 }
 
 function fetchMedicine() {
@@ -662,24 +771,20 @@ const handleSelectTindakan = (id) => {
 
 function onSubmitManualTindakan() {
     addData.value.queueId = props.data.id;
-    saveAdd(apiPostTindakan, () => {
-        fetchTindakan();
-    })
+    saveAdd(apiPostTindakan, () => emit('refresh', props.data));
 }
 
 function onSubmitManualLayanan() {
     addDataService.value.queueId = props.data.id;
-    saveAddService(apiPostService, () => {
-        fetchService();
-    })
+    saveAddService(apiPostService, () => emit('refresh', props.data))
 }
 
 function onDeleteTindakan(id) {
-    deleteData(apiDeleteTindakan, { id, queueId: props.data.id }, fetchTindakan);
+    deleteData(apiDeleteTindakan, { id, queueId: props.data.id }, () => emit('refresh', props.data));
 }
 
 function onDeleteService(id) {
-    deleteData(apiDeleteService, { id, queueId: props.data.id }, fetchService);
+    deleteData(apiDeleteService, { id, queueId: props.data.id }, () => emit('refresh', props.data));
 }
 
 function fetchService() {

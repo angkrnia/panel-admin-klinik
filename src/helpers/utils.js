@@ -171,13 +171,14 @@ export function dialogWidth(params) {
     const isLaptop = window.matchMedia("only screen and (min-width: 1025px) and (max-width: 1440px)").matches;
     const isDesktop = window.matchMedia("only screen and (min-width: 1441px)").matches;
 
-    if (isMobile) return "95%";
-    if (isTablet) return "65%";
-    if (isLaptop) return "50%";
-    if (isDesktop) {
+    if (isLaptop || isDesktop) {
         if (params?.onDesktop) return params?.onDesktop;
         return "45%";
     }
+
+    if (isMobile) return "95%";
+    if (isTablet) return "65%";
+    if (isLaptop) return "50%";
 
     return "45%";
 }
