@@ -8,12 +8,13 @@ window.Pusher = Pusher;
 export default new Echo({
     broadcaster: "pusher",
     key: import.meta.env.VITE_PUSHER_APP_KEY,
-    wsHost: import.meta.env.VITE_PUSHER_HOST || window.location.hostname,
-    wsPort: import.meta.env.VITE_PUSHER_PORT || 6001,
-    forceTLS: import.meta.env.VITE_PUSHER_SCHEME === "https",
-    encrypted: false,
+    wsHost: import.meta.env.VITE_PUSHER_HOST,
+    wsPort: import.meta.env.VITE_PUSHER_PORT || 443,
+    wssPort: import.meta.env.VITE_PUSHER_PORT || 443,
+    forceTLS: true,
+    encrypted: true,
     disableStats: true,
-    enabledTransports: ["ws"],
+    enabledTransports: ["ws", "wss"],
     cluster: "",
 
     authEndpoint: baseUrl + "/broadcasting/auth",

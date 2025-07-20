@@ -40,7 +40,7 @@ export default {
     },
   },
 
-  setup(props, { emit }) {
+  setup(props, { emit, expose  }) {
     const options = reactive({
       currency: 'IDR',
       locale: 'id',
@@ -56,6 +56,8 @@ export default {
     });
 
     const { inputRef, formattedValue, setValue, setOptions } = useCurrencyInput(options);
+
+    expose({ focus: () => inputRef.value?.focus() });
 
     watch(
       () => props.modelValue,

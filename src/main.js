@@ -13,6 +13,18 @@ const doctor_id = 10;
 //     console.log("📥 Pesan dari perawat ke dokter:", e);
 // });
 
+window.Echo.connector.pusher.connection.bind("connected", () => {
+    console.log("[WebSocket] Connected to server");
+});
+
+window.Echo.connector.pusher.connection.bind("disconnected", () => {
+    console.log("[WebSocket] Disconnected");
+});
+
+window.Echo.connector.pusher.connection.bind("error", (err) => {
+    console.error("[WebSocket] Error:", err);
+});
+
 window.Echo.private(`clinic.adiyasa.doctor.${doctor_id}`).listen(".clinic.perawat", (e) => {
     ElNotification({
         title: "Pengambilan Obat",

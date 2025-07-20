@@ -182,10 +182,22 @@
                                         <!-- Harga di atas -->
                                         <div class="text-xs">
                                             <div class="flex items-center justify-end gap-1">
-                                                <p>Harga: <span class="font-semibold text-sm text-green-500">{{ convertRp(item.total_price) }}</span></p>
-                                                <Poper content="Edit harga obat">
-                                                    <PencilLine class="text-xs size-4 cursor-pointer" />
-                                                </Poper>
+                                                <p>Harga: <span v-if="!item.IS_CHANGE_PRICE" @click="item.IS_CHANGE_PRICE = !item.IS_CHANGE_PRICE"
+                                                        class="font-semibold text-sm text-green-500">{{
+                                                            convertRp(item.total_price) }}</span></p>
+                                                <template v-if="item.IS_CHANGE_PRICE">
+                                                    <div class="max-w-28">
+                                                        <ElCurrencyInput ref="currencyInputRefs[index]" @keyup.enter="onChangeMedicinePrice(item)" v-model="item.total_price" />
+                                                    </div>
+                                                    <Poper content="Simpan harga obat baru">
+                                                        <Check @click="onChangeMedicinePrice(item)" class="text-xs size-5 cursor-pointer" />
+                                                    </Poper>
+                                                </template>
+                                                <template v-else>
+                                                    <Poper content="Edit harga obat">
+                                                        <PencilLine class="text-xs size-4 cursor-pointer" @click="item.IS_CHANGE_PRICE = !item.IS_CHANGE_PRICE" />
+                                                    </Poper>
+                                                </template>
                                             </div>
                                             <template v-if="item.additional_price">
                                                 <p class="text-xs text-nowrap font-normal border-b text-gray-500">Biaya Tambahan: <span
@@ -623,20 +635,22 @@ import { convertRp, copyToClipboard, dialogWidth } from '../../../helpers/utils'
 import { activity, capsule, capsulePill } from '../../../helpers/svg';
 import { Close } from '@element-plus/icons-vue';
 import useEditData from '../../../composables/useEditData';
-import { apiDeleteService, apiDeleteTindakan, apiListServiceByQueue, apiMasterTindakan, apiPostService, apiPostTindakan, apiRejectMedicine } from '../../../api/apiMedicine';
+import { apiDeleteService, apiDeleteTindakan, apiListServiceByQueue, apiMasterTindakan, apiMedicineChangePrice, apiPostService, apiPostTindakan, apiRejectMedicine } from '../../../api/apiMedicine';
 import useViewData from '../../../composables/useViewData';
 import useAddData from '../../../composables/useAddData';
 import useGetData from '../../../composables/useGetData';
 import { useAppStore } from '../../../store/appStore';
-import { watch, computed } from 'vue';
+import { watch, computed, ref, nextTick } from 'vue';
 import useDeleteData from '../../../composables/useDeleteData';
-import { Boxes, Clock, GlassWater, Info, Notebook, Package, PencilLine, Plus, ScanBarcode, Stethoscope, Trash2, User, Warehouse } from 'lucide-vue-next';
+import { Boxes, Clock, GlassWater, Info, Notebook, Package, PencilLine, Check, Plus, ScanBarcode, Stethoscope, Trash2, User, Warehouse } from 'lucide-vue-next';
 import { APISelectTipeLayanan } from '../../../api/apiHelper';
 import Poper from '../../../components/Poper.vue';
 import InfoRow from '../../../components/InfoRow.vue';
+import ElCurrencyInput from '../../../components/ElCurrencyInput.vue';
 
 const appStore = useAppStore();
 const profile = computed(() => appStore.profile);
+const currencyInputRefs = ref([]);
 
 const props = defineProps({
     data: {
@@ -665,6 +679,19 @@ const props = defineProps({
     }
 })
 
+watch(
+    () => props.medicineList.map(i => i.IS_CHANGE_PRICE),
+    async (newValues, oldValues) => {
+        newValues.forEach(async (v, index) => {
+            if (v && !oldValues[index]) {
+                await nextTick();
+                currencyInputRefs.value[index]?.focus?.();
+            }
+        });
+    },
+    { deep: true }
+);
+
 const [cancelData, cancelForm, cancelDialog, openCancelDialog, saveCancel] = useEditData({ returnAsArray: true })
 const [detailObat, detailObatDialog, closeDetailObat, openDetailObatDialog] = useViewData({ returnAsArray: true })
 const [
@@ -689,6 +716,7 @@ const [masterTindakan, getMasterTindakan] = useGetData();
 const [masterLayanan, getMasterLayanan] = useGetData();
 const [serviceList, getServiceList, isLoadingGetService] = useGetData();
 const { viewData, viewDialog, closeView, openViewDialog } = useViewData();
+const { 1: fetchApi } = useGetData();
 
 const { deleteData } = useDeleteData();
 
@@ -789,6 +817,16 @@ function onDeleteService(id) {
 
 function fetchService() {
     getServiceList(() => apiListServiceByQueue(props.data.id), true, true);
+}
+
+function onChangeMedicinePrice(item) {
+    const data = {
+        total_price: item.total_price
+    }
+    fetchApi(() => apiMedicineChangePrice(item.queue_id, item.id, data), false, true, () => {
+        emit('refresh', props.data);
+        item.IS_CHANGE_PRICE = false;
+    });
 }
 
 fetchService();
