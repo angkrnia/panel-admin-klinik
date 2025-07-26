@@ -67,11 +67,11 @@
                 <el-form label-width="150px" label-position="top" class="space-x-10" :model="addData" ref="addForm" :rules="addProductStockEntryRule">
                     <div class="w-full flex items-center gap-x-3">
                         <el-form-item label="Produk" prop="product_id" class="w-full">
-                            <!-- <ElProductSelect class="w-full" v-model="addData.product_id" /> -->
-                            <el-select v-model="addData.product_id" filterable class="w-full" placeholder="Pilih atau Cari Obat">
+                            <ElProductSelect class="w-full" v-model="addData.product_id" />
+                            <!-- <el-select v-model="addData.product_id" filterable class="w-full" placeholder="Pilih atau Cari Obat">
                                 <el-option v-for="item in productList" :key="item.id"
                                     :label="`[${item?.units?.find(p => p.pivot.is_base == 1)?.name}, stok: ${item.base_stock}] ${item.name}`" :value="item.id" />
-                            </el-select>
+                            </el-select> -->
                         </el-form-item>
                         <el-form-item label="QTY Real" prop="qty_real" style="width: 100px">
                             <el-input type="number" v-model="addData.qty_real" placeholder="QTY" style="width: 100px" />
@@ -100,7 +100,7 @@
                 <el-table-column prop="name" label="Produk" min-width="150">
                     <template #default="{ row }">
                         <div v-if="row.has_transaction && editHeaderData.status == 'NEW'" class="bg-red-500 text-white p-0.5 rounded text-center text-xs">Perlu update</div>
-                        <p>{{ row.product.name || '-' }}</p>
+                        <p>{{ row.product?.name || '-' }}</p>
                     </template>
                 </el-table-column>
                 <el-table-column prop="product.sku" label="SKU" />
@@ -177,6 +177,8 @@ import useGetData from '../../composables/useGetData';
 import { APIProductSelect } from '../../api/apiInventory';
 import ElCurrencyInput from '../../components/ElCurrencyInput.vue';
 import { Download, PencilLine, Plus, Save, Upload, X } from 'lucide-vue-next';
+import { APIGetAllProducts } from '../../api/apiReport';
+import useDownloadFile from '../../composables/useDownloadFile';
 
 const router = useRouter();
 const route = useRoute();
@@ -199,6 +201,7 @@ const [editHeaderData, editHeaderForm, editHeaderDialog, openEditHeaderDialog, s
 });
 const { deleteData } = useDeleteData();
 const [productList, getProductList] = useGetData();
+const { downloadBlobFile } = useDownloadFile();
 
 const isAddDataLineForm = ref(false);
 
@@ -212,7 +215,7 @@ function onCommittedStockOpname() {
     catchError(async () => {
         const data = await APIStockOpnameCommitted(route.params.id);
         if (data.status == 200) {
-            messageInfo("Berhasil COMMIT STOCK MASUK", "success");
+            messageInfo("Berhasil COMMIT Stock Opname", "success");
             doPaginate(1);
             firstLoad();
         }
@@ -257,7 +260,7 @@ function onSaveEdit() {
 }
 
 function openAddProductLine() {
-    getProductList(APIProductSelect);
+    // getProductList(APIProductSelect);
     isAddDataLineForm.value = !isAddDataLineForm.value
 }
 // END: UNTUK LINE STOCK
@@ -273,6 +276,10 @@ function firstLoad() {
             editHeaderData.value = data.data;
         }
     });
+}
+
+function onDownloadAllProducts() {
+    downloadBlobFile(APIGetAllProducts, null, "all-products.xlsx");
 }
 
 doPaginate(pageIndex.value);

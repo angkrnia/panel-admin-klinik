@@ -1,0 +1,204 @@
+<template>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div>
+            <h1 class="text-center font-semibold text-gray-700">Pendapatan</h1>
+            <div class="bg-white p-4 border rounded-xl shadow h-[350px] w-full">
+                <apexchart :key="salesIndex" type="area" width="100%" height="100%" :options="sales.options" :series="sales.series" />
+            </div>
+        </div>
+        <div>
+            <h1 class="text-center font-semibold text-gray-700">Statistik</h1>
+            <div class="bg-white p-4 border rounded-xl shadow h-[350px] w-full">
+                <apexchart :key="layananIndex" type="bar" width="100%" height="100%" :options="layanan.options" :series="layanan.series" />
+            </div>
+        </div>
+        <div>
+            <h1 class="text-center font-semibold text-gray-700">Usia Pasien</h1>
+            <div class="bg-white p-4 border rounded-xl shadow h-[350px] w-full">
+                <apexchart :key="ageIndex" type="bar" width="100%" height="100%" :options="age.options" :series="age.series" />
+            </div>
+        </div>
+        <div>
+            <h1 class="text-center font-semibold text-gray-700">Pergerakan Stok</h1>
+            <div class="bg-white p-4 border rounded-xl shadow h-[350px] w-full">
+                <apexchart :key="obatIndex" type="line" width="100%" height="100%" :options="obat.options" :series="obat.series" />
+            </div>
+        </div>
+    </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { convertRp, formatCurrencyToString, formatRibuan } from '../../helpers/utils'
+import useGetData from '../../composables/useGetData';
+
+const { 1: fetchData } = useGetData();
+
+const salesIndex = ref(null)
+const layananIndex = ref(null)
+const ageIndex = ref(null)
+const obatIndex = ref(null)
+
+const sales = ref({
+    series: [{
+        name: "Pendapatan",
+        data: [9558800, 9211600, 8775000, 9450500, 8925000, 9875000, 9548000, 9875000, 9548000, 10000000]
+    }],
+    options: {
+        chart: {
+            type: 'area',
+            zoom: {
+                enabled: false
+            },
+            toolbar: {
+                show: false
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        labels: ['1 Jul', '2 Jul', '3 Jul', '4 Jul', '5 Jul', '6 Jul', '7 Jul', '8 Jul', '9 Jul', '10 Jul'],
+        yaxis: {
+            opposite: true,
+            labels: {
+                formatter: function (val) {
+                    return formatCurrencyToString(val)
+                }
+            }
+        },
+        legend: {
+            horizontalAlign: 'bottom',
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return convertRp(val)
+                }
+            }
+        }
+    }
+})
+
+const layanan = ref({
+    series: [{
+        name: 'Layanan',
+        data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
+    }, {
+        name: 'Obat',
+        data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+    }, {
+        name: 'Tindakan',
+        data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+    }],
+    options: {
+        chart: {
+            type: 'bar',
+            toolbar: {
+                show: false
+            }
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '55%',
+                borderRadius: 5,
+                borderRadiusApplication: 'end'
+            },
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        xaxis: {
+            categories: ['1 Jul', '2 Jul', '3 Jul', '4 Jul', '5 Jul', '6 Jul', '7 Jul', '8 Jul', '9 Jul'],
+        },
+        yaxis: {
+            title: {
+                text: 'Jumlah'
+            }
+        },
+        fill: {
+            opacity: 1
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return formatRibuan(val)
+                }
+            }
+        }
+    }
+})
+
+const age = ref({
+    series: [{
+        name: 'Pasien',
+        data: [70, 40, 50, 60, 70, 100, 60, 60, 70, 50]
+    }],
+    options: {
+        chart: {
+            type: 'bar',
+            height: 350,
+            toolbar: {
+                show: false
+            }
+        },
+        plotOptions: {
+            bar: {
+                borderRadius: 4,
+                borderRadiusApplication: 'end',
+                horizontal: true,
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        xaxis: {
+            categories: ['0-3 Tahun', '3-5 Tahun', '6-10 Tahun', '11-20 Tahun', '21-30 Tahun', '31-40 Tahun', '41-50 Tahun', '51-60 Tahun', '61-70 Tahun', '80+ Tahun'],
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return formatRibuan(val)
+                }
+            }
+        }
+    }
+});
+
+const obat = ref({
+    series: [{
+        name: 'Obat Keluar',
+        type: 'column',
+        data: [440, 505, 414, 671, 227, 413, 201, 352, 752, 320, 257, 160]
+    }, {
+        name: 'Obat Masuk',
+        type: 'line',
+        data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16]
+    }],
+    options: {
+        chart: {
+            height: 350,
+            type: 'line',
+            toolbar: {
+                show: false
+            }
+        },
+        stroke: {
+            width: [0, 4]
+        },
+        dataLabels: {
+            enabled: true,
+            enabledOnSeries: [1]
+        },
+        labels: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan', '08 Jan', '09 Jan', '10 Jan', '11 Jan', '12 Jan'],
+    }
+})
+</script>

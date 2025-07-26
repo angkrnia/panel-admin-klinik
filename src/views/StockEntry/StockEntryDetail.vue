@@ -101,7 +101,7 @@
                 <!-- <el-table-column prop="product.name" label="Produk" min-width="170" /> -->
                 <el-table-column prop="product.name" label="Produk" min-width="170">
                     <template #default="{ row }">
-                        <div v-if="row.buy_price_diff && row.last_sell_price == row.product_unit?.new_price || row.product.sell_price"
+                        <div v-if="row.buy_price_diff && row.last_sell_price == row.product_unit?.new_price && row.product.sell_price"
                             class="bg-orange-400 text-white p-0.5 rounded text-center text-xs">Harga beli berbeda</div>
                         <p>{{ row.product.name }}</p>
                     </template>
@@ -116,12 +116,12 @@
                     <template #header>
                         <span style="font-weight: bold;">Harga Jual</span>
                     </template>
-                    <el-table-column label="Sebelumnya" min-width="110">
+                    <el-table-column label="Sebelumnya" min-width="110" align="right">
                         <template #default="scope">
                             {{ convertRp(scope.row.last_sell_price) }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="Sekarang" min-width="110">
+                    <el-table-column label="Sekarang" min-width="110" align="right">
                         <template #default="scope">
                             {{ convertRp(scope.row?.product_unit?.new_price || scope.row?.product?.sell_price || 0) }}
                         </template>
@@ -131,19 +131,19 @@
                     <template #header>
                         <span style="font-weight: bold;">Harga Beli</span>
                     </template>
-                    <el-table-column prop="buy_price" label="Sebelumnya" min-width="110">
+                    <el-table-column prop="buy_price" label="Sebelumnya" min-width="110" align="right">
                         <template #default="scope">
                             {{ convertRp(scope.row.last_buy_price) }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="buy_price" label="Sekarang" min-width="110">
+                    <el-table-column prop="buy_price" label="Sekarang" min-width="110" align="right">
                         <template #default="scope">
                             {{ convertRp(scope.row.buy_price) }}
                         </template>
                     </el-table-column>
                 </el-table-column>
                 <el-table-column prop="quantity" label="QTY" />
-                <el-table-column prop="buy_price" label="Total" min-width="100">
+                <el-table-column prop="buy_price" label="Total" min-width="130" align="right">
                     <template #default="scope">
                         {{ convertRp(scope.row.buy_price * scope.row.quantity) }}
                     </template>
@@ -233,6 +233,7 @@ import ElCurrencyInput from '../../components/ElCurrencyInput.vue';
 import { ElMessageBox } from 'element-plus';
 import { useAppStore } from '../../store/appStore';
 import useDownloadFile from '../../composables/useDownloadFile';
+import { APIGetStockInDetail } from '../../api/apiReport';
 
 const appStore = useAppStore();
 const router = useRouter();
@@ -276,7 +277,7 @@ function onCommittedStockEntry() {
         const data = await APIStockEntryCommitted(route.params.id);
         if (data.status == 200) {
             messageInfo("Berhasil COMMIT Stok Masuk", "success");
-            router.push('/stock-entry')
+            router.push('/stock/stock-entry')
         }
     });
 }
@@ -364,7 +365,7 @@ function onProductChange(data) {
 }
 
 function onDownloadReportDetail() {
-    downloadBlobFile(APIGetStockInDetail, route.params.id)
+    downloadBlobFile(APIGetStockInDetail, route.params.id, "stock-in.xlsx");
 }
 
 doPaginate(pageIndex.value);

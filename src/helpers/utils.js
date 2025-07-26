@@ -496,3 +496,22 @@ export const getSalesStatusType = (status) => {
 export function sanitizeFilename(name) {
     return name.replace(/[:\s]/g, "-");
 }
+
+export function formatCurrencyToString(number) {
+    if (number === null || number === undefined || isNaN(number)) return '-';
+
+    const abs = Math.abs(number);
+    let result = '';
+
+    if (abs >= 1_000_000_000) {
+        result = (number / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + ' m';
+    } else if (abs >= 1_000_000) {
+        result = (number / 1_000_000).toFixed(1).replace(/\.0$/, '') + ' jt';
+    } else if (abs >= 1_000) {
+        result = (number / 1_000).toFixed(0) + ' rb';
+    } else {
+        result = number.toString();
+    }
+
+    return result;
+}

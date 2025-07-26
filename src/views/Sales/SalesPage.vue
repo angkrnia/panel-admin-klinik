@@ -29,7 +29,7 @@
                                 class="el-width-for-filter text-xs">
                                 <el-option v-for="item in filters" :key="item.name" :label="item.label" :value="item.name"></el-option>
                             </el-select>
-                            <ElDateRangeInput v-model:startDate="filterData.from" v-model:endDate="filterData.to" class="flex-1" @change="(val) => {
+                            <ElDateRangeInput v-model:startDate="filterData.start_date" v-model:endDate="filterData.end_date" class="flex-1" @change="(val) => {
                                 onFilterData('date', val)
                             }" />
                         </div>
@@ -54,7 +54,7 @@
                             <span class="ml-2 text-xs text-gray-500">({{ item.patient_record_no || '-' }})</span>
                         </div>
                         <span class="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">{{ convertPaymentStatus(item.status)
-                            }}</span>
+                        }}</span>
                     </div>
                     <div class="text-right">
                         <div class="text-sm text-gray-500">Nomor Transaksi: <span class="font-medium text-blue-600">{{ item.receipt_number }}</span></div>
@@ -130,7 +130,7 @@ import { useRouter } from 'vue-router';
 import { saleHeaderPagination } from '../../api/salesApi';
 import useListDataPaginate from '../../composables/usePagination';
 import { people } from '../../helpers/svg';
-import { convertDate, convertPaymentStatus, convertRp, convertStatusName, dateFormatFull } from '../../helpers/utils';
+import { convertDate, convertPaymentStatus, convertRp, convertStatusName, dateFormatFull, doctorListHelper } from '../../helpers/utils';
 import { Printer, View } from 'lucide-vue-next';
 import { Refresh } from '@element-plus/icons-vue';
 import useGetData from '../../composables/useGetData';
@@ -199,5 +199,19 @@ function onPrint(item) {
     window.open('/sales/print?trxId=' + item.receipt_number, '_blank');
 }
 
+function onFilterData(type, val) {
+    onFilterSearch();
+}
+
+function onFilterSearch() {
+    changeIndex(() => doPaginate(), pageIndex.value, null, filterData.value);
+}
+
+async function firstLoad() {
+    const data = await doctorListHelper();
+    doctorList.value = data;
+}
+
 doPaginate();
+firstLoad();
 </script>

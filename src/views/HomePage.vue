@@ -6,12 +6,17 @@
     <section class="mt-5 space-y-5">
 
         <div class="p-3 rounded-lg bg-orange-100" v-if="false">
-            <h1 class="text-2xl">(Update 19:30 WIB) Mohon informasikan kepada dokter untuk update aplikasi dokter ke versi <span>1.6</span> download di sini <a target="_blank" href="https://gitlab.com/angkrnia/klinik-adiyasa/-/raw/main/klinik-adiyasa-v1.5.apk" class="text-blue-500 font-semibold">https://gitlab.com/angkrnia/klinik-adiyasa/-/raw/main/klinik-adiyasa-v1.6.apk</a></h1>
+            <h1 class="text-2xl">(Update 19:30 WIB) Mohon informasikan kepada dokter untuk update aplikasi dokter ke versi <span>1.6</span> download di sini <a target="_blank"
+                    href="https://gitlab.com/angkrnia/klinik-adiyasa/-/raw/main/klinik-adiyasa-v1.5.apk"
+                    class="text-blue-500 font-semibold">https://gitlab.com/angkrnia/klinik-adiyasa/-/raw/main/klinik-adiyasa-v1.6.apk</a></h1>
         </div>
+
+        <!-- Dashboard pendapatan -->
+        <DashboardPendapatan />
 
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <div class="flex-1 border rounded-md overflow-hidden">
-                <div class="px-2 py-1 bg-sky-500 border-b">
+                <div class="px-2 py-1 bg-sky-400 border-b">
                     <h1 class="font-semibold text-sm text-white">TOTAL PASIEN</h1>
                 </div>
                 <div class="p-2 flex items-center justify-between">
@@ -20,7 +25,7 @@
                 </div>
             </div>
             <div class="flex-1 border rounded-md overflow-hidden">
-                <div class="px-2 py-1 bg-sky-500 border-b">
+                <div class="px-2 py-1 bg-sky-400 border-b">
                     <h1 class="font-semibold text-sm text-white">TOTAL KUNJUNGAN</h1>
                 </div>
                 <div class="p-2 flex items-center justify-between">
@@ -29,7 +34,7 @@
                 </div>
             </div>
             <div class="flex-1 border rounded-md overflow-hidden">
-                <div class="px-2 py-1 bg-sky-500 border-b">
+                <div class="px-2 py-1 bg-sky-400 border-b">
                     <h1 class="font-semibold text-sm text-white">TOTAL DOKTER</h1>
                 </div>
                 <div class="p-2 flex items-center justify-between">
@@ -38,7 +43,7 @@
                 </div>
             </div>
             <div class="flex-1 border rounded-md overflow-hidden">
-                <div class="px-2 py-1 bg-sky-500 border-b">
+                <div class="px-2 py-1 bg-sky-400 border-b">
                     <h1 class="font-semibold text-sm text-white">TOTAL PENGGUNA</h1>
                 </div>
                 <div class="p-2 flex items-center justify-between">
@@ -49,8 +54,8 @@
         </div>
 
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
-            <div class="flex-1 border rounded-md overflow-hidden">
-                <div class="px-2 py-1 bg-sky-500 border-b">
+            <div class="bg-white overflow-hidden border rounded-xl shadow h-[350px] w-full">
+                <div class="px-2 py-1 bg-red-400 border-b">
                     <h1 class="font-semibold text-sm text-white">JUMLAH PASIEN PER HARI</h1>
                 </div>
                 <div class="p-2 flex items-center justify-between">
@@ -62,8 +67,8 @@
                     </div>
                 </div>
             </div>
-            <div class="flex-1 border rounded-md overflow-hidden">
-                <div class="px-2 py-1 bg-sky-500 border-b">
+            <div class="bg-white overflow-hidden border rounded-xl shadow h-[350px] w-full">
+                <div class="px-2 py-1 bg-red-400 border-b">
                     <h1 class="font-semibold text-sm text-white">TOTAL KUNJUNGAN PER HARI</h1>
                 </div>
                 <div class="p-2 flex items-center justify-between">
@@ -76,6 +81,14 @@
                 </div>
             </div>
         </div>
+
+        <div class="border-b border-gray-300 my-5"></div>
+
+        <DashboardStatistik />
+
+        <div class="border-b border-gray-300 my-5"></div>
+
+        <DashboardDonut />
     </section>
 </template>
 
@@ -85,6 +98,9 @@ import SVG from '../helpers/svg';
 import useGetData from '../composables/useGetData';
 import { historyByDate, patientByDate, summaryData } from '../api/dashboardApi';
 import { formatRibuan } from '../helpers/utils';
+import DashboardPendapatan from '../components/Dashboard/DashboardPendapatan.vue';
+import DashboardDonut from '../components/Dashboard/DashboardDonut.vue';
+import DashboardStatistik from '../components/Dashboard/DashboardStatistik.vue';
 
 const summaryCount = ref({
     total_doctors: 0,
@@ -121,7 +137,10 @@ const pasienOptions = ref({
         },
         toolbar: {
             show: false
-        }
+        },
+        stroke: {
+            curve: 'smooth'
+        },
     },
     colors: ['#22c55e', '#545454'],
     dataLabels: {
@@ -176,7 +195,10 @@ const historyOptions = ref({
         },
         toolbar: {
             show: false
-        }
+        },
+        stroke: {
+            curve: 'smooth'
+        },
     },
     colors: ['#77B6EA', '#545454'],
     dataLabels: {

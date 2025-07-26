@@ -103,8 +103,8 @@
                 <el-form-item label="Tipe" prop="type">
                     <el-input v-model="addData.type" placeholder="Tipe" style="width: 100%" />
                 </el-form-item>
-                <el-form-item label="Efel Samping" prop="side_effect">
-                    <el-input v-model="addData.side_effect" placeholder="Efel Samping" style="width: 100%" />
+                <el-form-item label="Efek Samping" prop="side_effect">
+                    <el-input v-model="addData.side_effect" placeholder="Efek Samping" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Dosis" prop="dosage">
                     <el-input v-model="addData.dosage" placeholder="Dosis" style="width: 100%" />
@@ -243,8 +243,8 @@
                 <el-form-item label="Tipe" prop="type">
                     <el-input v-model="editData.type" placeholder="Tipe" style="width: 100%" />
                 </el-form-item>
-                <el-form-item label="Efel Samping" prop="side_effect">
-                    <el-input v-model="editData.side_effect" placeholder="Efel Samping" style="width: 100%" />
+                <el-form-item label="Efek Samping" prop="side_effect">
+                    <el-input v-model="editData.side_effect" placeholder="Efek Samping" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Dosis" prop="dosage">
                     <el-input v-model="editData.dosage" placeholder="Dosis" style="width: 100%" />

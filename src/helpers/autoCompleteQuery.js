@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { catchError } from "./catchResp";
+import { catchError, catchErrorFinally } from "./catchResp";
 import { listPasienSelect } from "../api/pasienApi";
 import { APIProductSelect } from "../api/apiInventory";
 
@@ -35,7 +35,7 @@ export const productListLoading = ref(false);
 export const queryProductList = async (query) => {
   if (productList.value?.length && !query) return;
   productListLoading.value = true;
-  catchError(async () => {
+  catchErrorFinally(async () => {
     const { status, data } = await APIProductSelect(query);
     if (status == 200 || status == 204) {
       const result = [];

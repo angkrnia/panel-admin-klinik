@@ -14,7 +14,7 @@ const doctor_id = 10;
 // });
 
 window.Echo.connector.pusher.connection.bind("connected", () => {
-    console.log("[WebSocket] Connected to server");
+    console.log("[WebSocket] Connected to server ✔️");
 });
 
 window.Echo.connector.pusher.connection.bind("disconnected", () => {

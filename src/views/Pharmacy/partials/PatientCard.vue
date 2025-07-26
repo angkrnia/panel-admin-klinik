@@ -122,7 +122,7 @@
                                     </div>
                                 </template>
 
-                                <div class="flex items-start justify-between h-full">
+                                <div class="flex items-start justify-between h-full gap-x-5">
                                     <div class="flex-1 space-y-2">
                                         <div class="flex items-center gap-2">
                                             <h3 class="font-semibold text-gray-800 text-sm">{{ item.is_compound ? item.compound_name : item.product.name }}</h3>
@@ -150,7 +150,7 @@
                                                 </Poper>
                                             </div>
                                         </template>
-                                        <div class="flex flex-wrap items-center gap-3 text-xs text-gray-600">
+                                        <div class="flex flex-wrap items-center gap-3 text-xs text-gray-600 border p-2 rounded-lg bg-yellow-50">
                                             <Poper content="Jumlah obat">
                                                 <div class="flex items-center gap-0.5">
                                                     <Boxes class="shrink-0 h-4 w-4 text-gray-400" />
