@@ -7,7 +7,7 @@
                 <el-button type="primary">Filter</el-button>
             </div>
         </div>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3" v-role="['admin']">
             <div class="flex-1 border rounded-md overflow-hidden">
                 <div class="px-2 py-1 bg-orange-400 border-b">
                     <h1 class="font-semibold text-sm text-white">TOTAL TRANSAKSI</h1>
@@ -19,7 +19,7 @@
             </div>
             <div class="flex-1 border rounded-md overflow-hidden">
                 <div class="px-2 py-1 bg-orange-400 border-b">
-                    <h1 class="font-semibold text-sm text-white">TOTAL SALES</h1>
+                    <h1 class="font-semibold text-sm text-white">TOTAL PENDAPATAN</h1>
                 </div>
                 <div class="p-2 flex items-center justify-between">
                     <div v-html="SVG.graphUpArrow" class="size-5 text-slate-600"></div>
@@ -28,7 +28,7 @@
             </div>
             <div class="flex-1 border rounded-md overflow-hidden">
                 <div class="px-2 py-1 bg-orange-400 border-b">
-                    <h1 class="font-semibold text-sm text-white">QUANTITY OBAT TERJUAL</h1>
+                    <h1 class="font-semibold text-sm text-white">QTY OBAT TERJUAL</h1>
                 </div>
                 <div class="p-2 flex items-center justify-between">
                     <div v-html="SVG.graphUpArrow" class="size-5 text-slate-600"></div>
@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 my-5 2xl:my-10">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 my-5 2xl:my-10" v-role="['admin']">
             <div class="flex-1 border rounded-md overflow-hidden">
                 <div class="px-2 py-1 bg-purple-400 border-b">
                     <h1 class="font-semibold text-sm text-white uppercase">Total Keuntungan Obat</h1>
@@ -67,7 +67,7 @@
             </div>
             <div class="flex-1 border rounded-md overflow-hidden">
                 <div class="px-2 py-1 bg-purple-400 border-b">
-                    <h1 class="font-semibold text-sm text-white uppercase">QUANTITY OBAT Dibeli</h1>
+                    <h1 class="font-semibold text-sm text-white uppercase">QTY OBAT Dibeli</h1>
                 </div>
                 <div class="p-2 flex items-center justify-between">
                     <div v-html="SVG.graphUpArrow" class="size-5 text-slate-600"></div>

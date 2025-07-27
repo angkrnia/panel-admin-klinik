@@ -19,7 +19,7 @@
                     </template>
                 </el-table-column>
                 <!-- Untuk kolom aksi -->
-                <TableColumnAction show-edit show-delete @click-edit="onEditDialog" @click-delete="onDeleteData" />
+                <TableColumnAction :show-edit="appStore.isAdmin" :show-delete="appStore.isAdmin" @click-edit="onEditDialog" @click-delete="onDeleteData" />
             </el-table>
         </div>
         <div class="flex items-center justify-center">
@@ -77,6 +77,7 @@ import { convertDate, dialogWidth, labelPosition } from '../../helpers/utils';
 import { APIdeleteUnit, APIstoreUnit, APIupdateUnit, listUnitsPagination } from '../../api/apiInventory';
 import { unitsRule } from '../../rules/inventoryRules';
 import useDeleteData from '../../composables/useDeleteData';
+import { useAppStore } from '../../store/appStore';
 
 const {
     listData,
@@ -93,6 +94,8 @@ const {
 const { addData, addForm, addDialog, saveAdd, cancelAdd, openDialog } = useAddData();
 const { editData, editForm, editDialog, openEditDialog, saveEdit, cancelEdit } = useEditData();
 const { deleteData } = useDeleteData();
+
+const appStore = useAppStore()
 
 function doPaginate(index, pSize) {
     getListData(listUnitsPagination, index, pSize ? pSize : pageSize.value, search.value, filterData.value);

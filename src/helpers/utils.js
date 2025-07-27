@@ -95,11 +95,11 @@ export function setAuthentication(token, refreshToken) {
         appStore.setAuthentication(true);
         appStore.setToken(token);
 
-        if (decoded.role === "admin") {
-            appStore.setMenuList([...allMenus, ...adminMenus]);
-        } else if (decoded.role === "perawat") {
-            appStore.setMenuList(allMenus);
-        }
+        appStore.setMenuList([...allMenus, ...adminMenus]);
+        // if (decoded.role === "admin") {
+        // } else if (decoded.role === "perawat") {
+        //     appStore.setMenuList(allMenus);
+        // }
     } catch (error) {
         appStore.setAuthentication(false);
         appStore.setToken(null);
@@ -445,21 +445,21 @@ export const adminMenus = [
     },
     {
         seq: 8,
-        title: "Manajemen Stok",
+        title: "Manajemen Obat",
         path: "/stock",
         hasChildren: true,
         icon: Package,
         children: [
             {
                 seq: 1,
-                title: "Stok Masuk",
+                title: "Obat Masuk",
                 path: "/stock/stock-entry",
                 hasChildren: false,
                 icon: Upload,
             },
             {
                 seq: 2,
-                title: "Stok Opname",
+                title: "Stock Opname",
                 path: "/stock/stock-opname",
                 hasChildren: false,
                 icon: Clipboard,

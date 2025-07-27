@@ -1,6 +1,6 @@
 <template>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div>
+        <div v-role="['admin']">
             <h1 class="text-center font-semibold text-gray-700">Pendapatan</h1>
             <div class="bg-white p-4 border rounded-xl shadow h-[350px] w-full">
                 <apexchart :key="salesIndex" type="area" width="100%" height="100%" :options="sales.options" :series="sales.series" />
@@ -19,9 +19,21 @@
             </div>
         </div>
         <div>
-            <h1 class="text-center font-semibold text-gray-700">Pergerakan Stok</h1>
+            <h1 class="text-center font-semibold text-gray-700">Pergerakan Obat</h1>
             <div class="bg-white p-4 border rounded-xl shadow h-[350px] w-full">
                 <apexchart :key="obatIndex" type="line" width="100%" height="100%" :options="obat.options" :series="obat.series" />
+            </div>
+        </div>
+        <div>
+            <h1 class="text-center font-semibold text-gray-700">Jenis Kelamin</h1>
+            <div class="bg-white p-4 border rounded-xl shadow h-[350px] w-full">
+                <apexchart :key="genderIndex" type="bar" width="100%" height="100%" :options="gender.options" :series="gender.series" />
+            </div>
+        </div>
+        <div>
+            <h1 class="text-center font-semibold text-gray-700">Obat Terjual</h1>
+            <div class="bg-white p-4 border rounded-xl shadow h-[350px] w-full">
+                <apexchart :key="topObatIndex" type="donut" width="100%" height="100%" :options="topObat.options" :series="topObat.series" />
             </div>
         </div>
     </div>
@@ -38,6 +50,8 @@ const salesIndex = ref(null)
 const layananIndex = ref(null)
 const ageIndex = ref(null)
 const obatIndex = ref(null)
+const genderIndex = ref(null)
+const topObatIndex = ref(null)
 
 const sales = ref({
     series: [{
@@ -55,7 +69,10 @@ const sales = ref({
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            formatter(val, opts) {
+                return formatRibuan(val);
+            },
         },
         stroke: {
             curve: 'smooth'
@@ -109,7 +126,10 @@ const layanan = ref({
             },
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            formatter(val, opts) {
+                return formatRibuan(val);
+            },
         },
         stroke: {
             show: true,
@@ -158,7 +178,10 @@ const age = ref({
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            formatter(val, opts) {
+                return formatRibuan(val);
+            },
         },
         xaxis: {
             categories: ['0-3 Tahun', '3-5 Tahun', '6-10 Tahun', '11-20 Tahun', '21-30 Tahun', '31-40 Tahun', '41-50 Tahun', '51-60 Tahun', '61-70 Tahun', '80+ Tahun'],
@@ -192,13 +215,117 @@ const obat = ref({
             }
         },
         stroke: {
-            width: [0, 4]
+            width: [0, 1]
         },
         dataLabels: {
             enabled: true,
-            enabledOnSeries: [1]
+            formatter(val, opts) {
+                return formatRibuan(val);
+            },
         },
         labels: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan', '08 Jan', '09 Jan', '10 Jan', '11 Jan', '12 Jan'],
+    }
+})
+
+const gender = ref({
+    series: [{
+        name: 'Laki-laki',
+        data: [12560]
+    }, {
+        name: 'Perempuan',
+        data: [10588]
+    }],
+    options: {
+        chart: {
+            type: 'bar',
+            stacked: true,
+            stackType: '100%',
+            toolbar: {
+                show: false
+            },
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+            },
+        },
+        stroke: {
+            width: 1,
+            colors: ['#fff']
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return formatRibuan(val)
+                },
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            formatter(val, opts) {
+                const jumlah = opts.w.config.series[opts.seriesIndex].data[opts.dataPointIndex];
+                return `${formatRibuan(jumlah)} (${Math.round(val)}%)`;
+            },
+        },
+        xaxis: {
+            categories: ['Jenis Kelamin'],
+            labels: {
+                show: false
+            }
+        },
+        yaxis: {
+            labels: {
+                show: false
+            }
+        },
+    }
+})
+
+const topObat = ref({
+    series: [44, 55, 41, 17, 15],
+    options: {
+        chart: {
+            type: 'donut',
+        },
+        labels: ['Paracetamol', 'Amoxicillin', 'Ibuprofen', 'Antalgin', 'Vitamin C'],
+        plotOptions: {
+            pie: {
+                startAngle: -90,
+                endAngle: 90,
+                offsetY: 10
+            }
+        },
+        grid: {
+            padding: {
+                bottom: -100
+            }
+        },
+        legend: {
+            position: 'bottom',
+            horizontalAlign: 'center',
+        },
+        responsive: [{
+            breakpoint: 480,
+            options: {
+                chart: {
+                    width: 200
+                },
+                legend: {
+                    position: 'top'
+                }
+            }
+        }],
+        dataLabels: {
+            enabled: true,
+            formatter(val, opts) {
+                const jumlah = opts.w.config.series[opts.seriesIndex];
+                return formatRibuan(jumlah) + ' (' + val.toFixed(1) + '%)';
+            },
+            style: {
+                colors: ['#fff'],
+                fontWeight: 'bold',
+            }
+        }
     }
 })
 </script>

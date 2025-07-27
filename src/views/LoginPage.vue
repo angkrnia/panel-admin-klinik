@@ -173,13 +173,16 @@ function onLogin() {
     saveAdd(loginApi, (data) => {
         if (data) {
             const { token, refresh_token, user } = data;
-            if (user.role === 'admin') {
-                appStore.setMenuList([...allMenus, ...adminMenus]);
-            } else {
-                appStore.setMenuList(allMenus);
-            }
+            const menus = [...allMenus, ...adminMenus];
+            console.log("menus:", menus);
+
+            appStore.setMenuList(menus);
+            // if (user.role === 'admin') {
+            // } else {
+            //     appStore.setMenuList(allMenus);
+            // }
             setAuthentication(token, refresh_token);
-            return router.push('/dashboard');
+            window.location.href = '/dashboard';
         } else {
             messageInfo('Login gagal, silahkan coba lagi');
         }

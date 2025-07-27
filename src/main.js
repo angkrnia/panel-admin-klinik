@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import ElementPlus, { ElNotification } from "element-plus";
+import roleDirective from "./directives/role";
 import App from "./App.vue";
 import router from "./router";
 import Echo from "./echo";
@@ -64,4 +65,5 @@ app.use(VueApexCharts);
 app.use(pinia);
 app.use(router);
 app.use(ElementPlus);
+app.directive("role", roleDirective);
 app.mount("#app");

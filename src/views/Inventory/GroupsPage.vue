@@ -19,7 +19,7 @@
                     </template>
                 </el-table-column>
                 <!-- Untuk kolom aksi -->
-                <TableColumnAction show-edit show-delete @click-edit="onEditDialog" @click-delete="onDeleteData" />
+                <TableColumnAction :show-edit="appStore.isAdmin" :show-delete="appStore.isAdmin" @click-edit="onEditDialog" @click-delete="onDeleteData" />
             </el-table>
         </div>
         <div class="flex items-center justify-center">
@@ -77,6 +77,9 @@ import { convertDate, dialogWidth, labelPosition, messageInfo } from '../../help
 import { APIdeleteGroup, APIstoreGroup, APIupdateGroup, listGroupsPagination } from '../../api/apiInventory';
 import { unitsRule } from '../../rules/inventoryRules';
 import useDeleteData from '../../composables/useDeleteData';
+import { useAppStore } from '../../store/appStore';
+
+const appStore = useAppStore()
 
 const {
     listData,

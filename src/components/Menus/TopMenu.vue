@@ -76,6 +76,9 @@ function onUpdatePassword() {
 
 
 const menuList = computed(() => appStore.menuList);
+
+console.log("menuList:", menuList.value);
+
 </script>
 
 <style scoped>

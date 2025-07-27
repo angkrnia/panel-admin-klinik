@@ -23,7 +23,7 @@
                     </template>
                 </el-table-column>
                 <!-- Untuk kolom aksi -->
-                <TableColumnAction show-edit show-delete @click-edit="onEditDialog" @click-delete="onDeleteData" />
+                <TableColumnAction :show-edit="appStore.isAdmin" :show-delete="appStore.isAdmin" @click-edit="onEditDialog" @click-delete="onDeleteData" />
             </el-table>
         </div>
         <div class="flex items-center justify-center">
@@ -139,6 +139,7 @@ import { categoriesRule } from '../../rules/inventoryRules';
 import useDeleteData from '../../composables/useDeleteData';
 import { Delete, UploadFilled } from '@element-plus/icons-vue';
 import { ref } from 'vue';
+import { useAppStore } from '../../store/appStore';
 
 const {
     listData,
@@ -157,6 +158,7 @@ const { editData, editForm, editDialog, openEditDialog, saveEdit, cancelEdit } =
 const { deleteData } = useDeleteData();
 
 const previewImage = ref(null);
+const appStore = useAppStore();
 
 function doPaginate(index, pSize) {
     getListData(listCategoriesPagination, index, pSize ? pSize : pageSize.value, search.value, filterData.value);
