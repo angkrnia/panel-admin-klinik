@@ -1,4 +1,4 @@
-import { axiosAuth } from "../config/axios";
+import { axiosAuth, axiosNoAuth } from "../config/axios";
 import { paramPaging } from "../helpers/utils";
 const pageSizeEnv = parseInt(import.meta.env.VITE_PAGE_SIZE) || 10;
 
@@ -17,4 +17,8 @@ export function salePaidApi(data) {
 
 export function apiSalePrint(trxId) {
     return axiosAuth.get(`/sales/print/${trxId}`);
+}
+
+export function apiPublicReceipt(receiptNumber) {
+    return axiosNoAuth.get(`/public/transactions/${receiptNumber}`);
 }

@@ -1,5 +1,5 @@
 <template>
-    <el-container v-if="appStore.isAuthentication">
+    <el-container v-if="appStore.isAuthentication && !route.path.includes('public-receipt-print')">
         <el-header class="p-0 print:hidden">
             <slot name="menu"></slot>
         </el-header>
@@ -23,6 +23,8 @@
 <script setup>
 import { useAppStore } from '../store/appStore';
 import version from '../helpers/version';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 const appStore = useAppStore();
 </script>

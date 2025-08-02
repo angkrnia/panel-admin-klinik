@@ -174,8 +174,6 @@ function onLogin() {
         if (data) {
             const { token, refresh_token, user } = data;
             const menus = [...allMenus, ...adminMenus];
-            console.log("menus:", menus);
-
             appStore.setMenuList(menus);
             // if (user.role === 'admin') {
             // } else {

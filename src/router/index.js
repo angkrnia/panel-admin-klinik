@@ -28,7 +28,7 @@ router.beforeEach(async (to, from, next) => {
   const isAuth = appStore.isAuthentication;
 
   if (!isAuth) {
-    if (to.path == "/login" || to.path == "/reset-password") {
+    if (to.path == "/login" || to.path == "/reset-password" || to.path.includes("public-receipt-print")) {
       next();
     } else {
       next("/login");

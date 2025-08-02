@@ -25,7 +25,7 @@ const router = useRouter();
       await router.isReady();
       Cookies.remove("TOKEN");
       localStorage.clear();
-      if (route.path != "/login") {
+      if (route.path != "/login" && route.path != "/public-receipt-print") {
         setTimeout(() => (window.location.href = "/login"), 1000);
       }
     }

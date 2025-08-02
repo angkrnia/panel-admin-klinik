@@ -12,6 +12,14 @@ export const routes = [
         },
     },
     {
+        path: "/public-receipt-print",
+        name: "public-receipt-print",
+        component: () => import("@/views/Public/Print/ReceiptPage.vue"),
+        meta: {
+            title: "Print",
+        },
+    },
+    {
         path: "/",
         component: () => import("@/views/WrapperPage.vue"),
         children: [
