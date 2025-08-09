@@ -132,31 +132,20 @@ export function onLogoutHandler() {
 }
 
 export function convertDate(dateString) {
-    // Cek apakah dateString kemungkinan UTC
-    const isUTC = dateString.endsWith("Z") || /[+-]\d{2}:\d{2}$/.test(dateString);
+    const d = new Date(dateString);
+    const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Asia/Jakarta",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+    }).formatToParts(d)
+        .reduce((acc, p) => (acc[p.type] = p.value, acc), {});
 
-    // Parse date dari string (otomatis dianggap UTC jika ada Z atau offset)
-    const date = new Date(dateString);
-
-    // Jika UTC, kita konversi ke local manual
-    const localDate = isUTC
-        ? new Date(date.getTime() + date.getTimezoneOffset() * 60000)
-        : date;
-
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    const day = localDate.getDate();
-    const month = months[localDate.getMonth()];
-    const year = localDate.getFullYear();
-
-    let hours = localDate.getHours();
-    const minutes = localDate.getMinutes().toString().padStart(2, "0");
-    const seconds = localDate.getSeconds().toString().padStart(2, "0");
-
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12;
-
-    return `${day} ${month} ${year}, ${hours}:${minutes}:${seconds} ${ampm}`;
+    return `${parts.day} ${parts.month} ${parts.year}, ${parts.hour}:${parts.minute}:${parts.second}`;
 }
 
 export function labelPosition() {
