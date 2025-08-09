@@ -44,6 +44,7 @@ export const queryProductList = async (query) => {
           result.push({
             label: `${element.name} (stok: ${element.base_stock || "0"})`,
             value: element.id,
+            units: element.units,
           });
         });
       }
