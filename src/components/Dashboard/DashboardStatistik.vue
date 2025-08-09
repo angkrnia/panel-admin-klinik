@@ -19,15 +19,15 @@
             </div>
         </div>
         <div>
-            <h1 class="text-center font-semibold text-gray-700">Pergerakan Obat</h1>
-            <div class="bg-white p-4 border rounded-xl shadow h-[350px] w-full">
-                <apexchart :key="obatIndex" type="line" width="100%" height="100%" :options="obat.options" :series="obat.series" />
-            </div>
-        </div>
-        <div>
             <h1 class="text-center font-semibold text-gray-700">Jenis Kelamin</h1>
             <div class="bg-white p-4 border rounded-xl shadow h-[350px] w-full">
                 <apexchart :key="genderIndex" type="bar" width="100%" height="100%" :options="gender.options" :series="gender.series" />
+            </div>
+        </div>
+        <div>
+            <h1 class="text-center font-semibold text-gray-700">Pergerakan Obat</h1>
+            <div class="bg-white p-4 border rounded-xl shadow h-[350px] w-full">
+                <apexchart :key="obatIndex" type="line" width="100%" height="100%" :options="obat.options" :series="obat.series" />
             </div>
         </div>
         <div>
@@ -43,8 +43,9 @@
 import { ref } from 'vue'
 import { convertRp, formatCurrencyToString, formatRibuan } from '../../helpers/utils'
 import useGetData from '../../composables/useGetData';
+import { APIStatisticsPatient, APITransactionDateByDate } from '../../api/apiChart';
 
-const { 1: fetchData } = useGetData();
+const { 1: fetchData, 2: isLoading } = useGetData();
 
 const salesIndex = ref(null)
 const layananIndex = ref(null)
@@ -56,7 +57,7 @@ const topObatIndex = ref(null)
 const sales = ref({
     series: [{
         name: "Pendapatan",
-        data: [9558800, 9211600, 8775000, 9450500, 8925000, 9875000, 9548000, 9875000, 9548000, 10000000]
+        data: []
     }],
     options: {
         chart: {
@@ -77,7 +78,7 @@ const sales = ref({
         stroke: {
             curve: 'smooth'
         },
-        labels: ['1 Jul', '2 Jul', '3 Jul', '4 Jul', '5 Jul', '6 Jul', '7 Jul', '8 Jul', '9 Jul', '10 Jul'],
+        labels: [],
         yaxis: {
             opposite: true,
             labels: {
@@ -160,7 +161,7 @@ const layanan = ref({
 const age = ref({
     series: [{
         name: 'Pasien',
-        data: [70, 40, 50, 60, 70, 100, 60, 60, 70, 50]
+        data: [0]
     }],
     options: {
         chart: {
@@ -230,10 +231,10 @@ const obat = ref({
 const gender = ref({
     series: [{
         name: 'Laki-laki',
-        data: [12560]
+        data: [0]
     }, {
         name: 'Perempuan',
-        data: [10588]
+        data: [0]
     }],
     options: {
         chart: {
@@ -328,4 +329,27 @@ const topObat = ref({
         }
     }
 })
+
+function getStatisticPatient() {
+    fetchData(APIStatisticsPatient, false, true, (data) => {
+        if (data) {
+            age.value.series[0].data = data.age;
+            gender.value.series[0].data = [data.gender[0]];
+            gender.value.series[1].data = [data.gender[1]];
+        }
+    })
+}
+
+function getTransactionDateByDate() {
+    fetchData(APITransactionDateByDate, false, true, (data) => {
+        if (data) {
+            const date = data.map((item) => item.date);
+            sales.value.series[0].data = data.map((item) => item.total_sales);
+            sales.value.options.labels = date;
+        }
+    });
+}
+
+getTransactionDateByDate();
+getStatisticPatient();
 </script>

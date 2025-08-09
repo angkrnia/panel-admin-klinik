@@ -2,7 +2,7 @@
     <nav class="fixed z-50 bg-primary w-full">
         <div class="flex items-start justify-between overflow-hidden h-full w-full shadow-lg">
             <el-menu background-color="#2563eb" text-color="#f8fafc" active-text-color="#cbd5e1" :default-active="defaultActive" class="el-menu-demo" mode="horizontal" ellipsis
-                :ellipsis-icon="Menu">
+                menu-trigger="click" close-on-click-outside :ellipsis-icon="Menu">
                 <template v-for="(item, index) in menuList" :key="index">
                     <template v-if="item.hasChildren">
                         <el-sub-menu :index="item.path">
@@ -76,8 +76,6 @@ function onUpdatePassword() {
 
 
 const menuList = computed(() => appStore.menuList);
-
-console.log("menuList:", menuList.value);
 
 </script>
 

@@ -4,7 +4,7 @@
             <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate" />
         </div>
         <div class="py-5">
-            <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
+            <el-table size="small" :data="listData" v-loading="loading" stripe border style="width: 100%">
                 <el-table-column label="No" min-width="50">
                     <template #default="scope">
                         {{ (currentPage - 1) * pageSize + scope.$index + 1 }}

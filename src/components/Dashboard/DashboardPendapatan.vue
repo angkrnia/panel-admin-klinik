@@ -10,7 +10,7 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3" v-role="['admin']">
             <div class="flex-1 border rounded-md overflow-hidden">
                 <div class="px-2 py-1 bg-orange-400 border-b">
-                    <h1 class="font-semibold text-sm text-white">TOTAL TRANSAKSI</h1>
+                    <h1 class="font-semibold text-sm text-white">JUMLAH TRANSAKSI</h1>
                 </div>
                 <div class="p-2 flex items-center justify-between">
                     <div v-html="SVG.graphUpArrow" class="size-5 text-slate-600"></div>
@@ -19,7 +19,7 @@
             </div>
             <div class="flex-1 border rounded-md overflow-hidden">
                 <div class="px-2 py-1 bg-orange-400 border-b">
-                    <h1 class="font-semibold text-sm text-white">TOTAL PENDAPATAN</h1>
+                    <h1 class="font-semibold text-sm text-white">TOTAL TRANSAKSI</h1>
                 </div>
                 <div class="p-2 flex items-center justify-between">
                     <div v-html="SVG.graphUpArrow" class="size-5 text-slate-600"></div>
@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 my-5 2xl:my-10" v-role="['admin']">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 my-3" v-role="['admin']">
             <div class="flex-1 border rounded-md overflow-hidden">
                 <div class="px-2 py-1 bg-purple-400 border-b">
                     <h1 class="font-semibold text-sm text-white uppercase">Total Keuntungan Obat</h1>
@@ -85,7 +85,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 my-3">
             <div class="flex-1 border rounded-md overflow-hidden">
                 <div class="px-2 py-1 bg-amber-400 border-b">
                     <h1 class="font-semibold text-sm text-white">JUMLAH PRODUK</h1>
@@ -120,6 +120,36 @@
                 <div class="p-2 flex items-center justify-between">
                     <div v-html="SVG.boxSeam" class="size-5 text-slate-600"></div>
                     <h1 class="font-bold text-gray-700">{{ formatRibuan(summaryProduct.total_critical_stock_products) }}</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3" v-role="['admin']">
+            <div class="flex-1 border rounded-md overflow-hidden">
+                <div class="px-2 py-1 bg-red-400 border-b">
+                    <h1 class="font-semibold text-sm text-white uppercase">Potensi Omzet Kotor</h1>
+                </div>
+                <div class="p-2 flex items-center justify-between">
+                    <div v-html="SVG.cashStack" class="size-5 text-slate-600"></div>
+                    <h1 class="font-bold text-gray-700">{{ convertRp(summaryProduct.total_potential_omzet) }}</h1>
+                </div>
+            </div>
+            <div class="flex-1 border rounded-md overflow-hidden">
+                <div class="px-2 py-1 bg-red-400 border-b">
+                    <h1 class="font-semibold text-sm text-white uppercase">Harga Pokok Penjualan</h1>
+                </div>
+                <div class="p-2 flex items-center justify-between">
+                    <div v-html="SVG.cashStack" class="size-5 text-slate-600"></div>
+                    <h1 class="font-bold text-gray-700">{{ convertRp(summaryProduct.total_product_cost) }}</h1>
+                </div>
+            </div>
+            <div class="flex-1 border rounded-md overflow-hidden">
+                <div class="px-2 py-1 bg-red-400 border-b">
+                    <h1 class="font-semibold text-sm text-white uppercase">Potensi Keuntungan</h1>
+                </div>
+                <div class="p-2 flex items-center justify-between">
+                    <div v-html="SVG.cashStack" class="size-5 text-slate-600"></div>
+                    <h1 class="font-bold text-gray-700">{{ convertRp(summaryProduct.total_potential_profit) }}</h1>
                 </div>
             </div>
         </div>
