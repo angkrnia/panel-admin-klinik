@@ -47,7 +47,7 @@
                         Pas</button>
                     <button @click.prevent="onInputPayment(50000)" type="button" class="bg-gray-100 hover:bg-gray-200 py-2 rounded-md text-gray-700">50 Ribu</button>
                     <button @click.prevent="onInputPayment(75000)" type="button" class="bg-gray-100 hover:bg-gray-200 py-2 rounded-md text-gray-700">75 Ribu</button>
-                    <button @click.prevent="onInputPayment(10000)" type="button" class="bg-gray-100 hover:bg-gray-200 py-2 rounded-md text-gray-700">100 Ribu</button>
+                    <button @click.prevent="onInputPayment(100000)" type="button" class="bg-gray-100 hover:bg-gray-200 py-2 rounded-md text-gray-700">100 Ribu</button>
                     <button @click.prevent="onInputPayment(120000)" type="button" class="bg-gray-100 hover:bg-gray-200 py-2 rounded-md text-gray-700">120 Ribu</button>
                     <button @click.prevent="onInputPayment(150000)" type="button" class="bg-gray-100 hover:bg-gray-200 py-2 rounded-md text-gray-700">150 Ribu</button>
                     <button @click.prevent="onInputPayment(170000)" type="button" class="bg-gray-100 hover:bg-gray-200 py-2 rounded-md text-gray-700">170 Ribu</button>
