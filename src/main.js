@@ -26,7 +26,7 @@ window.Echo.connector.pusher.connection.bind("error", (err) => {
     console.error("[WebSocket] Error:", err);
 });
 
-window.Echo.private(`clinic.adiyasa.doctor.${doctor_id}`).listen(".clinic.perawat", (e) => {
+window.Echo.private(`clinic.tenjo.doctor.${doctor_id}`).listen(".clinic.perawat", (e) => {
     ElNotification({
         title: "Pengambilan Obat",
         message: `
