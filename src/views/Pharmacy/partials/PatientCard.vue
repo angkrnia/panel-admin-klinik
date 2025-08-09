@@ -125,7 +125,7 @@
                                 <div class="flex items-start justify-between h-full gap-x-5">
                                     <div class="flex-1 space-y-2">
                                         <div class="flex items-center gap-2">
-                                            <h3 class="font-semibold text-gray-800 text-sm">{{ item.is_compound ? item.compound_name : item.product.name }}</h3>
+                                            <h3 class="font-semibold text-gray-800 text-sm">{{ item.is_compound ? item.compound_name : item.product?.name }}</h3>
                                             <span v-if="item.is_compound" class="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded-full">PUYER</span>
                                         </div>
                                         <template v-if="!item.is_compound">
@@ -133,7 +133,7 @@
                                                 <Poper content="Kode Obat">
                                                     <div class="flex items-center gap-0.5">
                                                         <ScanBarcode class="shrink-0 h-4 w-4 text-gray-400" />
-                                                        <span>SKU: <strong>{{ item.product.sku || '-' }}</strong></span>
+                                                        <span>SKU: <strong>{{ item.product?.sku || '-' }}</strong></span>
                                                     </div>
                                                 </Poper>
                                                 <Poper content="Satuan obat">
@@ -145,7 +145,7 @@
                                                 <Poper content="Stok">
                                                     <div class="flex items-center gap-0.5">
                                                         <Warehouse class="shrink-0 h-4 w-4 text-gray-400" />
-                                                        <span>Stok: <strong>{{ item.product.base_stock || 0 }}</strong></span>
+                                                        <span>Stok: <strong>{{ item.product?.base_stock || 0 }}</strong></span>
                                                     </div>
                                                 </Poper>
                                             </div>
@@ -223,7 +223,7 @@
                                             <el-table-column prop="product.sku" label="SKU" />
                                             <el-table-column prop="amount" label="Jumlah" align="center" min-width="100">
                                                 <template #default="{ row }">
-                                                    <span class="font-bold">{{ row.amount }} {{ row?.product_unit?.unit.name ? row.product_unit.unit.name : '' }}</span>
+                                                    <span class="font-bold">{{ row.amount }} {{ row?.product_unit?.unit?.name ? row.product_unit.unit?.name : '' }}</span>
                                                 </template>
                                             </el-table-column>
                                             <el-table-column prop="notes" label="Catatan">
@@ -530,7 +530,7 @@
                                 {{ med.product?.name ?? 'Nama tidak ditemukan' }}
                             </p>
                             <p class="text-gray-600">
-                                {{ med.amount }} {{ med.unit.name }}
+                                {{ med.amount }} {{ med.unit?.name }}
                             </p>
                         </div>
                         <p class="text-sm text-gray-400">SKU: {{ med.product?.sku ?? '-' }}</p>
@@ -789,7 +789,7 @@ function onAddManualService() {
 const handleSelectTindakan = (id) => {
     const selected = masterTindakan.value.find(item => item.id === id)
     if (selected) {
-        addData.value.procedure_name = selected.name
+        addData.value.procedure_name = selected?.name
         addData.value.price = parseFloat(selected.total_fee)
     } else {
         addData.value.procedure_name = ''
