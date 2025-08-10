@@ -41,28 +41,28 @@
                     </template>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <InfoItem label="Nama Pasien" :value="data.patient_name" />
-                        <InfoItem label="Status Antrian" :value="convertStatusName(data.queue.status)" />
-                        <InfoItem label="Nomor Antrian" :value="`#${data.queue.queue}`" />
+                        <InfoItem label="Status Antrian" :value="convertStatusName(data.queue?.status || '-')" />
+                        <InfoItem label="Nomor Antrian" :value="`#${data.queue?.queue || '-'}`" />
                     </div>
                 </el-card>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
                 <!-- Pemeriksaan -->
-                <el-card shadow="never">
+                <el-card shadow="never" v-if="data.queue">
                     <template #header>
                         <div class="font-semibold text-lg text-gray-700">Pemeriksaan & Diagnosa</div>
                     </template>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <InfoItem label="Tekanan Darah" :value="data.queue.history.blood_pressure" />
-                        <InfoItem label="Tinggi Badan (cm)" :value="data.queue.history.height" />
-                        <InfoItem label="Berat Badan (kg)" :value="data.queue.history.weight" />
-                        <InfoItem label="Suhu Tubuh (°C)" :value="data.queue.history.temperature" />
-                        <InfoItem label="Keluhan" :value="data.queue.history.complaint" />
-                        <InfoItem label="Catatan" :value="data.queue.history.note || '-'" />
-                        <InfoItem label="Diagnosa" :value="data.queue.history.diagnosa" />
-                        <InfoItem label="Pemeriksaan" :value="data.queue.history.pemeriksaan || '-'" />
-                        <InfoItem label="Saran" :value="data.queue.history.saran || '-'" />
+                        <InfoItem label="Tekanan Darah" :value="data.queue?.history.blood_pressure" />
+                        <InfoItem label="Tinggi Badan (cm)" :value="data.queue?.history.height" />
+                        <InfoItem label="Berat Badan (kg)" :value="data.queue?.history.weight" />
+                        <InfoItem label="Suhu Tubuh (°C)" :value="data.queue?.history.temperature" />
+                        <InfoItem label="Keluhan" :value="data.queue?.history.complaint" />
+                        <InfoItem label="Catatan" :value="data.queue?.history.note || '-'" />
+                        <InfoItem label="Diagnosa" :value="data.queue?.history.diagnosa" />
+                        <InfoItem label="Pemeriksaan" :value="data.queue?.history.pemeriksaan || '-'" />
+                        <InfoItem label="Saran" :value="data.queue?.history.saran || '-'" />
                     </div>
                 </el-card>
 

@@ -82,9 +82,9 @@
                     <div class="p-4 sm:px-6">
                         <h4 class="text-xs font-medium text-gray-500 uppercase mb-2">Pasien</h4>
                         <p class="text-sm font-medium text-gray-900">{{ item.patient_name }}</p>
-                        <p class="text-sm text-gray-500 mt-2">Antrian #{{ item.queue.queue }}</p>
-                        <p class="text-sm text-gray-500 mt-2">Datang: {{ dateFormatFull(item.queue.created_at) }}</p>
-                        <p class="text-sm text-gray-500 mt-2">Status Antrian: <span class="text-green-600 font-medium">{{ convertStatusName(item.queue.status) }}</span></p>
+                        <p class="text-sm text-gray-500 mt-2">Antrian #{{ item.queue?.queue || '-' }}</p>
+                        <p class="text-sm text-gray-500 mt-2">Datang: {{ dateFormatFull(item.queue?.created_at || '-') }}</p>
+                        <p class="text-sm text-gray-500 mt-2">Status Antrian: <span class="text-green-600 font-medium">{{ convertStatusName(item.queue?.status || '-') }}</span></p>
                     </div>
 
                     <div class="p-4 sm:px-6">
@@ -192,7 +192,7 @@ function changePage(index = 1) {
 }
 
 function onDetailSale(sale) {
-    router.push({ name: 'sales-detail', query: { qId: sale.queue.id } });
+    router.push({ name: 'sales-detail', query: { qId: sale.queue?.id } });
 }
 
 function onPrint(item) {
