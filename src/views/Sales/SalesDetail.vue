@@ -73,12 +73,12 @@
                     </template>
                     <div class="flex gap-5 items-center">
                         <div class="md:col-span-1 flex justify-center">
-                            <img :src="data.doctor.avatar" class="w-24 h-24 rounded-full object-cover" alt="Foto Dokter" />
+                            <img :src="data.doctor?.avatar" class="w-24 h-24 rounded-full object-cover" alt="Foto Dokter" />
                         </div>
                         <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <InfoItem label="Nama Dokter" :value="data.doctor_name" />
-                            <InfoItem label="No. HP" :value="data.doctor.phone" />
-                            <InfoItem label="Deskripsi" :value="data.doctor.description" />
+                            <InfoItem label="No. HP" :value="data.doctor?.phone" />
+                            <InfoItem label="Deskripsi" :value="data.doctor?.description" />
                         </div>
                     </div>
                 </el-card>
