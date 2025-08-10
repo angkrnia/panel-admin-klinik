@@ -69,12 +69,12 @@
                         <h4 class="text-xs font-medium text-gray-500 uppercase mb-2">DOKTER</h4>
                         <div class="flex items-center gap-4">
                             <div class="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden">
-                                <img :src="item.doctor.avatar" alt="Doctor" class="w-full h-full object-cover" />
+                                <img :src="item.doctor?.avatar" alt="Doctor" class="w-full h-full object-cover" />
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-medium text-gray-900">{{ item.doctor_name }}</p>
-                                <p class="text-sm text-gray-500 line-clamp-2">{{ item.doctor.description }}</p>
-                                <p class="text-sm text-gray-500">{{ item.doctor.phone }}</p>
+                                <p class="text-sm text-gray-500 line-clamp-2">{{ item.doctor?.description }}</p>
+                                <p class="text-sm text-gray-500">{{ item.doctor?.phone }}</p>
                             </div>
                         </div>
                     </div>
