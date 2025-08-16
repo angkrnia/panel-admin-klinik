@@ -4,12 +4,24 @@ export function apiListMedicineByQueue(id) {
     return axiosAuth.get(`/queue/${id}/medicines`);
 }
 
+export function apiListMedicineBySales(id) {
+    return axiosAuth.get(`/sales/${id}/medicines`);
+}
+
 export function apiListTindakanByQueue(id) {
     return axiosAuth.get(`/queue/${id}/tindakan`);
 }
 
+export function apiListTindakanBySales(id) {
+    return axiosAuth.get(`/sales/${id}/tindakan`);
+}
+
 export function apiListServiceByQueue(id) {
     return axiosAuth.get(`/queue/${id}/layanan`);
+}
+
+export function apiListServiceBySales(id) {
+    return axiosAuth.get(`/sales/${id}/layanan`);
 }
 
 export function apiAcceptMedicine(queueId, medsId, data) {

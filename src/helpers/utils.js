@@ -189,9 +189,12 @@ export function paramPaging(url, pageIndex, pageSize, textSearch, newObj) {
     return `${url}?${params.toString()}`;
 }
 
-export function doctorListHelper() {
+export function doctorListHelper(isLoading = false) {
     return new Promise(async (resolve) => {
-        let load = loading();
+        let load = null
+        if (isLoading) {
+            load = loading();
+        }
         try {
             const result = await getDokterSelect();
             resolve(result.data.data);
@@ -199,7 +202,9 @@ export function doctorListHelper() {
             console.error(error);
             resolve([]);
         } finally {
-            load.close();
+            if (load) {
+                load.close();
+            }
         }
     });
 }
@@ -503,4 +508,15 @@ export function formatCurrencyToString(number) {
     }
 
     return result;
+}
+
+const escapeHtml = (s) =>
+    s.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]))
+
+const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+export function highlight(name, query) {
+    if (!query) return escapeHtml(name)
+    const re = new RegExp(`(${escapeRegExp(query)})`, 'ig')
+    return escapeHtml(name).replace(re, '<span class="bg-yellow-200">$1</span>')
 }

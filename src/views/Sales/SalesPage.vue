@@ -3,6 +3,7 @@
         <TitleDashboard title="Riwayat Transaksi">
             <template #btn1>
                 <el-button :icon="Refresh" @click="doPaginate">Refresh</el-button>
+                <el-button :icon="Plus" @click="addTransaction = true" type="primary">Transaksi Manual</el-button>
             </template>
         </TitleDashboard>
     </section>
@@ -123,6 +124,8 @@
             <el-empty description="Belum ada transaksi" :image-size="80"></el-empty>
         </div>
     </section>
+
+    <DialogManualTransaction v-model="addTransaction" @refresh="doPaginate" />
 </template>
 
 <script setup>
@@ -131,13 +134,16 @@ import { saleHeaderPagination } from '../../api/salesApi';
 import useListDataPaginate from '../../composables/usePagination';
 import { people } from '../../helpers/svg';
 import { convertDate, convertPaymentStatus, convertRp, convertStatusName, dateFormatFull, doctorListHelper } from '../../helpers/utils';
-import { Printer, View } from 'lucide-vue-next';
+import { Plus, Printer, View } from 'lucide-vue-next';
 import { Refresh } from '@element-plus/icons-vue';
 import useGetData from '../../composables/useGetData';
+import DialogManualTransaction from './partials/DialogManualTransaction.vue';
+import { ref } from 'vue';
 
 const router = useRouter();
 const { listData, rowTotal, pageIndex, pageSize, getListData, changeIndex, loading, filterData, search } = useListDataPaginate();
 const [doctorList, getDoctorList] = useGetData();
+const addTransaction = ref(false);
 
 const filters = [
     {
@@ -192,7 +198,7 @@ function changePage(index = 1) {
 }
 
 function onDetailSale(sale) {
-    router.push({ name: 'sales-detail', query: { qId: sale.queue?.id } });
+    router.push({ name: 'sales-detail', query: { sId: sale?.id } });
 }
 
 function onPrint(item) {

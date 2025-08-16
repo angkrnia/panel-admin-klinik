@@ -57,7 +57,7 @@ export const routes = [
             },
             {
                 path: "/vital-sign",
-                name: "Vital Sign",
+                name: "vital-sign",
                 component: () => import("@/views/VitalSign/VitalSignPage.vue"),
                 meta: {
                     title: "Antrian",
@@ -65,7 +65,7 @@ export const routes = [
             },
             {
                 path: "/pharmacy",
-                name: "Pengambilan Obat",
+                name: "pengambilan-obat",
                 component: () => import("@/views/Pharmacy/CompletedPage.vue"),
                 meta: {
                     title: "Pengambilan Obat",
@@ -73,7 +73,7 @@ export const routes = [
             },
             {
                 path: "/histories",
-                name: "Riwayat Kunjunan",
+                name: "riwayat-kunjungan",
                 component: () => import("@/views/Histories/HistoriesPage.vue"),
                 meta: {
                     title: "Riwayat Kunjunan",
@@ -81,7 +81,7 @@ export const routes = [
             },
             {
                 path: "/sales",
-                name: "Transaksi Penjualan",
+                name: "transaksi-penjualan",
                 component: () => import("@/views/Sales/SalesPage.vue"),
                 meta: {
                     title: "Transaksi Penjualan",
@@ -97,12 +97,12 @@ export const routes = [
             },
             {
                 path: "/master",
-                name: "Master",
+                name: "master",
                 component: () => import("@/views/WrapperPage.vue"),
                 children: [
                     {
                         path: "tindakan",
-                        name: "Tindakan",
+                        name: "tindakan",
                         component: () => import("@/views/Inventory/TindakanPage.vue"),
                         meta: {
                             title: "Tindakan",
@@ -110,7 +110,7 @@ export const routes = [
                     },
                     {
                         path: "tipe-layanan",
-                        name: "Tipe Layanan",
+                        name: "tipe-layanan",
                         component: () => import("@/views/Inventory/TipeLayanan.vue"),
                         meta: {
                             title: "Tipe Layanan",
@@ -120,12 +120,12 @@ export const routes = [
             },
             {
                 path: "/inventory",
-                name: "Inventory",
+                name: "inventory",
                 component: () => import("@/views/WrapperPage.vue"),
                 children: [
                     {
                         path: "units",
-                        name: "Units",
+                        name: "inventory-units",
                         component: () => import("@/views/Inventory/UnitsPage.vue"),
                         meta: {
                             title: "Units",
@@ -133,7 +133,7 @@ export const routes = [
                     },
                     {
                         path: "groups",
-                        name: "Groups",
+                        name: "inventory-groups",
                         component: () => import("@/views/Inventory/GroupsPage.vue"),
                         meta: {
                             title: "Groups",
@@ -141,7 +141,7 @@ export const routes = [
                     },
                     {
                         path: "categories",
-                        name: "Categories",
+                        name: "inventory-categories",
                         component: () => import("@/views/Inventory/CategoriesPage.vue"),
                         meta: {
                             title: "Categories",
@@ -149,7 +149,7 @@ export const routes = [
                     },
                     {
                         path: "riwayat-stok",
-                        name: "Riwayat Stok",
+                        name: "riwayat-stok",
                         component: () => import("@/views/Inventory/RiwayatStok.vue"),
                         meta: {
                             title: "Riwayat Stok",
@@ -159,7 +159,7 @@ export const routes = [
             },
             {
                 path: "/medicines",
-                name: "Master Obat",
+                name: "master-obat",
                 component: () => import("@/views/Inventory/MedicinesPage.vue"),
                 meta: {
                     title: "Master Obat",

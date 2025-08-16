@@ -132,7 +132,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { salePaidApi } from '../../../api/salesApi';
+import { apiPaidSales, salePaidApi } from '../../../api/salesApi';
 import useAddData from '../../../composables/useAddData';
 import useViewData from '../../../composables/useViewData';
 import { checkLg, printer } from '../../../helpers/svg';
@@ -144,7 +144,7 @@ const props = defineProps(['grandTotal', 'receiptNumber'])
 const emits = defineEmits(['update:modelValue', 'refresh'])
 
 const route = useRoute()
-const qId = computed(() => route.query.qId)
+const sId = computed(() => route.query.sId)
 
 const { viewData, viewDialog, closeView, openViewDialog } = useViewData()
 
@@ -155,8 +155,7 @@ const {
 } = useAddData();
 
 function onPaid() {
-    addData.value.queueId = qId.value;
-    saveAdd(salePaidApi, (data) => {
+    saveAdd(() => apiPaidSales(sId.value, addData.value), (data) => {
         modelValue.value = false;
         openViewDialog(data)
         emits('refresh')

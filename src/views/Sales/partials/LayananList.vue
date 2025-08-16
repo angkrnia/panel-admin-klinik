@@ -27,7 +27,7 @@ const props = defineProps({
                     <div>
                         <p class="font-medium text-gray-800">{{ item.service_type_name }}</p>
                         <p class="text-sm text-gray-500">{{ item.quantity }} x {{ convertRp(item.service_type_price) }}</p>
-                        <p class="text-sm text-gray-500 capitalize">{{ item.notes || '-' }}</p>
+                        <p class="text-sm text-gray-500 capitalize" v-if="item.notes">{{ item.notes }}</p>
                     </div>
                     <div class="text-sm font-semibold text-gray-700">
                         {{ convertRp(item.total_price) }}
