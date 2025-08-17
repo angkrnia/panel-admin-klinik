@@ -194,7 +194,9 @@ function onViewDialog(item) {
     getDetail(() => detailKunjungan(item.id), false, true, (data) => {
         fetchMedicine(item.id);
         fetchTindakan(item.id);
-        openEditDialog(data);
+        if (data) {
+            openEditDialog(data);
+        }
     })
 }
 
