@@ -1,5 +1,5 @@
 <template>
-  <el-input ref="inputRef" v-model="formattedValue" placeholder="Masukkan Nominal" class="text-end" v-bind="$attrs">
+  <el-input ref="inputRef" v-model="formattedValue" placeholder="Masukkan Nominal">
     <template #append v-if="showCopyButton">
       <div class="cursor-pointer w-full h-full flex items-center" @click="onClick">
         <el-icon>
@@ -20,7 +20,6 @@ export default {
   components: {
     CopyDocument
   },
-  inheritAttrs: false,
   props: {
     modelValue: Number,
     min: {
