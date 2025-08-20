@@ -1,5 +1,5 @@
 <template>
-  <el-input ref="inputRef" v-model="formattedValue" placeholder="Masukkan Nominal">
+  <el-input ref="inputRef" v-model="formattedValue" placeholder="Masukkan Nominal" class="text-end" :input-style="{ textAlign: 'right' }">
     <template #append v-if="showCopyButton">
       <div class="cursor-pointer w-full h-full flex items-center" @click="onClick">
         <el-icon>
@@ -98,3 +98,7 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+:deep(.amount-input .el-input__inner){ text-align:right; }
+</style>

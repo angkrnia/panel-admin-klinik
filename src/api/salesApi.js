@@ -22,3 +22,15 @@ export function apiSalePrint(trxId) {
 export function apiPublicReceipt(receiptNumber) {
     return axiosNoAuth.get(`/public/transactions/${receiptNumber}`);
 }
+
+export function apiPaidSales(saleId, data) {
+    return axiosAuth.post(`/sales/${saleId}/payments`, data);
+}
+
+export function apiSalesManualTransaction(data) {
+    return axiosAuth.post(`/sales/manual-transactions`, data);
+}
+
+export function apiSaleDetail(saleId) {
+    return axiosAuth.get(`/sales/${saleId}/detail`);
+}

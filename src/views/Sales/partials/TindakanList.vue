@@ -29,13 +29,13 @@ const total = computed(() =>
             <div v-for="item in procedureList" :key="item.id" class="border rounded-xl p-4 shadow-sm bg-white">
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="font-medium text-gray-800">{{ item.procedure_name }}</p>
-                        <p class="text-sm text-gray-500">{{ item.quantity }} x {{ convertRp(item.price) }}</p>
+                        <p class="font-medium text-gray-800">{{ item.tindakan_name }}</p>
+                        <p class="text-sm text-gray-500">{{ item.quantity }} x {{ convertRp(item.tindakan_price) }}</p>
                         <p class="text-sm text-gray-500 capitalize">{{ item.source }}</p>
-                        <p class="text-sm text-gray-500 capitalize">{{ item.notes || '-' }}</p>
+                        <p class="text-sm text-gray-500 capitalize" v-if="item.notes">{{ item.notes }}</p>
                     </div>
                     <div class="text-sm font-semibold text-gray-700">
-                        {{ convertRp(item.price * item.quantity) }}
+                        {{ convertRp(item.total_price) }}
                     </div>
                 </div>
             </div>

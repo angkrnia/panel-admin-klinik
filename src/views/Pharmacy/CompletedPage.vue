@@ -194,7 +194,9 @@ function onViewDialog(item) {
     getDetail(() => detailKunjungan(item.id), false, true, (data) => {
         fetchMedicine(item.id);
         fetchTindakan(item.id);
-        openEditDialog(data);
+        if (data) {
+            openEditDialog(data);
+        }
     })
 }
 
@@ -206,8 +208,10 @@ function onSaveUpdate() {
     fetchApi(() => completedQueue(editData.value.id), false, true, (data) => {
         doPaginate(1);
         editDialog.value = false;
-        messageInfo("Berhasil menyelesaikan antrian", 'success');
-        router.push(`/sales/detail?qId=${editData.value.id}`);
+        if (data) {
+            messageInfo("Berhasil menyelesaikan antrian", 'success');
+            router.push(`/sales/detail?sId=${data.sale_id}`);
+        }
     })
 }
 
