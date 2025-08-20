@@ -1,5 +1,5 @@
 <template>
-  <el-input ref="inputRef" v-model="formattedValue" placeholder="Masukkan Nominal" class="text-end" :input-style="{ textAlign: 'right' }">
+  <el-input ref="inputRef" v-model="formattedValue" placeholder="Masukkan Nominal" class="text-end" v-bind="$attrs">
     <template #append v-if="showCopyButton">
       <div class="cursor-pointer w-full h-full flex items-center" @click="onClick">
         <el-icon>
@@ -20,6 +20,7 @@ export default {
   components: {
     CopyDocument
   },
+  inheritAttrs: false,
   props: {
     modelValue: Number,
     min: {
@@ -40,7 +41,7 @@ export default {
     },
   },
 
-  setup(props, { emit, expose  }) {
+  setup(props, { emit, expose }) {
     const options = reactive({
       currency: 'IDR',
       locale: 'id',
@@ -100,5 +101,7 @@ export default {
 </script>
 
 <style scoped>
-:deep(.amount-input .el-input__inner){ text-align:right; }
+:deep(.amount-input .el-input__inner) {
+  text-align: right;
+}
 </style>
