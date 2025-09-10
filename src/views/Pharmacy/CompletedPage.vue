@@ -47,6 +47,19 @@
             @accept-medicine="onAcceptMedicine" @refresh-medicine="fetchMedicine" @refresh-tindakan="fetchTindakan" @click-detail-racikan="onClickDetailRacikan"
             @refresh="onViewDialog" />
 
+        <div class="bg-white rounded-lg shadow-md p-4 md:col-span-2">
+            <div class="grid gap-6 md:grid-cols-2">
+                <div class="leading-5" v-if="editData?.history?.tindakan">
+                    <p class="font-semibold">Tindakan</p>
+                    <p>{{ editData?.history?.tindakan || '-' }}</p>
+                </div>
+                <div class="leading-5" v-if="editData?.history?.teraphy">
+                    <p class="font-semibold">Terapi/Obat</p>
+                    <div v-html="formattedTherapy(editData?.history?.teraphy)"></div>
+                </div>
+            </div>
+        </div>
+
         <template #footer>
             <div class="text-end mb-1">
                 <p class="text-sm text-gray-500">Total Estimasi: <span class="font-bold text-green-500">{{ convertRp(editData.estimate_price_total) }}</span></p>
@@ -219,6 +232,12 @@ async function openQueueDialog() {
 async function firstLoad() {
     const data = await doctorListHelper();
     doctorList.value = data;
+}
+
+
+function formattedTherapy(text) {
+    if (!text) return '-';
+    return text.replace(/\n/g, '<br>');
 }
 
 firstLoad();

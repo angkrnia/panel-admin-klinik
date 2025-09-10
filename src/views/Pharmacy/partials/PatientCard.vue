@@ -93,6 +93,15 @@
                             <p class="font-medium">{{ data?.history?.height || '-' }} cm</p>
                         </div>
                     </div>
+
+                    <!-- Keluhan, full span -->
+                    <div class="space-y-1 col-span-2">
+                        <div class="flex items-center gap-2">
+                            <ScaleIcon class="h-4 w-4 text-purple-500" />
+                            <p class="text-sm text-gray-500 font-bold">Keluhan</p>
+                        </div>
+                        <p class="font-medium">{{ data?.history?.complaint || '-' }}</p>
+                    </div>
                 </div>
             </div>
 
