@@ -3,6 +3,7 @@
         <TitleDashboard title="Riwayat Transaksi">
             <template #btn1>
                 <el-button :icon="Refresh" @click="doPaginate">Refresh</el-button>
+                <el-button :icon="Plus" @click="addTransaction = true" type="primary">Transaksi Manual</el-button>
             </template>
         </TitleDashboard>
     </section>
@@ -69,12 +70,12 @@
                         <h4 class="text-xs font-medium text-gray-500 uppercase mb-2">DOKTER</h4>
                         <div class="flex items-center gap-4">
                             <div class="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden">
-                                <img :src="item.doctor.avatar" alt="Doctor" class="w-full h-full object-cover" />
+                                <img :src="item.doctor?.avatar" alt="Doctor" class="w-full h-full object-cover" />
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-medium text-gray-900">{{ item.doctor_name }}</p>
-                                <p class="text-sm text-gray-500 line-clamp-2">{{ item.doctor.description }}</p>
-                                <p class="text-sm text-gray-500">{{ item.doctor.phone }}</p>
+                                <p class="text-sm text-gray-500 line-clamp-2">{{ item.doctor?.description }}</p>
+                                <p class="text-sm text-gray-500">{{ item.doctor?.phone }}</p>
                             </div>
                         </div>
                     </div>
@@ -82,9 +83,9 @@
                     <div class="p-4 sm:px-6">
                         <h4 class="text-xs font-medium text-gray-500 uppercase mb-2">Pasien</h4>
                         <p class="text-sm font-medium text-gray-900">{{ item.patient_name }}</p>
-                        <p class="text-sm text-gray-500 mt-2">Antrian #{{ item.queue.queue }}</p>
-                        <p class="text-sm text-gray-500 mt-2">Datang: {{ dateFormatFull(item.queue.created_at) }}</p>
-                        <p class="text-sm text-gray-500 mt-2">Status Antrian: <span class="text-green-600 font-medium">{{ convertStatusName(item.queue.status) }}</span></p>
+                        <p class="text-sm text-gray-500 mt-2">Antrian #{{ item.queue?.queue || '-' }}</p>
+                        <p class="text-sm text-gray-500 mt-2">Datang: {{ dateFormatFull(item.queue?.created_at || '-') }}</p>
+                        <p class="text-sm text-gray-500 mt-2">Status Antrian: <span class="text-green-600 font-medium">{{ convertStatusName(item.queue?.status || '-') }}</span></p>
                     </div>
 
                     <div class="p-4 sm:px-6">
@@ -123,6 +124,8 @@
             <el-empty description="Belum ada transaksi" :image-size="80"></el-empty>
         </div>
     </section>
+
+    <DialogManualTransaction v-model="addTransaction" @refresh="doPaginate" />
 </template>
 
 <script setup>
@@ -131,13 +134,16 @@ import { saleHeaderPagination } from '../../api/salesApi';
 import useListDataPaginate from '../../composables/usePagination';
 import { people } from '../../helpers/svg';
 import { convertDate, convertPaymentStatus, convertRp, convertStatusName, dateFormatFull, doctorListHelper } from '../../helpers/utils';
-import { Printer, View } from 'lucide-vue-next';
+import { Plus, Printer, View } from 'lucide-vue-next';
 import { Refresh } from '@element-plus/icons-vue';
 import useGetData from '../../composables/useGetData';
+import DialogManualTransaction from './partials/DialogManualTransaction.vue';
+import { ref } from 'vue';
 
 const router = useRouter();
 const { listData, rowTotal, pageIndex, pageSize, getListData, changeIndex, loading, filterData, search } = useListDataPaginate();
 const [doctorList, getDoctorList] = useGetData();
+const addTransaction = ref(false);
 
 const filters = [
     {
@@ -192,7 +198,7 @@ function changePage(index = 1) {
 }
 
 function onDetailSale(sale) {
-    router.push({ name: 'sales-detail', query: { qId: sale.queue.id } });
+    router.push({ name: 'sales-detail', query: { sId: sale?.id } });
 }
 
 function onPrint(item) {

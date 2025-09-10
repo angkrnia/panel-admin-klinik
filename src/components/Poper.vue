@@ -1,8 +1,8 @@
 <template>
-    <el-popover class="box-item" :placement="position" trigger="hover">
+    <el-popover class="box-item" effect="dark" :placement="position" trigger="hover">
         <template #default>
             <div class="text-center text-sm">
-                {{ content }}
+                <p class="leading-4 capitalize">{{ content }}</p>
             </div>
         </template>
 

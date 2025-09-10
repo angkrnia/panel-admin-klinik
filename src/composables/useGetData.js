@@ -6,7 +6,12 @@ export default function useGetData(params = { defaultLoading: false }) {
   const dataRef = ref([]);
   const isLoading = ref(params.defaultLoading || false);
 
-  const getData = (apiURL, isLoadingInside, isForceCallAndSave, callBack) => {
+  const getData = (
+    apiURL,
+    isLoadingInside = false,
+    isForceCallAndSave = false,
+    callBack
+  ) => {
     async function callAndSave() {
       const { data } = await apiURL();
       isLoading.value = false;
@@ -33,10 +38,22 @@ export default function useGetData(params = { defaultLoading: false }) {
         isLoading.value = true;
         catchErrorFinally(
           async () => callAndSave(),
-          () => (isLoading.value = false)
+          () => {
+            isLoading.value = false;
+            if (callBack) {
+              callBack(null);
+            }
+          }
         );
       } else {
-        catchError(async () => callAndSave());
+        catchError(
+          async () => callAndSave(),
+          () => {
+            if (callBack) {
+              callBack(null);
+            }
+          }
+        );
       }
     }
   };

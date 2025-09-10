@@ -20,3 +20,7 @@ export function APIUploadPhotos(imageFiles) {
 export function APISelectTipeLayanan() {
   return axiosAuth.get("/service-types-list");
 }
+
+export function APISelectProductsWithUnits(search = "") {
+  return axiosAuth.get(`/products-with-units?search=${search}`);
+}

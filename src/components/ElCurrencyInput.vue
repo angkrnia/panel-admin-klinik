@@ -40,7 +40,7 @@ export default {
     },
   },
 
-  setup(props, { emit, expose  }) {
+  setup(props, { emit, expose }) {
     const options = reactive({
       currency: 'IDR',
       locale: 'id',
@@ -98,3 +98,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+:deep(.amount-input .el-input__inner) {
+  text-align: right;
+}
+</style>

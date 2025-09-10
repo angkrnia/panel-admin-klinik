@@ -838,12 +838,14 @@ function onChangeMedicinePrice(item) {
     });
 }
 
-fetchService();
-
 watch(
-    () => props.data,
-    () => {
-        fetchService();
-    }
+    () => ({ ...props }),
+    (newVal, oldVal) => {
+        if (newVal?.data) {
+            fetchService();
+        }
+    },
+    { deep: true }
 );
+
 </script>

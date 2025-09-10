@@ -42,9 +42,9 @@ const totalHarga = computed(() => {
                     'bg-red-400 text-white': item.status === 'rejected',
                     'bg-green-200 text-green-600': item.status === 'pending',
                 }">{{ item.status_name || '-' }}</span> -->
-                <h2 class="text-lg font-semibold mb-1 mt-2 text-gray-800">
+                <!-- <h2 class="text-lg font-semibold mb-1 mt-2 text-gray-800">
                     {{ item.is_compound ? item.compound_name : item.product?.name }}
-                </h2>
+                </h2> -->
                 <div class="text-sm text-gray-500 mb-2">
                     Dosis: <span class="text-gray-700">{{ item.dosage }}</span> |
                     Jumlah: <span class="text-gray-700">{{ item.qty }}</span>
