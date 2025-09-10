@@ -101,8 +101,8 @@
         <!-- Logo and pharmacy name -->
         <div class="pt-6 pb-4 flex flex-col items-center">
             <!-- <img src="/images/logo.png" alt="Logo" width="80" /> -->
-            <h1 class="text-sm font-bold text-gray-800 leading-4">KLINIK TENJO MEDIKA</h1>
-            <p class="text-xs text-gray-600 mt-1 px-8 text-center leading-4">Jl. Raya Tenjo, Kec. Tenjo, Kabupaten Bogor, Jawa Barat </p>
+            <h1 class="text-sm font-bold text-gray-800 leading-4">KLINIK ADIYASA MEDIKA</h1>
+            <p class="text-xs text-gray-600 mt-1 px-8 text-center leading-4">Jl. Raya Adiyasa, Kec. Solear, Kabupaten Tangerang, Banten</p>
         </div>
 
         <!-- Divider -->
