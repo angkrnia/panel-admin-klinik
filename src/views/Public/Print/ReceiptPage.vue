@@ -101,7 +101,7 @@
         <!-- Logo and pharmacy name -->
         <div class="pt-6 pb-4 flex flex-col items-center">
             <!-- <img src="/images/logo.png" alt="Logo" width="80" /> -->
-            <h1 class="text-sm font-bold text-gray-800 leading-4">KLINIK RIA MEDIKA CISOKA</h1>
+            <h1 class="text-sm font-bold text-gray-800 leading-4">RIA MEDIKA CISOKA</h1>
             <p class="text-xs text-gray-600 mt-1 px-8 text-center leading-4">Jl. Raya Cisoka, Kec. Cisoka, Kabupaten Tangeranga, Banten</p>
         </div>
 
