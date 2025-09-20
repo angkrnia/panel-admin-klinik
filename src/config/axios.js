@@ -2,7 +2,7 @@ import axios from "axios";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 import { getRefreshToken, setAuthentication } from "../helpers/utils";
 
-// const baseUrl = "https://api-klinik-adiyasa.adiyasamedicalcenter.com/api"
+// const baseUrl = "https://api-klinik-cisoka.adiyasamedicalcenter.com/api"
 export const baseUrl =
   import.meta.env.VITE_API_ENVIRONMENT == "production"
     ? import.meta.env.VITE_API_URL_PROD
