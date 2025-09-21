@@ -36,7 +36,7 @@
                 <p class="text-sm text-gray-500 mb-4 line-clamp-2">{{ medicine.description || 'Tidak ada deskripsi' }}</p>
 
                 <div class="flex items-center gap-2">
-                    <span class="font-bold text-gray-800 text-sm">Base Stok: {{ Math.floor(medicine.base_stock) }}</span>
+                    <span class="font-bold text-gray-800 text-sm">Base Stok: {{ medicine.base_stock }}</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="font-bold text-gray-800 text-sm">Base Price: {{ convertRp(medicine.sell_price) }}</span>
@@ -54,7 +54,7 @@
                                 {{ convertRp(unit.pivot.new_price) }}
                             </span>
                             <span class="block text-xs" :class="unit.stock < 50 ? 'text-red-600' : 'text-green-600'">
-                                Stok: {{ Math.floor(medicine.base_stock / unit.pivot.conversion_to_base) }}
+                                Stok: {{ medicine.base_stock / unit.pivot.conversion_to_base }}
                             </span>
                         </div>
                     </div>
