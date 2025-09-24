@@ -220,7 +220,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { deletePasien, listPasienPagination, tambahPasien, updatePasien } from '../../api/pasienApi';
 import useAddData from '../../composables/useAddData';
 import useDeleteData from '../../composables/useDeleteData';
@@ -335,6 +335,28 @@ function onSaveQueue() {
 async function openAddDialog() {
     openDialog(0);
 }
+
+// fungsi hitung umur
+function calculateAge(birthday) {
+    if (!birthday) return null;
+    const today = new Date();
+    const birthDate = new Date(birthday);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age >= 0 ? age : null;
+}
+
+// watcher birthday
+watch(
+    () => addData.value.birthday,
+    (newVal) => {
+        addData.value.age = calculateAge(newVal);
+    }
+);
 
 doPaginate(pageIndex.value);
 </script>
