@@ -839,13 +839,10 @@ function onChangeMedicinePrice(item) {
 }
 
 watch(
-    () => ({ ...props }),
+    () => props.data,
     (newVal, oldVal) => {
-        if (newVal?.data) {
-            fetchService();
-        }
-    },
-    { deep: true }
-);
+        if (newVal) fetchService()
+    }
+)
 
 </script>

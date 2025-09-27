@@ -359,8 +359,8 @@ function fetchTindakan(id = editData.value.id) {
 
 function onViewDialog(data) {
     getDetail(() => detailKunjungan(data.queue_id), false, true, (result) => {
-        fetchMedicine(data.id);
-        fetchTindakan(data.id);
+        fetchMedicine(data.queue_id);
+        fetchTindakan(data.queue_id);
         openEditDialog(result);
     })
 }

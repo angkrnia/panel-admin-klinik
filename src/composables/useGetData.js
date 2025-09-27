@@ -49,7 +49,7 @@ export default function useGetData(params = { defaultLoading: false }) {
         catchError(
           async () => callAndSave(),
           () => {
-            if (callBack) {
+            if (callBack && !Array.isArray(dataRef.value) && dataRef.value.length == 0) {
               callBack(null);
             }
           }
