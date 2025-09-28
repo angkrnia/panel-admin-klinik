@@ -83,7 +83,7 @@
                             </div>
                             <div class="leading-5 text-end">
                                 <p class="font-semibold">TTL/Umur</p>
-                                <p>{{ viewData?.patient?.birthday || '-' }} / {{ viewData?.patient?.age || '0' }} thn</p>
+                                <p>{{ viewData?.patient?.birthday || '-' }} / {{ viewData?.patient?.age || '0' }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-x-2 justify-between">

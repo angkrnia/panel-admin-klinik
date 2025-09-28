@@ -47,7 +47,7 @@
             @accept-medicine="onAcceptMedicine" @refresh-medicine="fetchMedicine" @refresh-tindakan="fetchTindakan" @click-detail-racikan="onClickDetailRacikan"
             @refresh="onViewDialog" />
 
-        <div class="bg-white rounded-lg shadow-md p-4 md:col-span-2">
+        <div class="bg-white rounded-lg shadow-md p-4 md:col-span-2" v-if="editData?.history?.tindakan || editData?.history?.teraphy">
             <div class="grid gap-6 md:grid-cols-2">
                 <div class="leading-5" v-if="editData?.history?.tindakan">
                     <p class="font-semibold">Tindakan</p>

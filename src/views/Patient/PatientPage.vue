@@ -29,7 +29,7 @@
                 <el-table-column show-overflow-tooltip prop="phone" label="No. HP" min-width="150" />
                 <el-table-column show-overflow-tooltip prop="birthday" label="Umur" min-width="150">
                     <template #default="scope">
-                        {{ scope.row.birthday }} ({{ scope.row.age }} thn)
+                        {{ scope.row.birthday }} ({{ scope.row.age }})
                     </template>
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="allergy" label="Alergi" min-width="180">
