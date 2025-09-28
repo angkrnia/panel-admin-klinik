@@ -26,7 +26,7 @@ window.Echo.connector.pusher.connection.bind("error", (err) => {
     console.error("[WebSocket] Error:", err);
 });
 
-window.Echo.private(`clinic.adiyasa.doctor.${doctor_id}`).listen(".clinic.perawat", (e) => {
+window.Echo.private(`clinic.tenjo.doctor.${doctor_id}`).listen(".clinic.perawat", (e) => {
     ElNotification({
         title: "Pengambilan Obat",
         message: `
@@ -45,7 +45,7 @@ window.Echo.private(`clinic.adiyasa.doctor.${doctor_id}`).listen(".clinic.perawa
     });
 });
 
-// window.Echo.channel("klinik_adiyasa").listen(".antrian", (e) => {
+// window.Echo.channel("klinik_tenjo").listen(".antrian", (e) => {
 //     console.log("📥 Pesan real-time dari antrian:", e);
 // });
 
