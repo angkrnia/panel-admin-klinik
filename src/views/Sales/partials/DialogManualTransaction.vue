@@ -23,7 +23,7 @@
                             <div class="px-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                                 <el-form-item prop="patient_id">
                                     <span class="block text-slate-500">Nama Pasien</span>
-                                    <el-input v-model="addData.patient_name" disabled class="w-full rounded-lg border-slate-300 focus:ring-2 focus:ring-sky-500"
+                                    <el-input v-model="addData.patient_name" class="w-full rounded-lg border-slate-300 focus:ring-2 focus:ring-sky-500"
                                         placeholder="Nama Pasien" />
                                 </el-form-item>
                                 <el-form-item>
