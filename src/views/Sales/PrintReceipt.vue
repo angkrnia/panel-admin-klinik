@@ -148,7 +148,7 @@
                     <div class="font-semibold text-gray-800">{{ item.product_name }}</div>
                 </div>
                 <div class="flex justify-between text-gray-700">
-                    <div>{{ item.quantity }} {{ item.product_unit }} x {{ convertRp(item.unit_price) }}</div>
+                    <div>{{ item.quantity }} {{ item.product_unit }} x {{ convertRp(item.unit_price - item.discount) }}</div>
                     <div>{{ convertRp(item.total_price) }}</div>
                 </div>
             </div>

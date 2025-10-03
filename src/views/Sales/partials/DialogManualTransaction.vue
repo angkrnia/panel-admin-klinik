@@ -23,8 +23,7 @@
                             <div class="px-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                                 <el-form-item prop="patient_id">
                                     <span class="block text-slate-500">Nama Pasien</span>
-                                    <el-input v-model="addData.patient_name" class="w-full rounded-lg border-slate-300 focus:ring-2 focus:ring-sky-500"
-                                        placeholder="Nama Pasien" />
+                                    <el-input v-model="addData.patient_name" class="w-full rounded-lg border-slate-300 focus:ring-2 focus:ring-sky-500" placeholder="Nama Pasien" />
                                 </el-form-item>
                                 <el-form-item>
                                     <span class="block text-slate-500">No Rekam Medis</span>
@@ -81,9 +80,14 @@
                                                 <div class="text-xs text-slate-500">Tarif</div>
                                                 <div class="font-semibold">{{ convertRp(item.price) }}</div>
                                             </div>
+                                            <label class="text-xs max-w-[120px]">
+                                                <span class="block mb-1 text-slate-500">Diskon</span>
+                                                <ElCurrencyInput v-model="item.discount" :max="item.price" placeholder="Diskon" style="width: 100%" />
+                                            </label>
                                             <div class="ml-auto sm:ml-0 text-right">
                                                 <div class="text-xs text-slate-500">Subtotal</div>
-                                                <div class="font-semibold">{{ convertRp(item.price * item.quantity) }}</div>
+                                                <div v-if="item.discount > 0" class="font-thin text-xs text-gray-500 line-through leading-1">{{ convertRp(item.price * item.quantity) }}</div>
+                                                <div class="font-semibold -mt-1">{{ convertRp((item.price - item.discount) * item.quantity) }}</div>
                                             </div>
                                             <el-button @click="addData.medicines.splice(index, 1)" size="small" :icon="Trash2" type="danger"></el-button>
                                         </div>
@@ -285,7 +289,7 @@
                                             <span class="block mb-1 text-slate-500">Kembalian</span>
                                             <h1 class="font-bold text-lg text-end">{{ convertRp(paidForm.paid_amount - Number(subTotalLayanan) - Number(subTotalObat) -
                                                 Number(subTotalTindakan))
-                                            }}
+                                                }}
                                             </h1>
                                         </label>
                                     </div>
@@ -351,7 +355,7 @@ const {
 const { 1: fetchApi } = useGetData();
 
 const subTotalObat = computed(() =>
-    addData.value.medicines.reduce((acc, item) => acc + (Number(item.price) * item.quantity || 0), 0)
+    addData.value.medicines.reduce((acc, item) => acc + (Number(item.price - item.discount) * item.quantity || 0), 0)
 )
 const subTotalLayanan = computed(() =>
     addData.value.services.reduce((acc, item) => acc + (Number(item.price) * item.quantity || 0), 0)
@@ -428,6 +432,7 @@ function handleSelectObat(data) {
             sku: data.sku,
             unit_name: data.unit_name,
             price: data.new_price || data.sell_price,
+            discount: 0,
             sub_total: data.new_price || data.sell_price * 1,
             quantity: 1,
         })
