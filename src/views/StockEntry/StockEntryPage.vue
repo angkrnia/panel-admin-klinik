@@ -42,6 +42,13 @@
                         </div>
                     </template>
                 </el-table-column>
+                <el-table-column prop="created_at" label="Tanggal Dibuat" min-width="100">
+                    <template #default="{ row }">
+                        <div class="flex items-center justify-center">
+                            {{ dateFormatFull(row.created_at) }}
+                        </div>
+                    </template>
+                </el-table-column>
                 <!-- Untuk kolom aksi -->
                 <el-table-column fixed="right" min-width="100">
                     <template #header>
@@ -137,7 +144,7 @@
 import useAddData from '../../composables/useAddData';
 import useEditData from '../../composables/useEditData';
 import usePagination from '../../composables/usePagination';
-import { convertDate, convertRp, dialogWidth, getStatusType, labelPosition } from '../../helpers/utils';
+import { convertRp, dateFormatFull, dialogWidth, getStatusType, labelPosition } from '../../helpers/utils';
 import useDeleteData from '../../composables/useDeleteData';
 import { APIdeleteStockEntry, APIstoreStockEntry, APIupdateStockEntry, stockEntryHeaderPagination } from '../../api/stockApi';
 import { stockEntryHeaderRule } from '../../rules/stockRules';

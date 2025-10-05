@@ -46,6 +46,18 @@
                         <el-input disabled :value="dateFormatFull(editHeaderData.updated_at)" placeholder="Terakhir Diubat" style="width: 100%" />
                     </el-form-item>
                 </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3
+                    gap-3">
+                    <el-form-item label="Total Produk" prop="total_products" class="w-full">
+                        <el-input disabled v-model="editHeaderData.total_products" placeholder="Total Produk" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Total QTY" prop="total_quantity" class="w-full">
+                        <el-input disabled :value="editHeaderData.total_quantity" placeholder="Total QTY" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="Total Belanja" prop="total_buy_price" class="w-full">
+                        <el-input disabled :value="convertRp(editHeaderData.total_buy_price)" placeholder="Total Belanja" style="width: 100%" />
+                    </el-form-item>
+                </div>
             </div>
         </el-form>
 
