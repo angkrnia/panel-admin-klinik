@@ -111,12 +111,13 @@
         <!-- Receipt details -->
         <div class="px-6 py-3 text-gray-700">
             <div>
-                <p v-if="data.queue">Antrian: {{ data.queue.queue }}</p>
+                <!-- <p v-if="data.queue">Antrian: {{ data.queue.queue }}</p> -->
                 <p>Kode: #{{ data.receipt_number }}</p>
                 <p class="text-xs">Tanggal: {{ convertDate(data.created_at) }}</p>
             </div>
             <div>
                 <p>Dokter: {{ data.doctor_name }}</p>
+                <p>Pasien: {{ data.patient_name }}</p>
             </div>
         </div>
 
