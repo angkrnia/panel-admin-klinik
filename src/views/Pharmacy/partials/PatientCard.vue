@@ -456,6 +456,49 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Lampiran -->
+            <div v-if="attachmentList" class="bg-white rounded-lg shadow-md p-4 md:col-span-2">
+                <!-- Header -->
+                <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                    <ClipboardDocumentIcon class="h-5 w-5 text-indigo-500" />
+                    Lampiran
+                </h2>
+
+                <!-- List -->
+                <div v-if="attachmentList.length > 0" class="space-y-3">
+                    <div v-for="(item, index) in attachmentList" :key="index"
+                        class="flex items-center justify-between border border-gray-200 bg-gray-50 rounded-lg p-3 hover:shadow-sm transition">
+                        <!-- Kiri -->
+                        <div class="flex items-center space-x-3 flex-1">
+                            <DocumentTextIcon class="h-5 w-5 text-indigo-600" />
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-800 truncate">
+                                    {{ item.file_name }}
+                                </p>
+                                <p class="text-xs text-gray-500">
+                                    {{ dateFormatFull(item.created_at) }} • {{ formatRibuan(item.size || 0) + ' KB' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Kanan -->
+                        <div class="flex space-x-2">
+                            <!-- Tombol lihat -->
+                            <a :href="item.attachment" target="_blank"
+                                class="inline-flex items-center px-2.5 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200 transition">
+                                <EyeIcon class="h-4 w-4 mr-1" />
+                                Lihat
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kosong -->
+                <div v-else class="text-gray-500 text-sm text-center py-4">
+                    Belum ada lampiran yang diunggah.
+                </div>
+            </div>
         </div>
     </div>
 
@@ -640,7 +683,7 @@ import {
     DocumentTextIcon,
     ArrowPathIcon,
 } from '@heroicons/vue/24/outline'
-import { convertRp, copyToClipboard, dialogWidth } from '../../../helpers/utils';
+import { convertRp, copyToClipboard, dateFormatFull, dialogWidth, formatRibuan } from '../../../helpers/utils';
 import { activity, capsule, capsulePill } from '../../../helpers/svg';
 import { Close } from '@element-plus/icons-vue';
 import useEditData from '../../../composables/useEditData';
@@ -651,7 +694,7 @@ import useGetData from '../../../composables/useGetData';
 import { useAppStore } from '../../../store/appStore';
 import { watch, computed, ref, nextTick } from 'vue';
 import useDeleteData from '../../../composables/useDeleteData';
-import { Boxes, Clock, GlassWater, Info, Notebook, Package, PencilLine, Check, Plus, ScanBarcode, Stethoscope, Trash2, User, Warehouse } from 'lucide-vue-next';
+import { Boxes, Clock, GlassWater, Info, Notebook, Package, PencilLine, Check, Plus, ScanBarcode, Stethoscope, Trash2, User, Warehouse, EyeIcon } from 'lucide-vue-next';
 import { APISelectTipeLayanan } from '../../../api/apiHelper';
 import Poper from '../../../components/Poper.vue';
 import InfoRow from '../../../components/InfoRow.vue';
@@ -685,7 +728,11 @@ const props = defineProps({
     hideAction: {
         type: Boolean,
         default: false
-    }
+    },
+    attachmentList: {
+        type: Array,
+        required: false
+    },
 })
 
 watch(

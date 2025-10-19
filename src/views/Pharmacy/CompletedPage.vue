@@ -43,7 +43,7 @@
             <h1 class="border-b pb-5">Detail Antrian</h1>
         </template>
 
-        <PatientCard :data="editData" :tindakanList="tindakanList" :loadingTindakan="isLoadingGetTindakan" :medicineList="medicineList" :loadingMedicine="isLoadingGetMedicine"
+        <PatientCard :data="editData" :tindakanList="tindakanList" :attachmentList="attachmentList" :loadingTindakan="isLoadingGetTindakan" :medicineList="medicineList" :loadingMedicine="isLoadingGetMedicine"
             @accept-medicine="onAcceptMedicine" @refresh-medicine="fetchMedicine" @refresh-tindakan="fetchTindakan" @click-detail-racikan="onClickDetailRacikan"
             @refresh="onViewDialog" />
 
@@ -98,7 +98,7 @@
 <script setup>
 import { ref } from 'vue';
 import usePagination from '../../composables/usePagination';
-import { completedQueue, detailKunjungan, pharmacyPagination, tambahAntrian } from '../../api/antrianApi';
+import { APIAttachmentList, completedQueue, detailKunjungan, pharmacyPagination, tambahAntrian } from '../../api/antrianApi';
 import useAddData from '../../composables/useAddData';
 import { convertDate, convertRp, convertStatusName, dialogWidth, doctorListHelper, messageInfo } from '../../helpers/utils';
 import useEditData from '../../composables/useEditData';
@@ -150,6 +150,7 @@ const [detail, getDetail] = useGetData();
 const { 1: fetchApi } = useGetData();
 const [medicineList, getMedicineList, isLoadingGetMedicine] = useGetData({ defaultLoading: true });
 const [tindakanList, getTindakanList, isLoadingGetTindakan] = useGetData({ defaultLoading: true });
+const [attachmentList, getAttachmentList, isLoadingGetAttachment] = useGetData({ defaultLoading: true });
 const { viewData, viewDialog, closeView, openViewDialog } = useViewData();
 
 filterData.value = {
@@ -203,10 +204,15 @@ function fetchTindakan(id = editData.value.id) {
     getTindakanList(() => apiListTindakanByQueue(id), true, true);
 }
 
+function fetchAttachment(id = editData.value.id) {
+    getAttachmentList(() => APIAttachmentList(id), true, true)
+}
+
 function onViewDialog(item) {
     getDetail(() => detailKunjungan(item.id), false, true, (data) => {
         fetchMedicine(item.id);
         fetchTindakan(item.id);
+        fetchAttachment(item.id);
         if (data) {
             openEditDialog(data);
         }
