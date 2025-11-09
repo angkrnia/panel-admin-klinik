@@ -111,12 +111,13 @@
         <!-- Receipt details -->
         <div class="px-6 py-3 text-gray-700">
             <div>
-                <p>Antrian: {{ data.queue.queue }}</p>
+                <!-- <p>Antrian: {{ data.queue.queue }}</p> -->
                 <p>Kode: #{{ data.receipt_number }}</p>
                 <p class="text-xs">Tanggal: {{ convertDate(data.created_at) }}</p>
             </div>
             <div>
                 <p>Dokter: {{ data.doctor_name }}</p>
+                <p>Pasien: {{ data.patient_name }}</p>
             </div>
         </div>
 
@@ -225,34 +226,39 @@ firstLoad()
 
 <style scoped>
 @media print {
-    body {
-        width: 7.9cm;
-        padding-top: 20mm;
-        page-break-before: always;
-    }
+  @page {
+    size: 58mm auto;
+    margin: 0;
+  }
 
-    img {
-        filter: grayscale(100%);
-    }
+  html, body {
+    width: 58mm;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
 
-    .receipt-container {
-        width: 7.9cm;
-        height: auto;
-    }
+  .receipt-container {
+    width: 58mm;
+    height: auto;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
 
-    * {
-        font-size: 12px !important;
-    }
+  * {
+    max-width: 100%;
+    font-size: 12px !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 
-    .receipt-container::before {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
-
-    * {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 @keyframes shimmer {

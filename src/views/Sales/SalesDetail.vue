@@ -21,7 +21,7 @@
                 <!-- Col kiri 2/3 -->
                 <div class="lg:col-span-2 space-y-4">
                     <!-- Detail Pasien -->
-                    <DetailPasien :data="data?.patient" :queue="data?.queue" />
+                    <DetailPasien :data="data?.patient || data" :queue="data?.queue" />
                     <!-- Vital Sign -->
                     <VitalSign :data="data?.queue?.history" />
                     <!-- Dokter -->

@@ -83,7 +83,7 @@
                             </div>
                             <div class="leading-5 text-end">
                                 <p class="font-semibold">TTL/Umur</p>
-                                <p>{{ viewData?.patient?.birthday || '-' }} / {{ viewData?.patient?.age || '0' }} thn</p>
+                                <p>{{ viewData?.patient?.birthday || '-' }} / {{ viewData?.patient?.age || '0' }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-x-2 justify-between">
@@ -221,10 +221,10 @@
             <h1 class="border-b pb-5">Riwayat Kunjungan</h1>
         </template>
 
-        <PatientCard :hide-action="true" :data="editData" :tindakanList="tindakanList" :loadingTindakan="isLoadingGetTindakan" :medicineList="medicineList"
-            :loadingMedicine="isLoadingGetMedicine" />
+        <PatientCard :hide-action="true" :data="editData" :tindakanList="tindakanList" :attachmentList="attachmentList" :loadingTindakan="isLoadingGetTindakan"
+            :medicineList="medicineList" :loadingMedicine="isLoadingGetMedicine" />
 
-        <div class="bg-white rounded-lg shadow-md p-4 md:col-span-2">
+        <div class="bg-white rounded-lg shadow-md p-4 md:col-span-2" v-if="editData?.history?.tindakan || editData?.history?.teraphy">
             <div class="grid gap-6 md:grid-cols-2">
                 <div class="leading-5">
                     <p class="font-semibold">Tindakan</p>
@@ -243,7 +243,7 @@
 import { useRoute } from 'vue-router';
 import { riwayatKunjunganPagination } from '../../api/apiRiwayatKunjungan';
 import { apiListMedicineByQueue, apiListTindakanByQueue } from '../../api/apiMedicine';
-import { detailKunjungan } from '../../api/antrianApi';
+import { APIAttachmentList, detailKunjungan } from '../../api/antrianApi';
 import ElDateRangeInput from '../../components/ElDateRangeInput.vue';
 import useListDataPaginate from '../../composables/usePagination';
 import useViewData from '../../composables/useViewData';
@@ -304,6 +304,7 @@ const [detail, getDetail] = useGetData();
 const { 1: fetchApi } = useGetData();
 const [medicineList, getMedicineList, isLoadingGetMedicine] = useGetData({ defaultLoading: true });
 const [tindakanList, getTindakanList, isLoadingGetTindakan] = useGetData({ defaultLoading: true });
+const [attachmentList, getAttachmentList, isLoadingGetAttachment] = useGetData({ defaultLoading: true });
 
 if (route.query.page) {
     filterData.value.page = parseInt(route.query.page);
@@ -357,10 +358,15 @@ function fetchTindakan(id = editData.value.id) {
     getTindakanList(() => apiListTindakanByQueue(id), true, true);
 }
 
+function fetchAttachment(id = editData.value.id) {
+    getAttachmentList(() => APIAttachmentList(id), true, true)
+}
+
 function onViewDialog(data) {
     getDetail(() => detailKunjungan(data.queue_id), false, true, (result) => {
         fetchMedicine(data.queue_id);
         fetchTindakan(data.queue_id);
+        fetchAttachment(data.queue_id);
         openEditDialog(result);
     })
 }

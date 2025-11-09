@@ -12,31 +12,31 @@
                     <UserRound class="mt-0.5 h-5 w-5 text-slate-500"></UserRound>
                     <div>
                         <div class="text-xs text-slate-500">Nama Lengkap</div>
-                        <div class="font-medium">{{ data?.fullname }}</div>
+                        <div class="font-medium">{{ data?.fullname || data?.patient_name }}</div>
                     </div>
                 </div>
-                <div class="flex items-start gap-3">
+                <div class="flex items-start gap-3" v-if="data?.record_no">
                     <InfoIcon class="mt-0.5 h-5 w-5 text-slate-500" />
                     <div>
                         <div class="text-xs text-slate-500">No Rekam Medis</div>
                         <div class="font-medium">{{ data?.record_no }}</div>
                     </div>
                 </div>
-                <div class="flex items-start gap-3">
+                <div class="flex items-start gap-3" v-if="data?.gender">
                     <VenusAndMars class="mt-0.5 h-5 w-5 text-slate-500" />
                     <div>
                         <div class="text-xs text-slate-500">Jenis Kelamin</div>
                         <div class="font-medium">{{ data?.gender == 'L' ? 'Laki-laki' : 'Perempuan' }}</div>
                     </div>
                 </div>
-                <div class="flex items-start gap-3">
+                <div class="flex items-start gap-3" v-if="data?.phone">
                     <Phone class="mt-0.5 h-5 w-5 text-slate-500"></Phone>
                     <div>
                         <div class="text-xs text-slate-500">Nomor HP</div>
                         <div class="font-medium">{{ data?.phone || '-' }}</div>
                     </div>
                 </div>
-                <div class="flex items-start gap-3">
+                <div class="flex items-start gap-3" v-if="data?.nama_keluarga">
                     <UserRound class="mt-0.5 h-5 w-5 text-slate-500"></UserRound>
                     <div>
                         <div class="text-xs text-slate-500">
@@ -45,14 +45,14 @@
                         <div class="font-medium">{{ data?.nama_keluarga || '-' }}</div>
                     </div>
                 </div>
-                <div class="flex items-start gap-3">
+                <div class="flex items-start gap-3" v-if="data?.no_ktp">
                     <BadgeCheck class="mt-0.5 h-5 w-5 text-slate-500"></BadgeCheck>
                     <div>
                         <div class="text-xs text-slate-500">No KTP</div>
                         <div class="font-medium">{{ data?.no_ktp || '-' }}</div>
                     </div>
                 </div>
-                <div class="sm:col-span-2 flex items-start gap-3">
+                <div class="sm:col-span-2 flex items-start gap-3" v-if="data?.address">
                     <MapPin class="mt-0.5 h-5 w-5 text-slate-500"></MapPin>
                     <div class="w-full">
                         <div class="text-xs text-slate-500">Alamat</div>
@@ -61,7 +61,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex items-start gap-3">
+                <div class="flex items-start gap-3" v-if="data?.allergy">
                     <TriangleAlert class="mt-0.5 h-5 w-5 text-rose-500"></TriangleAlert>
                     <div>
                         <div class="text-xs text-slate-500">Alergi</div>

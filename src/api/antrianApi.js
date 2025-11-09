@@ -51,3 +51,19 @@ export function updateVitalSign(id, data) {
 export function completedQueue(id, data) {
   return axiosAuth.put("/queue/" + id + "/completed-v2", data);
 }
+
+export const APISubmitAttachment = async (data) => {
+  return axiosAuth.post("/queue/attachment", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const APIAttachmentList = async (queueId) => {
+  return axiosAuth.get("/queue/attachment/" + queueId);
+};
+
+export const APIDeleteAttachment = async (id) => {
+  return axiosAuth.delete("/queue/attachment/" + id);
+};
