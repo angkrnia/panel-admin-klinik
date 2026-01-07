@@ -90,7 +90,7 @@ export const routes = [
             {
                 path: "/sales/detail",
                 name: "sales-detail",
-                component: () => import("@/views/Sales/SalesDetail.vue"),
+                component: () => import("@/views/Sales/SalesDetailV2.vue"),
                 meta: {
                     title: "Detail Penjualan",
                 },
