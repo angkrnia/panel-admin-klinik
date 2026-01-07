@@ -134,7 +134,7 @@
                                 <div class="flex items-start justify-between h-full gap-x-5">
                                     <div class="flex-1 space-y-2">
                                         <div class="flex items-center gap-2">
-                                            <h3 class="font-semibold text-gray-800 text-sm">{{ item.is_compound ? item.compound_name : item.product?.name }}</h3>
+                                            <h3 class="font-bold text-gray-800">{{ item.is_compound ? item.compound_name : item.product?.name }}</h3>
                                             <span v-if="item.is_compound" class="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded-full">PUYER</span>
                                         </div>
                                         <template v-if="!item.is_compound">
@@ -142,7 +142,7 @@
                                                 <Poper content="Kode Obat">
                                                     <div class="flex items-center gap-0.5">
                                                         <ScanBarcode class="shrink-0 h-4 w-4 text-gray-400" />
-                                                        <span>SKU: <strong>{{ item.product?.sku || '-' }}</strong></span>
+                                                        <span>Kode: <strong>{{ item.product?.sku || '-' }}</strong></span>
                                                     </div>
                                                 </Poper>
                                                 <Poper content="Satuan obat">
