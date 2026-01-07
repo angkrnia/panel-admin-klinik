@@ -237,9 +237,9 @@
             </div>
         </div>
 
-        <div class="text-end my-2">
+        <!-- <div class="text-end my-2">
             <p class="text-sm text-gray-500">Total Estimasi: <span class="font-bold text-green-500">{{ convertRp(editData?.estimate_price_total || '-') }}</span></p>
-        </div>
+        </div> -->
     </el-dialog>
 </template>
 
