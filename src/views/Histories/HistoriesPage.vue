@@ -236,6 +236,10 @@
                 </div>
             </div>
         </div>
+
+        <div class="text-end my-2">
+            <p class="text-sm text-gray-500">Total Estimasi: <span class="font-bold text-green-500">{{ convertRp(editData?.estimate_price_total || '-') }}</span></p>
+        </div>
     </el-dialog>
 </template>
 
@@ -249,7 +253,7 @@ import useListDataPaginate from '../../composables/usePagination';
 import useViewData from '../../composables/useViewData';
 import useGetData from '../../composables/useGetData';
 import useEditData from '../../composables/useEditData';
-import { convertDate, convertStatusName, dialogWidth, doctorListHelper } from '../../helpers/utils';
+import { convertDate, convertRp, convertStatusName, dialogWidth, doctorListHelper } from '../../helpers/utils';
 import { ref } from 'vue';
 import PatientCard from '../Pharmacy/partials/PatientCard.vue';
 
