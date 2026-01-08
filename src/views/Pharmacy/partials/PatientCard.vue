@@ -148,7 +148,7 @@
                                                 <Poper content="Satuan obat">
                                                     <div class="flex items-center gap-0.5">
                                                         <Package class="shrink-0 h-4 w-4 text-gray-400" />
-                                                        <span>Satuan: <strong>{{ item?.product_unit?.name || '-' }}</strong></span>
+                                                        <span>Satuan: <strong>{{ item?.product_unit?.unit?.name || '-' }}</strong></span>
                                                     </div>
                                                 </Poper>
                                                 <Poper content="Stok">
