@@ -193,7 +193,7 @@
                                             <div class="flex items-center justify-end gap-1">
                                                 <p>Harga: <span class="font-semibold text-sm text-green-500">{{
                                                             convertRp(item.total_price) }}</span></p>
-                                                <!-- <template v-if="item.IS_CHANGE_PRICE">
+                                                <template v-if="item.IS_CHANGE_PRICE">
                                                     <div class="max-w-28">
                                                         <ElCurrencyInput ref="currencyInputRefs[index]" @keyup.enter="onChangeMedicinePrice(item)" v-model="item.total_price" />
                                                     </div>
@@ -205,7 +205,7 @@
                                                     <Poper content="Edit harga obat">
                                                         <PencilLine class="text-xs size-4 cursor-pointer" @click="item.IS_CHANGE_PRICE = !item.IS_CHANGE_PRICE" />
                                                     </Poper>
-                                                </template> -->
+                                                </template>
                                             </div>
                                             <template v-if="item.additional_price">
                                                 <p class="text-xs text-nowrap font-normal border-b text-gray-500">Biaya Tambahan: <span
@@ -828,13 +828,13 @@ function fetchService() {
 }
 
 function onChangeMedicinePrice(item) {
-    // const data = {
-    //     total_price: item.total_price
-    // }
-    // fetchApi(() => apiMedicineChangePrice(item.queue_id, item.id, data), false, true, () => {
-    //     emit('refresh', props.data);
-    //     item.IS_CHANGE_PRICE = false;
-    // });
+    const data = {
+        total_price: item.total_price
+    }
+    fetchApi(() => apiMedicineChangePrice(item.queue_id, item.id, data), false, true, () => {
+        emit('refresh', props.data);
+        item.IS_CHANGE_PRICE = false;
+    });
 }
 
 watch(
