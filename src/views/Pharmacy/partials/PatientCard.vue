@@ -828,13 +828,13 @@ function fetchService() {
 }
 
 function onChangeMedicinePrice(item) {
-    // const data = {
-    //     total_price: item.total_price
-    // }
-    // fetchApi(() => apiMedicineChangePrice(item.queue_id, item.id, data), false, true, () => {
-    //     emit('refresh', props.data);
-    //     item.IS_CHANGE_PRICE = false;
-    // });
+    const data = {
+        total_price: item.total_price
+    }
+    fetchApi(() => apiMedicineChangePrice(item.queue_id, item.id, data), false, true, () => {
+        emit('refresh', props.data);
+        item.IS_CHANGE_PRICE = false;
+    });
 }
 
 watch(
