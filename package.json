@@ -1,7 +1,7 @@
 {
   "name": "panel-admin-klinik",
   "private": true,
-  "version": "1.0.1",
+  "version": "2.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -54,7 +54,8 @@
                             <span class="text-sm font-medium text-gray-900">{{ item.patient_name }}</span>
                             <span class="ml-2 text-xs text-gray-500">({{ item.patient_record_no || '-' }})</span>
                         </div>
-                        <span class="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">{{ convertPaymentStatus(item.status)
+                        <span class="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full" :class="paymentStatusClass(item.status)">{{
+                            convertPaymentStatus(item.status)
                         }}</span>
                     </div>
                     <div class="text-right">
@@ -90,13 +91,27 @@
 
                     <div class="p-4 sm:px-6">
                         <div class="flex flex-col gap-4">
-                            <div>
-                                <h4 class="text-xs font-medium text-gray-500 uppercase mb-2">Pembayaran</h4>
-                                <p class="text-sm text-gray-900">{{ item.payment_method || '-' }}</p>
+                            <div class="grid grid-cols-1 lg:grid-cols-2">
+                                <div class="space-y-1">
+                                    <h4 class="text-xs font-medium text-gray-500 uppercase">Pembayaran</h4>
+                                    <p class="text-sm text-gray-900">{{ item.payment_method || '-' }}</p>
+                                </div>
+                                <div class="space-y-1">
+                                    <h4 class="text-xs font-medium text-gray-500 uppercase">Catatan</h4>
+                                    <p class="text-sm text-gray-900">{{ item.note || '-' }}</p>
+                                </div>
                             </div>
-                            <div>
-                                <h4 class="text-xs font-medium text-gray-500 uppercase mb-2">Status Transaksi</h4>
-                                <p class="text-sm text-yellow-600 font-medium">{{ convertPaymentStatus(item.status) }}</p>
+                            <div class="grid grid-cols-1 lg:grid-cols-2">
+                                <div class="space-y-1">
+                                    <h4 class="text-xs font-medium text-gray-500 uppercase">Status Transaksi</h4>
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" :class="paymentStatusClass(item.status)">{{
+                                        convertPaymentStatus(item.status)
+                                        }}</span>
+                                </div>
+                                <div class="space-y-1" v-if="item.status === 'canceled'">
+                                    <h4 class="text-xs font-medium text-gray-500 uppercase">Dibatalkan Oleh</h4>
+                                    <p>{{ item.updated_by }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -133,7 +148,7 @@ import { useRouter } from 'vue-router';
 import { saleHeaderPagination } from '../../api/salesApi';
 import useListDataPaginate from '../../composables/usePagination';
 import { people } from '../../helpers/svg';
-import { convertDate, convertPaymentStatus, convertRp, convertStatusName, dateFormatFull, doctorListHelper } from '../../helpers/utils';
+import { convertDate, convertPaymentStatus, convertRp, convertStatusName, dateFormatFull, doctorListHelper, paymentStatusClass } from '../../helpers/utils';
 import { Plus, Printer, View } from 'lucide-vue-next';
 import { Refresh } from '@element-plus/icons-vue';
 import useGetData from '../../composables/useGetData';
@@ -151,32 +166,20 @@ const filters = [
         name: "",
     },
     {
-        label: "Vital Sign",
-        name: "on waiting",
-    },
-    {
-        label: "Menunggu",
+        label: "Menunggu Pembayaran",
         name: "waiting",
     },
     {
-        label: "Diperiksa",
-        name: "on process",
-    },
-    {
-        label: "Terlewat",
-        name: "skiped",
-    },
-    {
-        label: "Batal",
-        name: "canceled",
-    },
-    {
-        label: "Pengambilan Obat",
-        name: "done",
+        label: "Dalam Proses",
+        name: "processing",
     },
     {
         label: "Selesai",
-        name: "completed",
+        name: "done",
+    },
+    {
+        label: "Dibatalkan",
+        name: "canceled",
     },
 ];
 

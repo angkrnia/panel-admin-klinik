@@ -34,3 +34,7 @@ export function apiSalesManualTransaction(data) {
 export function apiSaleDetail(saleId) {
     return axiosAuth.get(`/sales/${saleId}/detail`);
 }
+
+export function apiSaleCancel(saleId, data) {
+    return axiosAuth.put(`/sales/${saleId}/cancel`, data);
+}

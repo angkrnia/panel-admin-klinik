@@ -41,7 +41,7 @@
                 </button>
             </template>
             <div class="grid grid-cols-2 gap-2" v-else-if="data.status === 'done'">
-                <button @click="onShare" v-role="['admin']"
+                <button @click="onOpenDialogCancel" v-role="['admin']"
                     class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-transparent transition hover:bg-slate-50 active:scale-[.99]">
                     <TriangleAlert class="h-4 w-4"></TriangleAlert> Batalkan
                 </button>
@@ -52,17 +52,48 @@
             </div>
         </div>
     </section>
+
+    <!-- cancel dialog -->
+    <el-dialog v-model="cancelDialog" :width="dialogWidth()" top="5vh">
+        <template #header>
+            <h1>Apakah anda yakin?</h1>
+        </template>
+        <el-form label-position="top" class="space-x-10" :model="cancelData" ref="cancelForm">
+            <el-form-item label="Alasan Pembatalan" prop="note" :rules="[{ required: true, message: 'Alasan Pembatalan tidak boleh kosong', trigger: ['blur', 'change'] }]">
+                <el-input type="textarea" show-word-limit maxlength="255" :rows="3" v-model="cancelData.note" placeholder="Alasan Pembatalan" style="width: 100%" />
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <FooterButtonDialog @save-click="onSaveCancel" save-text="Batalkan" @cancel-click="cancelCancel" />
+        </template>
+    </el-dialog>
 </template>
 
 <script setup>
-import { Printer, ReceiptText, Share2, Shield, ShieldCheck, TriangleAlert } from 'lucide-vue-next';
-import { convertRp } from '../../../../helpers/utils';
+import { Printer, ReceiptText, ShieldCheck, TriangleAlert } from 'lucide-vue-next';
+import { convertRp, dialogWidth } from '../../../../helpers/utils';
+import useEditData from '../../../../composables/useEditData';
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
+import { apiSaleCancel } from '../../../../api/salesApi';
 
 const props = defineProps({
     data: Object,
 });
 
+const route = useRoute();
+const saleId = computed(() => route.query.sId);
+
 const emit = defineEmits(['click-bayar']);
+
+const [
+    cancelData,
+    cancelForm,
+    cancelDialog,
+    openCancelDialog,
+    saveCancel,
+    cancelCancel,
+] = useEditData({ returnAsArray: true });
 
 function onClickBayar() {
     emit('click-bayar');
@@ -72,7 +103,17 @@ function onPrint() {
     window.open('/sales/print?receipt_number=' + props.data.receipt_number, '_blank');
 }
 
-const onShare = () => {
-    navigator.clipboard.writeText(window.location.href);
+const onOpenDialogCancel = () => {
+    cancelData.value.saleId = saleId.value;
+    cancelData.value.otp = "0000";
+    openCancelDialog(cancelData.value)
+}
+
+function onSaveCancel() {
+    saveCancel(apiSaleCancel, 'saleId', (data) => {
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    })
 }
 </script>
