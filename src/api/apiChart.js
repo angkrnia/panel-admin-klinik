@@ -68,3 +68,8 @@ export function APISummaryLayanan(params = {}) {
 export function APIStatisticsPatient() {
   return axiosAuth.get("/chart/summary-patient");
 }
+
+export function APITopMedicines() {
+  return axiosAuth.get("/chart/top-medicines");
+}
+
