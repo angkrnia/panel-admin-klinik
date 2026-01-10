@@ -43,7 +43,7 @@
 import { ref } from 'vue'
 import { convertRp, formatCurrencyToString, formatRibuan } from '../../helpers/utils'
 import useGetData from '../../composables/useGetData';
-import { APIStatisticsPatient, APITransactionDateByDate } from '../../api/apiChart';
+import { APIStatisticsPatient, APITopMedicines, APITransactionDateByDate } from '../../api/apiChart';
 
 const { 1: fetchData, 2: isLoading } = useGetData();
 
@@ -109,7 +109,7 @@ const layanan = ref({
         data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
     }, {
         name: 'Tindakan',
-        data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+        data: [35, 41, 36, 26, 45, 48, 52,  53, 41]
     }],
     options: {
         chart: {
@@ -283,12 +283,12 @@ const gender = ref({
 })
 
 const topObat = ref({
-    series: [44, 55, 41, 17, 15],
+    series: [],
     options: {
         chart: {
             type: 'donut',
         },
-        labels: ['Paracetamol', 'Amoxicillin', 'Ibuprofen', 'Antalgin', 'Vitamin C'],
+        labels: [],
         plotOptions: {
             pie: {
                 startAngle: -90,
@@ -350,6 +350,17 @@ function getTransactionDateByDate() {
     });
 }
 
+function getTopMedicines() {
+    fetchData(APITopMedicines, false, true, (data) => {
+        if (data) {
+            topObat.value.series = data.map(item => item.quantity);
+            topObat.value.options.labels = data.map(item => item.product_name);
+            topObatIndex.value = new Date().getTime();
+        }
+    })
+}
+
 getTransactionDateByDate();
 getStatisticPatient();
+getTopMedicines();
 </script>
