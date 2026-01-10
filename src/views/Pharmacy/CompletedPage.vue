@@ -3,13 +3,24 @@
     <section>
         <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
             <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate">
-                <el-button :icon="Refresh" @click="doPaginate">Refresh</el-button>
+                <el-button :icon="Refresh" @click="() => doPaginate(pageIndex)">Refresh</el-button>
             </SearchAndPagination2>
         </div>
         <div class="py-5">
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
-                <el-table-column prop="queue" align="center" label="No. Antrian" />
-                <el-table-column show-overflow-tooltip prop="status" min-width="180" align="center" label="Status">
+                <el-table-column prop="queue" align="center" label="No. Antrian">
+                    <template #default="{ row }">
+                        <div class="flex flex-col items-center">
+                            <el-tag type="primary" class="mb-1.5">
+                                {{ row.queue }}
+                            </el-tag>
+                            <span class="text-xs text-gray-400 leading-none">
+                                {{ convertDate(row.created_at) }}
+                            </span>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column show-overflow-tooltip prop="status" min-width="150" align="center" label="Status">
                     <template #default="{ row }">
                         <el-tag type="success">{{ convertStatusName(row.status) }}</el-tag>
                     </template>
@@ -26,11 +37,11 @@
                         <p class="line-clamp-1">{{ scope.row.patient.address }}</p>
                     </template>
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="created_at" label="Dibuat">
+                <!-- <el-table-column show-overflow-tooltip prop="created_at" label="Dibuat">
                     <template #default="scope">
                         {{ convertDate(scope.row.created_at) }}
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <!-- Untuk kolom aksi -->
                 <TableColumnAction show-view @click-view="onViewDialog" />
             </el-table>
@@ -155,7 +166,7 @@ const { viewData, viewDialog, closeView, openViewDialog } = useViewData();
 filterData.value = {
     status: 'vital-sign',
     data: 'all',
-    sort: 'asc'
+    sort: 'desc'
 }
 
 function doPaginate(index, pSize) {
