@@ -3,6 +3,8 @@
     <section>
         <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
             <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate">
+                <el-date-picker @change="onFilterData" v-model="filterData.date" type="date" placeholder="Pilih tanggal kunjungan" value-format="YYYY-MM-DD" format="YYYY-MM-DD"
+                    :shortcuts="shortcuts" />
                 <el-button :icon="Refresh" @click="() => doPaginate(pageIndex)">Refresh</el-button>
             </SearchAndPagination2>
         </div>
@@ -119,6 +121,7 @@ import { apiAcceptMedicine, apiListMedicineByQueue, apiListTindakanByQueue } fro
 import useViewData from '../../composables/useViewData';
 import { Refresh } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
+import ElDateRangeInput from '../../components/ElDateRangeInput.vue';
 
 const router = useRouter();
 const doctorList = ref([]);
@@ -129,6 +132,20 @@ const queueInfo = ref({
     doctor: 'dr. Friska Yeni Sinamo',
     patient: 'Jhon',
 });
+const shortcuts = [
+    {
+        text: 'Hari Ini',
+        value: new Date(),
+    },
+    {
+        text: 'Kemarin',
+        value: () => {
+            const date = new Date()
+            date.setDate(date.getDate() - 1)
+            return date
+        },
+    },
+]
 
 const {
     listData,
@@ -185,6 +202,10 @@ function onPaginate(pageSize) {
 
 function changePage(index = 1) {
     changeIndex(() => doPaginate(index), index);
+}
+
+function onFilterData() {
+    changeIndex(() => doPaginate(), pageIndex.value, null, filterData.value);
 }
 
 function onSaveAdd() {
