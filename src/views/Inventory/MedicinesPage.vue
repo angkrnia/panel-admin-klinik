@@ -194,7 +194,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <el-form-item class="space-y-2">
                                     <label class="block text-sm font-medium text-gray-700">Satuan</label>
-                                    <el-select v-model="unit.unit_id" placeholder="Pilih Satuan" filterable clearable style="width: 100%" @change="onChangeUnit(unit)">
+                                    <el-select v-model="unit.unit_id" placeholder="Pilih Satuan" filterable clearable style="width: 100%" @change="onChangeUnit(unit, 'edit')">
                                         <el-option v-for="item in unitList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                                     </el-select>
                                 </el-form-item>
@@ -373,6 +373,12 @@ function onEditDialog(row) {
             }
         ]
     }
+    // mapping si unitsnya
+    const mappedUnits = editData.value.units.map((unit) => ({
+        ...unit,
+        id: unit.pivot.id,
+    }))
+    editData.value.units = mappedUnits;
     getCategoryList(APIGetCategoriesSelect);
     getUnitList(APIGetUnitsSelect);
     getGroupList(APIGetGroupsSelect);
@@ -545,10 +551,15 @@ function removeEditUnit(index) {
     editData.value.units.splice(index, 1);
 }
 
-function onChangeUnit(unit) {
+function onChangeUnit(unit, type = 'add') {
     if (unit.is_base) {
-        addData.value.units[0].unit_name = unit.name;
-        addData.value.units[0].conversion_to_base = 1;
+        if (type === 'add') {
+            addData.value.units[0].unit_name = unit.name;
+            addData.value.units[0].conversion_to_base = 1;
+        } else {
+            editData.value.units[0].unit_name = unit.name;
+            editData.value.units[0].conversion_to_base = 1;
+        }
     }
 }
 
