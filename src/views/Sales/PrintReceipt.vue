@@ -240,7 +240,6 @@ firstLoad()
 
   .receipt-container {
     width: 58mm;
-    height: auto;
     margin: 0 auto;
     padding: 0;
     overflow: hidden;
