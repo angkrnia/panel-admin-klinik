@@ -235,7 +235,9 @@ firstLoad()
     width: 58mm;
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
+    height: auto !important;
+    overflow: hidden !important;
   }
 
   .receipt-container {
@@ -244,6 +246,9 @@ firstLoad()
     padding: 0;
     overflow: hidden;
     box-sizing: border-box;
+    page-break-after: avoid;
+    page-break-before: avoid;
+    page-break-inside: avoid;
   }
 
   * {
@@ -251,6 +256,10 @@ firstLoad()
     font-size: 10px !important;
     /* -webkit-print-color-adjust: exact;
     print-color-adjust: exact; */
+    color: #000 !important;
+    background: transparent !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   img {
@@ -282,7 +291,7 @@ firstLoad()
 }
 
 .receipt-container::before {
-    content: '';
+    /* content: '';
     position: absolute;
     top: 50%;
     left: 50%;
@@ -294,6 +303,6 @@ firstLoad()
     opacity: 0.2;
     transform: translate(-50%, -50%);
     z-index: 0;
-    pointer-events: none;
+    pointer-events: none; */
 }
 </style>
