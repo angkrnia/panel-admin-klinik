@@ -99,17 +99,18 @@
 
     <div v-else v-loading="isLoading" class="b bg-white mx-auto receipt-container max-w-[7.9cm] w-full rounded-lg overflow-hidden text-xs">
         <!-- Logo and pharmacy name -->
-        <div class="pt-6 pb-4 flex flex-col items-center">
+        <div class="pt-6 pb-4 flex flex-col items-center !w-full">
             <!-- <img src="/images/logo.png" alt="Logo" width="80" /> -->
-            <h1 class="text-sm font-bold text-gray-800 leading-4">KLINIK CEMPAKA MEDIKA</h1>
-            <p class="text-xs text-gray-600 mt-1 px-8 text-center leading-4">Jl. Raya Cisoka - Megu, Kec. Cisoka, Kabupaten Tangerang, Banten</p>
+            <h1 class="text-sm font-bold text-gray-800 text-center leading-4 !w-full">KLINIK CEMPAKA MEDIKA</h1>
+            <p class="text-xs text-gray-600 text-center leading-4 !w-full">Jl. Raya Cisoka - Megu</p>
+            <p class="text-xs text-gray-600 text-center leading-4 !w-full">Kec. Cisoka, Kabupaten Tangerang, Banten</p>
         </div>
 
         <!-- Divider -->
-        <div class="border-b border-dashed border-black mx-4"></div>
+        <div class="border-b border-dashed border-black"></div>
 
         <!-- Receipt details -->
-        <div class="px-6 py-3 text-gray-700">
+        <div class="py-2 text-gray-700">
             <div>
                 <!-- <p v-if="data.queue">Antrian: {{ data.queue.queue }}</p> -->
                 <p>Kode: #{{ data.receipt_number }}</p>
@@ -122,11 +123,11 @@
         </div>
 
         <!-- Divider -->
-        <div class="border-b border-dashed border-black mx-4"></div>
+        <div class="border-b border-dashed border-black"></div>
 
         <!-- Item details -->
-        <div>
-            <div class="px-6 py-1" v-for="(item, index) in data?.sale_services" :key="index">
+        <div class="py-1">
+            <div v-for="(item, index) in data?.sale_services" :key="index">
                 <div class="flex justify-between">
                     <div class="font-semibold text-gray-800">{{ item.service_type_name }}</div>
                 </div>
@@ -135,7 +136,7 @@
                     <div>{{ convertRp(item.total_price) }}</div>
                 </div>
             </div>
-            <div class="px-6 py-1" v-for="(item, index) in data?.sale_tindakans" :key="index">
+            <div v-for="(item, index) in data?.sale_tindakans" :key="index">
                 <div class="flex justify-between">
                     <div class="font-semibold text-gray-800">{{ item.tindakan_name }}</div>
                 </div>
@@ -144,7 +145,7 @@
                     <div>{{ convertRp(item.total_price) }}</div>
                 </div>
             </div>
-            <div class="px-6 py-1" v-for="(item, index) in data?.sale_details" :key="index">
+            <div v-for="(item, index) in data?.sale_details" :key="index">
                 <div class="flex justify-between">
                     <div class="font-semibold text-gray-800">{{ item.product_name }}</div>
                 </div>
@@ -156,22 +157,22 @@
         </div>
 
         <!-- Divider -->
-        <div class="border-b border-dashed border-black mx-4"></div>
+        <div class="border-b border-dashed border-black"></div>
 
         <!-- Subtotal -->
-        <div class="px-6 pt-3 flex justify-between text-gray-700">
+        <div class="pt-2 flex justify-between text-gray-700">
             <div>Sub Total</div>
             <div>{{ convertRp(data?.grand_total) }}</div>
         </div>
 
         <!-- Total -->
-        <div class="px-6 flex justify-between font-bold text-sm">
+        <div class="flex justify-between font-bold text-sm">
             <div>Total</div>
             <div>{{ convertRp(data?.grand_total) }}</div>
         </div>
 
         <!-- Payment details -->
-        <div class="px-6 pb-3">
+        <div class="pb-2">
             <div class="flex justify-between text-gray-700">
                 <div>Bayar ({{ data.payment_method }})</div>
                 <div>{{ convertRp(data.paid_amount) }}</div>
@@ -183,10 +184,10 @@
         </div>
 
         <!-- Divider -->
-        <div class="border-b border-dashed border-black mx-4"></div>
+        <div class="border-b border-dashed border-black"></div>
 
         <!-- Footer -->
-        <div class="p-4 text-center">
+        <div class="py-2 text-center">
             <p class="text-emerald-600 font-semibold">Semoga Lekas Sembuh</p>
             <p class="text-gray-500 text-xs">Terima kasih atas kepercayaan Anda</p>
             <p class="text-gray-500 text-xs">Keluhan: 082264579334</p>
@@ -227,24 +228,26 @@ firstLoad()
 <style scoped>
 @media print {
   @page {
-    size: 58mm auto;
-    margin: 0;
+    /* min-size: 58mm auto; */
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
 
   html, body {
-    width: 58mm;
-    margin: 0;
-    padding: 0;
+    /* min-width: 58mm; */
+    margin: 0 !important;
+    padding: 0 !important;
     /* overflow-x: hidden; */
     height: auto !important;
     overflow: hidden !important;
   }
 
   .receipt-container {
-    width: 58mm;
-    margin: 0 auto;
-    padding: 0;
-    overflow: hidden;
+    /* min-width: 58mm; */
+    margin: 0 auto !important;
+    padding: 0 !important;
+    overflow: hidden !important;
     box-sizing: border-box;
     page-break-after: avoid;
     page-break-before: avoid;
