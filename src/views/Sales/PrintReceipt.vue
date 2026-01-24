@@ -250,8 +250,8 @@ firstLoad()
   * {
     max-width: 100%;
     font-size: 10px !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    /* -webkit-print-color-adjust: exact;
+    print-color-adjust: exact; */
   }
 
   img {
