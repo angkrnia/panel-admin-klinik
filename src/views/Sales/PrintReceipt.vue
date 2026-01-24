@@ -1,6 +1,6 @@
 <template>
     <template v-if="isLoading">
-        <div class="bg-white mx-auto receipt-container max-w-[7.9cm] w-full rounded-lg shadow-sm relative">
+        <div class="bg-white mx-auto receipt-container max-w-[7.8cm] w-full rounded-lg shadow-sm relative">
             <!-- Header with Logo -->
             <div class="text-center mb-6">
                 <!-- <div class="skeleton w-12 h-12 rounded-full mx-auto mb-3"></div> -->
@@ -249,7 +249,7 @@ firstLoad()
 
   * {
     max-width: 100%;
-    font-size: 12px !important;
+    font-size: 10px !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
