@@ -189,7 +189,7 @@
         <div class="p-4 text-center">
             <p class="text-emerald-600 font-semibold">Semoga Lekas Sembuh</p>
             <p class="text-gray-500 text-xs">Terima kasih atas kepercayaan Anda</p>
-            <p class="text-gray-500 text-xs">Keluhan: 082216026507</p>
+            <p class="text-gray-500 text-xs">Keluhan: 082264579334</p>
         </div>
 
         <div class="print:hidden flex items-center w-full justify-center mb-3">
