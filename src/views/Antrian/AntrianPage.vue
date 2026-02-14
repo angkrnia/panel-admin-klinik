@@ -238,7 +238,7 @@ const filters = [
     },
     {
         label: "Vital Sign",
-        name: "on waiting",
+        name: "on_waiting",
         icon: HeartPulse,
     },
     {
@@ -248,7 +248,7 @@ const filters = [
     },
     {
         label: "Diperiksa",
-        name: "on process",
+        name: "on_process",
         icon: Stethoscope,
     },
     {

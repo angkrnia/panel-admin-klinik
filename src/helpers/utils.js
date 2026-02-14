@@ -213,9 +213,13 @@ export function convertStatusName(status) {
     switch (status) {
         case "on waiting":
             return "Pemeriksaan Perawat";
+        case "on_waiting":
+            return "Pemeriksaan Perawat";
         case "waiting":
             return "Menunggu Panggilan Dokter";
         case "on process":
+            return "Diperiksa Dokter";
+        case "on_process":
             return "Diperiksa Dokter";
         case "done":
             return "Pengambilan Obat";
