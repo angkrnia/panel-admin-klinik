@@ -198,7 +198,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { apiSalePrint } from '../../api/salesApi';
 import { convertDate, convertRp, messageInfo } from '../../helpers/utils';
@@ -208,11 +208,22 @@ const [data, getData, isLoading] = useGetData({ defaultLoading: true });
 const route = useRoute();
 const trxId = computed(() => route.query.receipt_number || route.query.trxId)
 
+const hasPrinted = ref(false)
+
 function firstLoad() {
     if (!trxId.value) {
         messageInfo('Data tidak valid!')
     } else {
-        getData(() => apiSalePrint(trxId.value), true, true);
+        getData(() => apiSalePrint(trxId.value), true, true, async () => {
+            if (hasPrinted.value) return
+
+            hasPrinted.value = true
+
+            await nextTick()
+            setTimeout(() => {
+                window.print()
+            }, 500)
+        });
     }
 }
 
