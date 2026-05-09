@@ -841,7 +841,8 @@ watch(
     () => props.data,
     (newVal, oldVal) => {
         if (newVal) fetchService()
-    }
+    },
+    { immediate: true }
 )
 
 </script>

@@ -11,7 +11,6 @@ export const useAppStore = defineStore("app", {
       role: null,
     },
     menuList: [],
-    isAdmin: false,
   }),
   actions: {
     setMenuList(data) {

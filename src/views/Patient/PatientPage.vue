@@ -7,8 +7,21 @@
         </TitleDashboard>
         <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
             <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate">
-                <el-button :icon="Refresh" @click="doPaginate">Refresh</el-button>
-            </SearchAndPagination2>
+            <div class="h-[35px] flex items-center">
+                <el-select v-model="filterData.gender" clearable placeholder="Semua Gender" @change="changePage(1)" style="width: 150px;" class="mr-2">
+                    <el-option label="Semua Gender" value="" />
+                    <el-option label="Laki-Laki" value="L" />
+                    <el-option label="Perempuan" value="P" />
+                </el-select>
+                <el-select v-model="filterData.search_by" clearable placeholder="Cari Berdasarkan" @change="changePage(1)" style="width: 160px;" class="mr-2">
+                    <el-option label="Semua Kolom" value="" />
+                    <el-option label="Nama Saja" value="fullname" />
+                    <el-option label="Keluarga Saja" value="nama_keluarga" />
+                    <el-option label="No HP Saja" value="phone" />
+                </el-select>
+                <el-button :icon="Refresh" @click="doPaginate(1)">Refresh</el-button>
+            </div>
+        </SearchAndPagination2>
         </div>
         <div class="py-5">
             <el-table :data="listData" v-loading="loading" stripe border style="width: 100%">
@@ -17,27 +30,47 @@
                         {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
                     </template>
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="record_no" label="No. RM" />
-                <el-table-column show-overflow-tooltip prop="fullname" label="Nama Pasien" min-width="170" />
-                <el-table-column show-overflow-tooltip prop="nama_keluarga" label="Nama Keluarga" min-width="170" />
-                <el-table-column show-overflow-tooltip prop="gender" label="Gender" min-width="90" />
-                <el-table-column show-overflow-tooltip prop="no_ktp" label="No. KTP">
+                <el-table-column show-overflow-tooltip label="No. RM" min-width="120">
                     <template #default="scope">
-                        <p class="line-clamp-1">{{ scope.row.no_ktp || '-' }}</p>
+                        <span v-html="highlight(scope.row.record_no, search)"></span>
                     </template>
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="phone" label="No. HP" min-width="150" />
+                <el-table-column show-overflow-tooltip label="Nama Pasien" min-width="170">
+                    <template #default="scope">
+                        <span v-html="highlight(scope.row.fullname, search)"></span>
+                    </template>
+                </el-table-column>
+                <el-table-column show-overflow-tooltip label="Nama Keluarga" min-width="170">
+                    <template #default="scope">
+                        <span v-html="highlight(scope.row.nama_keluarga || '-', search)"></span>
+                    </template>
+                </el-table-column>
+                <el-table-column show-overflow-tooltip prop="gender" label="Gender" min-width="90" />
+                <el-table-column show-overflow-tooltip label="No. KTP" min-width="150">
+                    <template #default="scope">
+                        <p class="line-clamp-1" v-html="highlight(scope.row.no_ktp || '-', search)"></p>
+                    </template>
+                </el-table-column>
+                <el-table-column show-overflow-tooltip label="No. HP" min-width="150">
+                    <template #default="scope">
+                        <span v-html="highlight(scope.row.phone || '-', search)"></span>
+                    </template>
+                </el-table-column>
                 <el-table-column show-overflow-tooltip prop="birthday" label="Umur" min-width="150">
                     <template #default="scope">
                         {{ scope.row.birthday }} ({{ scope.row.age }} thn)
                     </template>
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="allergy" label="Alergi" min-width="180">
+                <el-table-column show-overflow-tooltip prop="allergy" label="Alergi" min-width="120">
                     <template #default="scope">
                         <p class="line-clamp-1">{{ scope.row.allergy || '-' }}</p>
                     </template>
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="address" label="Alamat" min-width="180" />
+                <el-table-column show-overflow-tooltip label="Alamat" min-width="200">
+                    <template #default="scope">
+                        <span v-html="highlight(scope.row.address || '-', search)"></span>
+                    </template>
+                </el-table-column>
                 <el-table-column show-overflow-tooltip prop="created_at" label="Dibuat" min-width="120">
                     <template #default="scope">
                         {{ convertDate(scope.row.created_at) }}
@@ -226,7 +259,7 @@ import useAddData from '../../composables/useAddData';
 import useDeleteData from '../../composables/useDeleteData';
 import useEditData from '../../composables/useEditData';
 import usePagination from '../../composables/usePagination';
-import { convertDate, convertRp, dialogWidth, doctorListHelper, labelPosition, messageInfo } from '../../helpers/utils';
+import { convertDate, convertRp, dialogWidth, doctorListHelper, labelPosition, messageInfo, highlight } from '../../helpers/utils';
 import { patientRule } from '../../rules/patientRules';
 import { tambahAntrian } from '../../api/antrianApi';
 import { queueRule } from '../../rules/queueRule';

@@ -43,16 +43,16 @@
 import { ref } from 'vue'
 import { convertRp, formatCurrencyToString, formatRibuan } from '../../helpers/utils'
 import useGetData from '../../composables/useGetData';
-import { APIStatisticsPatient, APITopMedicines, APITransactionDateByDate } from '../../api/apiChart';
+import { APIMedicineMovementChart, APIStatisticChart, APIStatisticsPatient, APITopMedicines, APITransactionDateByDate } from '../../api/apiChart';
 
 const { 1: fetchData, 2: isLoading } = useGetData();
 
-const salesIndex = ref(null)
-const layananIndex = ref(null)
-const ageIndex = ref(null)
-const obatIndex = ref(null)
-const genderIndex = ref(null)
-const topObatIndex = ref(null)
+const salesIndex = ref(0)
+const layananIndex = ref(0)
+const ageIndex = ref(0)
+const obatIndex = ref(0)
+const genderIndex = ref(0)
+const topObatIndex = ref(0)
 
 const sales = ref({
     series: [{
@@ -103,13 +103,13 @@ const sales = ref({
 const layanan = ref({
     series: [{
         name: 'Layanan',
-        data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
+        data: []
     }, {
         name: 'Obat',
-        data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+        data: []
     }, {
         name: 'Tindakan',
-        data: [35, 41, 36, 26, 45, 48, 52,  53, 41]
+        data: []
     }],
     options: {
         chart: {
@@ -138,7 +138,7 @@ const layanan = ref({
             colors: ['transparent']
         },
         xaxis: {
-            categories: ['1 Jul', '2 Jul', '3 Jul', '4 Jul', '5 Jul', '6 Jul', '7 Jul', '8 Jul', '9 Jul'],
+            categories: [],
         },
         yaxis: {
             title: {
@@ -201,11 +201,11 @@ const obat = ref({
     series: [{
         name: 'Obat Keluar',
         type: 'column',
-        data: [440, 505, 414, 671, 227, 413, 201, 352, 752, 320, 257, 160]
+        data: []
     }, {
         name: 'Obat Masuk',
         type: 'line',
-        data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16]
+        data: []
     }],
     options: {
         chart: {
@@ -224,7 +224,7 @@ const obat = ref({
                 return formatRibuan(val);
             },
         },
-        labels: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan', '08 Jan', '09 Jan', '10 Jan', '11 Jan', '12 Jan'],
+        labels: [],
     }
 })
 
@@ -283,12 +283,12 @@ const gender = ref({
 })
 
 const topObat = ref({
-    series: [],
+    series: [1],
     options: {
         chart: {
             type: 'donut',
         },
-        labels: [],
+        labels: ['Tidak ada data'],
         plotOptions: {
             pie: {
                 startAngle: -90,
@@ -340,6 +340,18 @@ function getStatisticPatient() {
     })
 }
 
+function getStatisticChart() {
+    fetchData(APIStatisticChart, false, true, (data) => {
+        if (data) {
+            layanan.value.options.xaxis.categories = data.map((item) => item.date);
+            layanan.value.series[0].data = data.map((item) => item.layanan);
+            layanan.value.series[1].data = data.map((item) => item.obat);
+            layanan.value.series[2].data = data.map((item) => item.tindakan);
+            layananIndex.value = new Date().getTime();
+        }
+    })
+}
+
 function getTransactionDateByDate() {
     fetchData(APITransactionDateByDate, false, true, (data) => {
         if (data) {
@@ -352,15 +364,31 @@ function getTransactionDateByDate() {
 
 function getTopMedicines() {
     fetchData(APITopMedicines, false, true, (data) => {
-        if (data) {
-            topObat.value.series = data.map(item => item.quantity);
+        if (data?.length) {
+            topObat.value.series = data.map(item => Number(item.quantity));
             topObat.value.options.labels = data.map(item => item.product_name);
-            topObatIndex.value = new Date().getTime();
+        } else {
+            topObat.value.series = [1];
+            topObat.value.options.labels = ['Tidak ada data'];
+        }
+        topObatIndex.value = new Date().getTime();
+    })
+}
+
+function getMedicineMovementChart() {
+    fetchData(APIMedicineMovementChart, false, true, (data) => {
+        if (data) {
+            obat.value.options.labels = data.map((item) => item.date);
+            obat.value.series[0].data = data.map((item) => item.medicine_out);
+            obat.value.series[1].data = data.map((item) => item.medicine_in);
+            obatIndex.value = new Date().getTime();
         }
     })
 }
 
 getTransactionDateByDate();
+getStatisticChart();
 getStatisticPatient();
+getMedicineMovementChart();
 getTopMedicines();
 </script>

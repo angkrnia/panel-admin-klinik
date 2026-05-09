@@ -65,6 +65,14 @@ export function APISummaryLayanan(params = {}) {
   return axiosAuth.get(`/chart/summary-layanan?${urlParams.toString()}`);
 }
 
+export function APIStatisticChart() {
+  return axiosAuth.get("/chart/statistic");
+}
+
+export function APIMedicineMovementChart() {
+  return axiosAuth.get("/chart/medicine-movement");
+}
+
 export function APIStatisticsPatient() {
   return axiosAuth.get("/chart/summary-patient");
 }

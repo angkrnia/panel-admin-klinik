@@ -3,7 +3,7 @@
         <div class="flex items-start justify-between overflow-hidden h-full w-full shadow-lg">
             <el-menu background-color="#2563eb" text-color="#f8fafc" active-text-color="#cbd5e1" :default-active="defaultActive" class="el-menu-demo" mode="horizontal" ellipsis
                 menu-trigger="click" close-on-click-outside :ellipsis-icon="Menu">
-                <template v-for="(item, index) in menuList" :key="index">
+                <template v-for="item in menuList" :key="item.path">
                     <template v-if="item.hasChildren">
                         <el-sub-menu :index="item.path">
                             <template #title>
@@ -12,7 +12,7 @@
                                     <p>{{ item.title }}</p>
                                 </div>
                             </template>
-                            <template v-for="(child, idx) in item.children" :key="idx">
+                            <template v-for="child in item.children" :key="child.path">
                                 <el-menu-item @click="$router.push(child.path)" :index="child.path">
                                     <div class="flex items-center gap-1">
                                         <component :is="child.icon" class="size-4" />
