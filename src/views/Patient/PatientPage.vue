@@ -6,6 +6,11 @@
             </template>
         </TitleDashboard>
         <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
+            <div class="mb-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-700">
+                <p class="font-semibold">Tips pencarian pasien:</p>
+                <p>Gunakan format: nama lengkap, nama pasien + nama keluarga, atau nama pasien + alamat.</p>
+                <p class="text-blue-500 font-black">Contoh: jajang saepudin, arif saepudin cikasungka, asep marsinah, hendra cikasungka</p>
+            </div>
             <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate">
             <div class="h-[35px] flex items-center">
                 <el-select v-model="filterData.gender" clearable placeholder="Semua Gender" @change="changePage(1)" style="width: 150px;" class="mr-2">
@@ -307,7 +312,8 @@ const queueInfo = ref({
 });
 
 function doPaginate(index, pSize) {
-    getListData(listPasienPagination, index, pSize ? pSize : pageSize.value, search.value, filterData.value);
+    const limit = pSize || (pageSize.value < 10 ? 10 : pageSize.value);
+    getListData(listPasienPagination, index, limit, search.value, filterData.value);
 }
 
 function onSearch(textSearch) {
