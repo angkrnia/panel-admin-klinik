@@ -1,4 +1,4 @@
-export const routes = [
+﻿export const routes = [
     {
         path: "/",
         redirect: "/dashboard",
@@ -85,6 +85,13 @@ export const routes = [
                 component: () => import("@/views/Reports/DoctorFeeReport.vue"),
                 meta: {
                     title: "Fee Dokter",
+                },
+            },            {
+                path: "/reports/visit-time-analysis",
+                name: "visit-time-analysis",
+                component: () => import("@/views/Reports/VisitTimeAnalysisPage.vue"),
+                meta: {
+                    title: "Analisis Waktu Kunjungan",
                 },
             },
             {
@@ -231,3 +238,5 @@ export const routes = [
         },
     },
 ];
+
+

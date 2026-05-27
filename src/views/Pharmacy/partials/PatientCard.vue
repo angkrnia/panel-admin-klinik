@@ -47,6 +47,24 @@
                         <p class="text-sm text-gray-500 font-bold">Nama Keluarga</p>
                         <p class="font-medium">{{ data?.patient?.nama_keluarga || '-' }}</p>
                     </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <p class="text-sm text-gray-500 font-bold">Jenis Kelamin</p>
+                            <p class="font-medium">{{ patientGender }}</p>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-sm text-gray-500 font-bold">Usia</p>
+                            <p class="font-medium">{{ data?.patient?.age || '-' }}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-sm text-gray-500 font-bold">Alamat</p>
+                        <p class="font-medium whitespace-pre-line">{{ data?.patient?.address || '-' }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-sm text-gray-500 font-bold">Alergi</p>
+                        <p class="font-medium" :class="data?.patient?.has_allergy ? 'text-red-600' : ''">{{ patientAllergy }}</p>
+                    </div>
                     <div class="space-y-1">
                         <p class="text-sm text-gray-500 font-bold">Dokter</p>
                         <p class="font-medium">{{ data?.doctor?.fullname || '-' }}</p>
@@ -107,33 +125,36 @@
 
             <!-- Daftar Obat -->
             <div class="bg-white rounded-lg shadow-md p-4 md:col-span-2">
-                <div class="flex items-center gap-x-2 mb-4">
-                    <h2 class="text-xl font-semibold flex items-center gap-2">
-                        <div v-html="capsulePill" class="size-5 text-indigo-400"></div>
-                        Daftar Obat
-                    </h2>
-                    <template v-if="!hideAction">
-                        <el-tooltip class="box-item" effect="dark" content="Refresh" placement="top">
-                            <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
-                        </el-tooltip>
-                    </template>
+                <div class="sticky top-0 z-20 -mx-4 -mt-4 mb-4 border-b bg-white/95 px-4 py-4 backdrop-blur">
+                    <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-x-2">
+                                <h2 class="text-xl font-semibold flex items-center gap-2">
+                                    <div v-html="capsulePill" class="size-5 text-indigo-400"></div>
+                                    Daftar Obat
+                                </h2>
+                                <template v-if="!hideAction">
+                                    <el-tooltip class="box-item" effect="dark" content="Refresh" placement="top">
+                                        <ArrowPathIcon class="size-5 text-blue-500 cursor-pointer" @click="fetchMedicine" />
+                                    </el-tooltip>
+                                </template>
+                            </div>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="rounded-full bg-gray-100 px-3 py-1 font-medium text-gray-700">Total: {{ medicineSummary.total }}</span>
+                                <span class="rounded-full bg-orange-50 px-3 py-1 font-medium text-orange-700">Racikan: {{ medicineSummary.compound }}</span>
+                                <span class="rounded-full bg-indigo-50 px-3 py-1 font-medium text-indigo-700">Non Racikan: {{ medicineSummary.single }}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="space-y-2">
                     <template v-if="!loadingMedicine">
                         <template v-for="(item, index) in medicineList" :key="index">
                             <!-- NEW -->
-                            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 relative overflow-hidden">
-                                <template v-if="item.status == 'rejected'">
-                                    <div class="absolute w-full h-full top-0 bottom-0 left-0 right-0 flex items-center justify-center bg-gray-300/80 z-10">
-                                        <div class="bg-red-400 rounded-full py-2 px-6">
-                                            <p class="text-sm text-white">{{ item.status_name }}</p>
-                                        </div>
-                                    </div>
-                                </template>
-
+                            <div class="bg-white rounded-lg shadow-sm border p-3 relative overflow-hidden transition-colors" :class="item.is_compound ? 'border-orange-200 bg-orange-50/20' : 'border-gray-200'">
                                 <div class="flex items-start justify-between h-full gap-x-5">
                                     <div class="flex-1 space-y-2">
-                                        <div class="flex items-center gap-2">
+                                        <div class="flex flex-wrap items-center gap-2">
                                             <h3 class="font-bold text-gray-800">{{ item.is_compound ? item.compound_name : item.product?.name }}</h3>
                                             <span v-if="item.is_compound" class="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded-full">PUYER</span>
                                         </div>
@@ -215,17 +236,19 @@
                                                     convertRp(Number(item.additional_price) + Number(item.total_price)) }}</span></p>
                                             </template>
                                         </div>
-                                        <div class="flex">
+                                        <div class="flex flex-wrap justify-end gap-2">
                                             <el-button type="primary" size="small" :icon="Info" @click="onDetailMedicine(item)">Detail</el-button>
-                                            <template v-if="!hideAction && item.status !== 'rejected'">
-                                                <el-button type="danger" size="small" :icon="Close" @click="onCancelMedicine(item)">Cancel</el-button>
+                                            <template v-if="!hideAction">
+                                                <el-button plain type="danger" size="small" :icon="Close" @click="onCancelMedicine(item)">Cancel</el-button>
                                             </template>
                                         </div>
                                     </div>
                                 </div>
                                 <template v-if="item.is_compound">
-                                    <div class="flex flex-wrap items-center text-xs text-gray-600">
-                                        <h1 class="font-medium text-gray-800 text-sm mb-1">Daftar Obat Racikan:</h1>
+                                    <div class="mt-3 flex flex-wrap items-center text-xs text-gray-600">
+                                        <h1 class="font-medium text-gray-800 text-sm">Daftar Obat Racikan: {{ item.compound_meds?.length || 0 }} item</h1>
+                                    </div>
+                                    <div class="mt-2 flex flex-wrap items-center text-xs text-gray-600">
                                         <el-table :data="item.compound_meds" stripe border style="width: 100%" size="small">
                                             <el-table-column prop="product.name" min-width="150" label="Obat" />
                                             <el-table-column prop="product.sku" label="SKU" />
@@ -452,6 +475,60 @@
                             <p class="text-sm text-gray-500 font-bold">Diagnosis</p>
                         </div>
                         <p class="whitespace-pre-line">{{ data?.history?.diagnosa || '-' }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <Notebook class="h-4 w-4 text-indigo-500" />
+                            <p class="text-sm text-gray-500 font-bold">Catatan Dokter</p>
+                        </div>
+                        <p class="whitespace-pre-line">{{ data?.history?.note || '-' }}</p>
+                    </div>
+                    <div v-if="data?.history?.teraphy" class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <Notebook class="h-4 w-4 text-green-500" />
+                            <p class="text-sm text-gray-500 font-bold">Terapi</p>
+                        </div>
+                        <p class="whitespace-pre-line">{{ data?.history?.teraphy }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <Notebook class="h-4 w-4 text-blue-500" />
+                            <p class="text-sm text-gray-500 font-bold">Saran</p>
+                        </div>
+                        <p class="whitespace-pre-line">{{ data?.history?.saran || '-' }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <Notebook class="h-4 w-4 text-purple-500" />
+                            <p class="text-sm text-gray-500 font-bold">Tindakan</p>
+                        </div>
+                        <p class="whitespace-pre-line">{{ data?.history?.tindakan || '-' }}</p>
+                    </div>
+                    <div v-if="data?.history?.is_observation || data?.history?.observation" class="space-y-1 md:col-span-2">
+                        <div class="flex items-center gap-2">
+                            <Notebook class="h-4 w-4 text-orange-500" />
+                            <p class="text-sm text-gray-500 font-bold">Observasi</p>
+                        </div>
+                        <p class="whitespace-pre-line">{{ data?.history?.observation || '-' }}</p>
+                    </div>
+                    <div v-if="queueDiagnoses.length" class="space-y-1 md:col-span-2">
+                        <div class="flex items-center gap-2">
+                            <DocumentTextIcon class="h-4 w-4 text-red-500" />
+                            <p class="text-sm text-gray-500 font-bold">Diagnoses</p>
+                        </div>
+                        <div class="space-y-2">
+                            <div v-for="diagnosis in queueDiagnoses" :key="diagnosis.id" class="rounded-md border border-gray-200 p-3">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="text-xs font-semibold text-red-600">{{ diagnosis.icd10_code || diagnosis.icd10?.icd10_code || '-' }}</span>
+                                    <span class="px-2 py-0.5 rounded-full text-xs font-medium capitalize" :class="getDiagnosisTypeClass(diagnosis.type)">
+                                        {{ diagnosis.type || '-' }}
+                                    </span>
+                                </div>
+                                <p class="mt-1 font-medium">{{ diagnosis.diagnosis_id || diagnosis.icd10?.icd10_id || '-' }}</p>
+                                <p class="text-sm text-gray-500">{{ diagnosis.diagnosis_en || diagnosis.icd10?.icd10_en || '-' }}</p>
+                                <p v-if="diagnosis.notes" class="mt-1 text-sm text-gray-600 whitespace-pre-line">{{ diagnosis.notes }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -728,24 +805,38 @@ const { 1: fetchApi } = useGetData();
 
 const { deleteData } = useDeleteData();
 
+const queueDiagnoses = computed(() => Array.isArray(props.data?.diagnoses) ? props.data.diagnoses : []);
+const patientGender = computed(() => {
+    switch (props.data?.patient?.gender) {
+        case 'L':
+            return 'Laki-laki';
+        case 'P':
+            return 'Perempuan';
+        default:
+            return props.data?.patient?.gender || '-';
+    }
+});
+const patientAllergy = computed(() => props.data?.patient?.has_allergy ? (props.data?.patient?.allergy || 'Ada alergi') : 'Tidak ada alergi');
+const medicineSummary = computed(() => {
+    const items = Array.isArray(props.medicineList) ? props.medicineList : [];
+
+    return {
+        total: items.length,
+        compound: items.filter(item => item.is_compound).length,
+        single: items.filter(item => !item.is_compound).length,
+    };
+});
+
 const emit = defineEmits(['accept-medicine', 'refresh-medicine', 'refresh-tindakan', 'click-detail-racikan', 'refresh']);
 
-const getStatusColor = (status) => {
-    switch (status) {
-        case 'new':
-            return 'bg-blue-400/60'; // Warna untuk status Baru
-        case 'accepted':
-            return 'bg-green-400/60'; // Warna untuk status Diproses
-        case 'rejected':
-            return 'bg-red-400/60 text-white'; // Warna untuk status Ditolak
-        case 'changed':
-            return 'bg-yellow-400/60'; // Warna untuk status Diganti
-        case 'done':
-            return 'bg-orange-500/60'; // Warna untuk status Selesai
-        case 'completed':
-            return 'bg-orange-500/60';
+const getDiagnosisTypeClass = (type) => {
+    switch (type) {
+        case 'primary':
+            return 'bg-red-100 text-red-700';
+        case 'secondary':
+            return 'bg-blue-100 text-blue-700';
         default:
-            return 'bg-gray-200/60'; // Warna default kalau tidak cocok
+            return 'bg-gray-100 text-gray-700';
     }
 };
 

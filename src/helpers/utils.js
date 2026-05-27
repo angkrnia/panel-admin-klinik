@@ -1,4 +1,4 @@
-import { ElLoading, ElMessage } from "element-plus";
+﻿import { ElLoading, ElMessage } from "element-plus";
 import { useAppStore } from "../store/appStore";
 import Cookies from "js-cookie";
 import { axiosAuth, axiosDownload } from "../config/axios";
@@ -493,6 +493,13 @@ export const adminMenus = [
             },
         ],
     },
+    {
+        seq: 10,
+        title: "Analisis Kunjungan",
+        path: "/reports/visit-time-analysis",
+        hasChildren: false,
+        icon: Activity,
+    },
 ];
 
 export const getStatusType = (status) => {
@@ -553,3 +560,5 @@ export function highlight(name, query) {
     const re = new RegExp(`(${escapeRegExp(query)})`, 'ig')
     return escapeHtml(name).replace(re, '<span class="bg-yellow-200">$1</span>')
 }
+
+
