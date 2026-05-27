@@ -80,6 +80,14 @@ export const routes = [
                 },
             },
             {
+                path: "/reports/doctor-fees",
+                name: "report-fee-dokter",
+                component: () => import("@/views/Reports/DoctorFeeReport.vue"),
+                meta: {
+                    title: "Fee Dokter",
+                },
+            },
+            {
                 path: "/sales",
                 name: "transaksi-penjualan",
                 component: () => import("@/views/Sales/SalesPage.vue"),
@@ -145,6 +153,14 @@ export const routes = [
                         component: () => import("@/views/Inventory/CategoriesPage.vue"),
                         meta: {
                             title: "Categories",
+                        },
+                    },
+                    {
+                        path: "suppliers",
+                        name: "inventory-suppliers",
+                        component: () => import("@/views/Inventory/SuppliersPage.vue"),
+                        meta: {
+                            title: "Suppliers",
                         },
                     },
                     {

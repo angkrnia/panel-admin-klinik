@@ -1,17 +1,69 @@
-<template>
+﻿<template>
     <section>
         <TitleDashboard title="Daftar Obat">
             <template #btn1>
+                <el-button type="success" @click="onDownloadProducts">Download Produk</el-button>
                 <el-button type="primary" @click="openAddDialog" :icon="Plus">Tambah Obat</el-button>
             </template>
         </TitleDashboard>
         <div id="stickyElement" class="bg-white w-full sticky -top-3 z-10">
-            <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate" />
+            <SearchAndPagination2 :row-total="rowTotal" :page-size="pageSize" :page-index="pageIndex" @change-page="changePage" @search="onSearch" @paginate="onPaginate">
+                <el-badge :value="activeFilterCount" :hidden="activeFilterCount === 0">
+                    <el-button @click="filterDialog = true">Filter</el-button>
+                </el-badge>
+            </SearchAndPagination2>
         </div>
         <div v-loading="loading">
             <ProductList :medicines="listData" @edit-data="onEditDialog" />
         </div>
     </section>
+
+    <el-dialog v-model="filterDialog" :width="dialogWidth()" top="8vh">
+        <template #header>
+            <h1 class="border-b pb-5">Filter Daftar Obat</h1>
+        </template>
+        <el-form label-width="120px" :label-position="labelPosition()" :model="filterData">
+            <div class="w-full space-y-3">
+                <el-form-item label="Tanggal">
+                    <ElDateRangeInput v-model:startDate="filterData.start_date" v-model:endDate="filterData.end_date" />
+                </el-form-item>
+                <el-form-item label="Urutkan">
+                    <el-select v-model="filterData.sort" clearable filterable placeholder="Urutkan" class="w-full">
+                        <el-option v-for="item in sortOptions" :key="item.value" :label="item.label" :value="item.value" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Status Stok">
+                    <el-select v-model="filterData.stock_status" clearable filterable placeholder="Status Stok" class="w-full">
+                        <el-option v-for="item in stockStatusOptions" :key="item.value" :label="item.label" :value="item.value" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Satuan">
+                    <el-select v-model="filterData.unit_id" clearable filterable placeholder="Satuan" class="w-full">
+                        <el-option v-for="item in unitList" :key="item.id" :label="item.name" :value="item.id" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Kategori">
+                    <el-select v-model="filterData.category_id" clearable filterable placeholder="Kategori" class="w-full">
+                        <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Grup">
+                    <el-select v-model="filterData.group_id" clearable filterable placeholder="Grup" class="w-full">
+                        <el-option v-for="item in groupList" :key="item.id" :label="item.name" :value="item.id" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Produk Baru">
+                    <el-select v-model="filterData.is_new" clearable filterable placeholder="Produk Baru" class="w-full">
+                        <el-option label="Produk Baru" :value="1" />
+                    </el-select>
+                </el-form-item>
+            </div>
+        </el-form>
+        <template #footer>
+            <el-button @click="resetFilter">Reset</el-button>
+            <el-button type="primary" @click="applyFilter">Terapkan</el-button>
+        </template>
+    </el-dialog>
 
     <!-- FORM ADD DIALOG -->
     <el-dialog v-model="addDialog" :width="dialogWidth()" top="5vh">
@@ -31,6 +83,12 @@
                 </el-form-item>
                 <el-form-item label="Harga Beli Dasar" prop="buy_price">
                     <ElCurrencyInput v-model="addData.buy_price" placeholder="Harga Beli" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Minimum Stock" prop="min_stock">
+                    <el-input v-model="addData.min_stock" type="number" placeholder="Minimum Stock" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Safe Stock" prop="safe_stock">
+                    <el-input v-model="addData.safe_stock" type="number" placeholder="Safe Stock" style="width: 100%" />
                 </el-form-item>
                 <!-- Multi Satuan -->
                 <el-form-item label="Satuan" prop="unit_id">
@@ -66,7 +124,7 @@
                                 </el-form-item>
                                 <el-form-item class="space-y-2">
                                     <label class="block text-sm font-medium text-gray-700">Harga Jual</label>
-                                    <ElCurrencyInput v-model="unit.sell_price"
+                                    <ElCurrencyInput v-model="unit.sell_price" @update:model-value="syncNewPrice(unit, $event)"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" />
                                 </el-form-item>
                                 <el-form-item class="space-y-2">
@@ -74,11 +132,14 @@
                                     <ElCurrencyInput v-model="unit.new_price"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" />
                                 </el-form-item>
-                                <el-form-item class="space-y-2" v-if="!unit.is_base">
-                                    <label class="block text-sm font-medium text-gray-700">Konversi Ke Satuan Dasar</label>
-                                    <el-input type="text" v-model="unit.conversion_to_base"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Contoh: 10" />
-                                </el-form-item>
+                            </div>
+                            <div v-if="!unit.is_base" class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Konversi ke Satuan Dasar</label>
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-600 whitespace-nowrap mr-2">1 {{ getUnitName(unit.unit_id) || 'Satuan' }} =</span>
+                                    <el-input v-model="unit.conversion_to_base" type="number" min="1" class="max-w-[140px]" />
+                                    <span class="inline-flex items-center px-4 border border-l-0 rounded-r-md bg-slate-50 text-sm text-gray-500 h-8">{{ baseUnitName(unit) || 'Satuan Dasar' }}</span>
+                                </div>
                             </div>
                         </div>
                     </template>
@@ -172,6 +233,12 @@
                 <el-form-item label="Harga Beli Dasar" prop="buy_price">
                     <ElCurrencyInput v-model="editData.buy_price" placeholder="Harga Beli" style="width: 100%" />
                 </el-form-item>
+                <el-form-item label="Minimum Stock" prop="min_stock">
+                    <el-input v-model="editData.min_stock" type="number" placeholder="Minimum Stock" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Safe Stock" prop="safe_stock">
+                    <el-input v-model="editData.safe_stock" type="number" placeholder="Safe Stock" style="width: 100%" />
+                </el-form-item>
                 <!-- Multi Satuan -->
                 <el-form-item label="Satuan" prop="unit_id">
                     <template v-for="(unit, index) in editData.units" :key="index">
@@ -206,7 +273,7 @@
                                 </el-form-item>
                                 <el-form-item class="space-y-2">
                                     <label class="block text-sm font-medium text-gray-700">Harga Jual</label>
-                                    <ElCurrencyInput v-model="unit.sell_price"
+                                    <ElCurrencyInput v-model="unit.sell_price" @update:model-value="syncNewPrice(unit, $event)"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" />
                                 </el-form-item>
                                 <el-form-item class="space-y-2">
@@ -214,11 +281,14 @@
                                     <ElCurrencyInput v-model="unit.new_price"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" />
                                 </el-form-item>
-                                <el-form-item class="space-y-2" v-if="!unit.is_base">
-                                    <label class="block text-sm font-medium text-gray-700">Konversi Ke Satuan Dasar</label>
-                                    <el-input type="text" v-model="unit.conversion_to_base"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Contoh: 10" />
-                                </el-form-item>
+                            </div>
+                            <div v-if="!unit.is_base" class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Konversi ke Satuan Dasar</label>
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-600 whitespace-nowrap mr-2">1 {{ getUnitName(unit.unit_id) || 'Satuan' }} =</span>
+                                    <el-input v-model="unit.conversion_to_base" type="number" min="1" class="max-w-[140px]" />
+                                    <span class="inline-flex items-center px-4 border border-l-0 rounded-r-md bg-slate-50 text-sm text-gray-500 h-8">{{ baseUnitName(unit) || 'Satuan Dasar' }}</span>
+                                </div>
                             </div>
                         </div>
                     </template>
@@ -303,10 +373,13 @@ import { APIdeleteCategory, APIGetCategoriesSelect, APIGetGroupsSelect, APIGetUn
 import { categoriesRule, medicinesRule } from '../../rules/inventoryRules';
 import useDeleteData from '../../composables/useDeleteData';
 import { Box, Delete, InfoFilled, Plus, PriceTag, UploadFilled, View } from '@element-plus/icons-vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import useGetData from '../../composables/useGetData';
 import SVG from '../../helpers/svg';
 import ProductList from './partials/ProductList.vue';
+import ElDateRangeInput from '../../components/ElDateRangeInput.vue';
+import useDownloadFile from '../../composables/useDownloadFile';
+import { APIGetAllProducts } from '../../api/apiReport';
 
 const {
     listData,
@@ -326,8 +399,35 @@ const { deleteData } = useDeleteData();
 const [categoryList, getCategoryList] = useGetData();
 const [unitList, getUnitList] = useGetData();
 const [groupList, getGroupList] = useGetData();
+const { downloadBlobFile } = useDownloadFile();
 
 const previewImage = ref(null);
+const filterDialog = ref(false);
+const sortOptions = [
+    { label: 'Terbaru', value: 'latest' },
+    { label: 'Terlama', value: 'oldest' },
+    { label: 'Nama A-Z', value: 'name_asc' },
+    { label: 'Nama Z-A', value: 'name_desc' },
+    { label: 'Stok Terkecil', value: 'stock_asc' },
+    { label: 'Stok Terbesar', value: 'stock_desc' },
+];
+const stockStatusOptions = [
+    { label: 'Stok Aman', value: 'safe' },
+    { label: 'Stok Tidak Aman', value: 'unsafe' },
+    { label: 'Stok Kosong', value: 'empty' },
+];
+const activeFilterCount = computed(() => {
+    const filters = filterData.value || {};
+    let count = 0;
+
+    if (filters.start_date || filters.end_date) count += 1;
+
+    ['sort', 'stock_status', 'unit_id', 'category_id', 'group_id', 'is_new'].forEach((key) => {
+        if (filters[key] !== null && filters[key] !== undefined && filters[key] !== '') count += 1;
+    });
+
+    return count;
+});
 
 function doPaginate(index, pSize) {
     getListData(listMedicinesPagination, index, pSize ? pSize : pageSize.value, search.value, filterData.value);
@@ -344,6 +444,28 @@ function onPaginate(pageSize) {
 
 function changePage(index = 1) {
     changeIndex(() => doPaginate(index), index);
+}
+
+function onFilterSearch() {
+    changeIndex(() => doPaginate(1), 1, null, filterData.value);
+}
+
+function applyFilter() {
+    filterDialog.value = false;
+    onFilterSearch();
+}
+
+function resetFilter() {
+    filterData.value = {};
+    applyFilter();
+}
+
+function onDownloadProducts() {
+    const params = Object.fromEntries(
+        Object.entries(filterData.value).filter(([, value]) => value !== null && value !== undefined && value !== '')
+    );
+    if (search.value) params.search = search.value;
+    downloadBlobFile(APIGetAllProducts, params, "all-products.xlsx");
 }
 
 function onEditDialog(row) {
@@ -463,6 +585,8 @@ async function openAddDialog() {
     getCategoryList(APIGetCategoriesSelect);
     getUnitList(APIGetUnitsSelect);
     getGroupList(APIGetGroupsSelect);
+    addData.value.min_stock = 1;
+    addData.value.safe_stock = 1;
     addData.value.units = [
         {
             unit_id: null,
@@ -514,6 +638,10 @@ async function inputImage(event, type = 'add') {
     }
 }
 
+function syncNewPrice(unit, value) {
+    unit.new_price = value;
+}
+
 function addNewUnit() {
     addData.value.units.push({
         unit_id: null,
@@ -546,11 +674,31 @@ function removeEditUnit(index) {
 }
 
 function onChangeUnit(unit) {
+    const selectedUnit = unitList.value.find((item) => item.id === unit.unit_id);
+    unit.unit_name = selectedUnit?.name || null;
     if (unit.is_base) {
-        addData.value.units[0].unit_name = unit.name;
-        addData.value.units[0].conversion_to_base = 1;
+        unit.conversion_to_base = 1;
     }
 }
 
+function getUnitName(unitId) {
+    return unitList.value.find((item) => item.id === unitId)?.name || null;
+}
+
+function baseUnitName(unit) {
+    const units = editDialog.value ? editData.value.units : addData.value.units;
+    const baseUnit = units?.find((item) => item.is_base) || unit;
+    return baseUnit?.unit_name || getUnitName(baseUnit?.unit_id);
+}
+
 doPaginate(pageIndex.value);
+getCategoryList(APIGetCategoriesSelect);
+getUnitList(APIGetUnitsSelect);
+getGroupList(APIGetGroupsSelect);
 </script>
+
+
+
+
+
+

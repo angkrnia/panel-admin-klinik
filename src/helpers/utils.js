@@ -5,7 +5,7 @@ import { axiosAuth, axiosDownload } from "../config/axios";
 import { jwtDecode } from "jwt-decode";
 import { getDokterSelect } from "../api/dokterApi";
 import { APIUploadPhotos } from "../api/apiHelper";
-import { Activity, Box, BoxSelect, Clipboard, Clock, CreditCard, Database, Droplets, FlaskRound, Flower, HeartPulse, Home, Layers, ListCheck, Package, ShoppingCart, Tag, Upload, User, UserCheck, Users } from "lucide-vue-next";
+import { Activity, Box, BoxSelect, Clipboard, Clock, CreditCard, Database, Droplets, FileText, FlaskRound, Flower, HeartPulse, Home, Layers, ListCheck, Package, ShoppingCart, Store, Tag, Upload, User, UserCheck, Users } from "lucide-vue-next";
 
 export const isObjectEmpty = (object) => {
     if (!object) return true;
@@ -409,11 +409,18 @@ export const allMenus = [
         hasChildren: false,
         icon: Clock,
     },
+    {
+        seq: 8,
+        title: "Fee Dokter",
+        path: "/reports/doctor-fees",
+        hasChildren: false,
+        icon: FileText,
+    },
 ];
 
 export const adminMenus = [
     {
-        seq: 7,
+        seq: 9,
         title: "Inventory",
         path: "/inventory",
         hasChildren: true,
@@ -446,6 +453,13 @@ export const adminMenus = [
                 path: "/inventory/categories",
                 hasChildren: false,
                 icon: Tag,
+            },
+            {
+                seq: 5,
+                title: "Supplier",
+                path: "/inventory/suppliers",
+                hasChildren: false,
+                icon: Store,
             },
             {
                 seq: 6,

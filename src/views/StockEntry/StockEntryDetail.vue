@@ -30,6 +30,19 @@
                 <el-form-item label="Asal" prop="source">
                     <el-input v-model="editHeaderData.source" placeholder="Asal" style="width: 100%" :disabled="!editHeaderDialog" />
                 </el-form-item>
+                <el-form-item label="Supplier" prop="supplier_id">
+                    <el-select v-model="editHeaderData.supplier_id" placeholder="Pilih Supplier" filterable clearable style="width: 100%" :disabled="!editHeaderDialog">
+                        <el-option v-for="item in supplierList" :key="item.id" :label="item.supplier_name" :value="item.id" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Grup Produk" prop="product_group">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <el-radio-group v-model="editHeaderData.product_group" :disabled="!editHeaderDialog">
+                            <el-radio-button v-for="item in productGroupOptions" :key="item" :label="item">{{ item }}</el-radio-button>
+                        </el-radio-group>
+                        <el-tag v-if="editHeaderDialog && editHeaderData.product_group" type="info" class="cursor-pointer" @click="editHeaderData.product_group = null">Kosongkan</el-tag>
+                    </div>
+                </el-form-item>
                 <el-form-item label="Catatan" prop="note">
                     <el-input type="textarea" show-word-limit maxlength="255" rows="3" v-model="editHeaderData.note" placeholder="Catatan" style="width: 100%"
                         :disabled="!editHeaderDialog" />
@@ -234,7 +247,7 @@ import { backArrow } from '../../helpers/svg';
 import useAddData from '../../composables/useAddData';
 import useEditData from '../../composables/useEditData';
 import useDeleteData from '../../composables/useDeleteData';
-import { APIdeleteStockEntryLine, APIStockEntryCanceled, APIStockEntryCommitted, APIStockEntryDetail, APIstoreStockEntryLine, APIupdateStockEntry, APIupdateStockEntryLine, stockEntryLinePagination } from '../../api/stockApi';
+import { APIdeleteStockEntryLine, APIGetSuppliersList, APIStockEntryCanceled, APIStockEntryCommitted, APIStockEntryDetail, APIstoreStockEntryLine, APIupdateStockEntry, APIupdateStockEntryLine, stockEntryLinePagination } from '../../api/stockApi';
 import { addProductStockEntryRule, stockEntryHeaderRule, updateProductStockEntryRule } from '../../rules/stockRules';
 import { convertDate, convertRp, dateFormatFull, dialogWidth, labelPosition, messageInfo } from '../../helpers/utils';
 import { catchError } from '../../helpers/catchResp';
@@ -269,6 +282,7 @@ const [editHeaderData, editHeaderForm, editHeaderDialog, openEditHeaderDialog, s
 });
 const { deleteData } = useDeleteData();
 const [productList, getProductList] = useGetData();
+const [supplierList, getSupplierList] = useGetData();
 const [cancelData, cancelForm, cancelDialog, openCancelDialog, saveCancel, cancelStock] = useEditData({
     returnAsArray: true,
 });
@@ -277,6 +291,7 @@ const { downloadBlobFile } = useDownloadFile();
 const isAddDataLineForm = ref(false);
 const unitListProducts = ref([]);
 const profile = computed(() => appStore.profile);
+const productGroupOptions = ['ALKES', 'APOTEK_MEDICINE', 'KLINIK_MEDICINE'];
 
 // UNTUK HEADER STOCK
 function onSaveHeader() {
@@ -362,6 +377,7 @@ function onBack() {
 }
 
 function firstLoad() {
+    getSupplierList(APIGetSuppliersList);
     catchError(async () => {
         const { status, data } = await APIStockEntryDetail(route.params.id);
         if (status == 200) {

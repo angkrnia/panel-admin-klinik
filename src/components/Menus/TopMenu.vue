@@ -1,8 +1,8 @@
 <template>
-    <nav class="fixed z-50 bg-primary w-full">
+    <nav ref="topMenuRef" class="fixed z-50 bg-primary w-full">
         <div class="flex items-start justify-between overflow-hidden h-full w-full shadow-lg">
-            <el-menu background-color="#2563eb" text-color="#f8fafc" active-text-color="#cbd5e1" :default-active="defaultActive" class="el-menu-demo" mode="horizontal" ellipsis
-                menu-trigger="click" close-on-click-outside :ellipsis-icon="Menu">
+            <el-menu ref="menuRef" background-color="#2563eb" text-color="#f8fafc" active-text-color="#cbd5e1" :default-active="defaultActive" class="el-menu-demo" mode="horizontal" ellipsis
+                menu-trigger="click" close-on-click-outside :ellipsis-icon="Menu" @open="onOpenMenu">
                 <template v-for="item in menuList" :key="item.path">
                     <template v-if="item.hasChildren">
                         <el-sub-menu :index="item.path">
@@ -13,7 +13,7 @@
                                 </div>
                             </template>
                             <template v-for="child in item.children" :key="child.path">
-                                <el-menu-item @click="$router.push(child.path)" :index="child.path">
+                                <el-menu-item @click="onMenuItemClick(child.path)" :index="child.path">
                                     <div class="flex items-center gap-1">
                                         <component :is="child.icon" class="size-4" />
                                         <p>{{ child.title }}</p>
@@ -23,7 +23,7 @@
                         </el-sub-menu>
                     </template>
                     <template v-else>
-                        <el-menu-item @click="$router.push(item.path)" :index="item.path">
+                        <el-menu-item @click="onMenuItemClick(item.path)" :index="item.path">
                             <div class="flex items-center gap-1">
                                 <component :is="item.icon" class="size-4" />
                                 <p>{{ item.title }}</p>
@@ -57,18 +57,52 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { onLogoutHandler } from '../../helpers/utils';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useAppStore } from '../../store/appStore';
 import { Menu } from 'lucide-vue-next';
 
 const route = useRoute();
+const router = useRouter();
 const defaultActive = ref(route.path);
 const appStore = useAppStore();
+const menuRef = ref(null);
+const topMenuRef = ref(null);
 
 const fullname = computed(() => appStore.profile.fullname);
 const role = computed(() => appStore.profile.role);
+
+function closeAllSubMenus() {
+    menuList.value
+        .filter((item) => item.hasChildren)
+        .forEach((item) => menuRef.value?.close(item.path));
+}
+
+function onOpenMenu(index) {
+    menuList.value
+        .filter((item) => item.hasChildren && item.path !== index)
+        .forEach((item) => menuRef.value?.close(item.path));
+}
+
+function onMenuItemClick(path) {
+    closeAllSubMenus();
+    router.push(path);
+}
+
+function onClickOutside(event) {
+    if (!topMenuRef.value?.contains(event.target)) {
+        closeAllSubMenus();
+    }
+}
+
+onMounted(() => {
+    document.addEventListener('click', onClickOutside);
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener('click', onClickOutside);
+});
 
 function onUpdatePassword() {
 

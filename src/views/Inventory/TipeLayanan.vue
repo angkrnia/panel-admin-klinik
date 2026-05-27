@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <section>
         <TitleDashboard title="Master Tipe Layanan">
             <template #btn1>
@@ -16,7 +16,19 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="name" label="Nama" min-width="200" />
-                <el-table-column prop="description" label="Deskripsi" min-width="170" />
+                                <el-table-column prop="description" label="Deskripsi" min-width="170" />
+                <el-table-column label="Biaya" min-width="130" align="right">
+                    <template #default="scope">{{ convertRp(scope.row.price) }}</template>
+                </el-table-column>
+                <el-table-column label="Fee Dokter" min-width="130" align="right">
+                    <template #default="scope">{{ convertRp(scope.row.doctor_fee) }}</template>
+                </el-table-column>
+                <el-table-column label="Fee Perawat" min-width="130" align="right">
+                    <template #default="scope">{{ convertRp(scope.row.nurse_fee) }}</template>
+                </el-table-column>
+                <el-table-column label="Fee Lainnya" min-width="130" align="right">
+                    <template #default="scope">{{ convertRp(scope.row.other_fee) }}</template>
+                </el-table-column>
                 <el-table-column prop="is_active" label="Aktif">
                     <template #default="scope">
                         <el-tag type="success" v-if="scope.row.is_active">Ya</el-tag><el-tag type="danger" v-else>Tidak</el-tag>
@@ -50,6 +62,15 @@
                 <el-form-item label="Biaya" prop="price">
                     <ElCurrencyInput v-model="addData.price" placeholder="Biaya" style="width: 100%" />
                 </el-form-item>
+                <el-form-item label="Fee Dokter" prop="doctor_fee">
+                    <ElCurrencyInput v-model="addData.doctor_fee" placeholder="Fee Dokter" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Fee Perawat" prop="nurse_fee">
+                    <ElCurrencyInput v-model="addData.nurse_fee" placeholder="Fee Perawat" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Fee Lainnya" prop="other_fee">
+                    <ElCurrencyInput v-model="addData.other_fee" placeholder="Fee Lainnya" style="width: 100%" />
+                </el-form-item>
                 <el-form-item label="Aktif" prop="is_active">
                     <el-switch v-model="addData.is_active"></el-switch>
                 </el-form-item>
@@ -75,6 +96,15 @@
                 </el-form-item>
                 <el-form-item label="Biaya" prop="price">
                     <ElCurrencyInput v-model="editData.price" placeholder="Biaya" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Fee Dokter" prop="doctor_fee">
+                    <ElCurrencyInput v-model="editData.doctor_fee" placeholder="Fee Dokter" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Fee Perawat" prop="nurse_fee">
+                    <ElCurrencyInput v-model="editData.nurse_fee" placeholder="Fee Perawat" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Fee Lainnya" prop="other_fee">
+                    <ElCurrencyInput v-model="editData.other_fee" placeholder="Fee Lainnya" style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="Aktif" prop="is_active">
                     <el-switch v-model="editData.is_active"></el-switch>
@@ -137,6 +167,10 @@ function onEditDialog(row) {
 
 function onOpenAddDialog() {
     addData.value.is_active = true;
+    addData.value.price = 0;
+    addData.value.doctor_fee = 0;
+    addData.value.nurse_fee = 0;
+    addData.value.other_fee = 0;
     openAddDialog();
 }
 
@@ -154,3 +188,5 @@ async function openAddDialog() {
 
 doPaginate(pageIndex.value);
 </script>
+
+
