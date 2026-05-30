@@ -60,7 +60,15 @@
                 name: "vital-sign",
                 component: () => import("@/views/VitalSign/VitalSignPage.vue"),
                 meta: {
-                    title: "Antrian",
+                    title: "Vital Sign",
+                },
+            },
+            {
+                path: "/resep-obat",
+                name: "resep-obat",
+                component: () => import("@/views/ResepObat/ResepObatPage.vue"),
+                meta: {
+                    title: "Resep Obat",
                 },
             },
             {

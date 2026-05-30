@@ -4,7 +4,7 @@
             <slot name="menu"></slot>
         </el-header>
         <transition name="fade" mode="out-in">
-            <el-main class="bg-gray-200 p-2 md:px-5">
+            <el-main class="bg-gray-200 p-2 md:px-5 print:p-0 print:bg-transparent">
                 <div class="bg-white p-2 md:px-5 rounded shadow-sm min-h-[85vh]">
                     <slot name="main"></slot>
                 </div>

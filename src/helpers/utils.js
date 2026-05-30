@@ -5,7 +5,7 @@ import { axiosAuth, axiosDownload } from "../config/axios";
 import { jwtDecode } from "jwt-decode";
 import { getDokterSelect } from "../api/dokterApi";
 import { APIUploadPhotos } from "../api/apiHelper";
-import { Activity, Box, BoxSelect, Clipboard, Clock, CreditCard, Database, Droplets, FileText, FlaskRound, Flower, HeartPulse, Home, Layers, ListCheck, Package, ShoppingCart, Store, Tag, Upload, User, UserCheck, Users } from "lucide-vue-next";
+import { Activity, Box, BoxSelect, Clipboard, Clock, CreditCard, Database, Droplets, FileText, FlaskRound, Flower, HeartPulse, Home, Layers, ListCheck, Package, Pill, ShoppingCart, Store, Tag, Upload, User, UserCheck, Users } from "lucide-vue-next";
 
 export const isObjectEmpty = (object) => {
     if (!object) return true;
@@ -410,11 +410,11 @@ export const allMenus = [
         icon: Clock,
     },
     {
-        seq: 8,
-        title: "Fee Dokter",
-        path: "/reports/doctor-fees",
+        seq: 10,
+        title: "Resep Obat",
+        path: "/resep-obat",
         hasChildren: false,
-        icon: FileText,
+        icon: Pill,
     },
 ];
 
@@ -493,8 +493,15 @@ export const adminMenus = [
             },
         ],
     },
+        {
+        seq: 11,
+        title: "Fee Dokter",
+        path: "/reports/doctor-fees",
+        hasChildren: false,
+        icon: FileText,
+    },
     {
-        seq: 10,
+        seq: 122,
         title: "Analisis Kunjungan",
         path: "/reports/visit-time-analysis",
         hasChildren: false,
