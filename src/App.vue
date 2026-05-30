@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import Cookies from "js-cookie";
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import TopMenu from './components/Menus/TopMenu.vue';
@@ -6,6 +6,7 @@ import AppLayout from './layouts/AppLayout.vue';
 import { axiosAuth, refreshAuthLogic } from './config/axios';
 import { useAppStore } from './store/appStore';
 import { setAuthentication } from "./helpers/utils";
+import { initFirebasePushNotification } from "./firebase/pushNotification";
 import { useRoute, useRouter } from "vue-router";
 import { onMounted } from "vue";
 
@@ -20,6 +21,7 @@ const router = useRouter();
     const token = Cookies.get("TOKEN");
     if (token) {
       setAuthentication(token);
+      initFirebasePushNotification();
     } else {
       // Jika bukan di route login atau reset password, redirect ke login
       await router.isReady();
@@ -72,3 +74,4 @@ const router = useRouter();
   transform: translateX(-100%);
 }
 </style>
+

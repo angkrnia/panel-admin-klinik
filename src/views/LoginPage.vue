@@ -1,4 +1,4 @@
-<template>
+﻿<template>
 
     <body class="min-h-screen flex">
         <!-- Left Side - Login Form -->
@@ -147,6 +147,7 @@ import { ref } from 'vue';
 import useAddData from '../composables/useAddData';
 import { useRouter } from 'vue-router';
 import { useAppStore } from '../store/appStore';
+import { initFirebasePushNotification } from '../firebase/pushNotification';
 import { loginRule } from '../rules/loginRules';
 
 const {
@@ -170,7 +171,7 @@ const form = ref({
 });
 
 function onLogin() {
-    saveAdd(loginApi, (data) => {
+    saveAdd(loginApi, async (data) => {
         if (data) {
             const { token, refresh_token, user } = data;
             const menus = [...allMenus, ...adminMenus];
@@ -180,6 +181,7 @@ function onLogin() {
             //     appStore.setMenuList(allMenus);
             // }
             setAuthentication(token, refresh_token);
+            await initFirebasePushNotification();
             window.location.href = '/dashboard';
         } else {
             messageInfo('Login gagal, silahkan coba lagi');
@@ -249,3 +251,4 @@ function onLogin() {
     backdrop-filter: blur(20px);
 }
 </style>
+

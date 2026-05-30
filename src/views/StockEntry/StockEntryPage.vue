@@ -96,7 +96,7 @@
             </el-table>
         </div>
         <div class="flex items-center justify-center">
-            <el-pagination background layout="prev, pager, next" :total="rowTotal" :page-size="pageSize" @current-change="changePage" :current-page="currentPage"
+            <el-pagination background layout="prev, pager, next" :total="rowTotal" :page-size="pageSize" @current-change="changePage" v-model:current-page="currentPage"
                 :hide-on-single-page="false" />
         </div>
     </section>
@@ -149,9 +149,12 @@
                     </div>
                 </el-form-item>
                 <el-form-item label="Supplier" prop="supplier_id">
-                    <el-select v-model="addData.supplier_id" placeholder="Pilih Supplier" filterable clearable style="width: 100%">
-                        <el-option v-for="item in supplierList" :key="item.id" :label="item.supplier_name" :value="item.id" />
-                    </el-select>
+                    <div class="flex items-center gap-2 w-full">
+                        <el-select v-model="addData.supplier_id" placeholder="Pilih Supplier" filterable clearable style="width: 100%">
+                            <el-option v-for="item in supplierList" :key="item.id" :label="item.supplier_name" :value="item.id" />
+                        </el-select>
+                        <el-button type="primary" plain @click="openQuickSupplierDialog('add')">Tambah</el-button>
+                    </div>
                 </el-form-item>
                 <el-form-item label="Grup Produk" prop="product_group">
                     <div class="flex flex-wrap items-center gap-2">
@@ -187,9 +190,12 @@
                     </div>
                 </el-form-item>
                 <el-form-item label="Supplier" prop="supplier_id">
-                    <el-select v-model="editData.supplier_id" placeholder="Pilih Supplier" filterable clearable style="width: 100%">
-                        <el-option v-for="item in supplierList" :key="item.id" :label="item.supplier_name" :value="item.id" />
-                    </el-select>
+                    <div class="flex items-center gap-2 w-full">
+                        <el-select v-model="editData.supplier_id" placeholder="Pilih Supplier" filterable clearable style="width: 100%">
+                            <el-option v-for="item in supplierList" :key="item.id" :label="item.supplier_name" :value="item.id" />
+                        </el-select>
+                        <el-button type="primary" plain @click="openQuickSupplierDialog('edit')">Tambah</el-button>
+                    </div>
                 </el-form-item>
                 <el-form-item label="Grup Produk" prop="product_group">
                     <div class="flex flex-wrap items-center gap-2">
@@ -208,6 +214,46 @@
             <FooterButtonDialog @save-click="onSaveEdit" @cancel-click="cancelEdit" />
         </template>
     </el-dialog>
+
+    <el-dialog v-model="quickSupplierDialog" :width="dialogWidth()" top="8vh" append-to-body>
+        <template #header>
+            <h1 class="border-b pb-5">Tambah Supplier</h1>
+        </template>
+        <el-form label-width="150px" :label-position="labelPosition()" class="space-x-10" :model="quickSupplierData" :rules="suppliersRule" ref="quickSupplierForm">
+            <div class="w-full">
+                <el-form-item label="Kode Supplier" prop="supplier_code">
+                    <el-input v-model="quickSupplierData.supplier_code" placeholder="Kode Supplier" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Nama Supplier" prop="supplier_name">
+                    <el-input v-model="quickSupplierData.supplier_name" placeholder="Nama Supplier" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="PBF" prop="is_pbf">
+                    <el-radio-group v-model="quickSupplierData.is_pbf">
+                        <el-radio-button :label="true">Ya</el-radio-button>
+                        <el-radio-button :label="false">Tidak</el-radio-button>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="PIC" prop="pic_name">
+                    <el-input v-model="quickSupplierData.pic_name" placeholder="Nama PIC" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Telepon" prop="phone">
+                    <el-input v-model="quickSupplierData.phone" placeholder="Telepon" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Alamat" prop="address">
+                    <el-input type="textarea" rows="3" v-model="quickSupplierData.address" placeholder="Alamat" style="width: 100%" />
+                </el-form-item>
+                <el-form-item label="Status" prop="status">
+                    <el-select v-model="quickSupplierData.status" placeholder="Pilih Status" style="width: 100%">
+                        <el-option label="Aktif" value="aktif" />
+                        <el-option label="Nonaktif" value="nonaktif" />
+                    </el-select>
+                </el-form-item>
+            </div>
+        </el-form>
+        <template #footer>
+            <FooterButtonDialog @save-click="onSaveQuickSupplier" @cancel-click="cancelQuickSupplier" />
+        </template>
+    </el-dialog>
 </template>
 
 <script setup>
@@ -217,7 +263,9 @@ import usePagination from '../../composables/usePagination';
 import { convertDate, convertRp, dialogWidth, getStatusType, labelPosition } from '../../helpers/utils';
 import useDeleteData from '../../composables/useDeleteData';
 import useGetData from '../../composables/useGetData';
+import { APIstoreSupplier } from '../../api/apiInventory';
 import { APIdeleteStockEntry, APIGetSuppliersList, APIstoreStockEntry, APIupdateStockEntry, stockEntryHeaderPagination } from '../../api/stockApi';
+import { suppliersRule } from '../../rules/inventoryRules';
 import { stockEntryHeaderRule } from '../../rules/stockRules';
 import { useRouter } from 'vue-router';
 import { InfoFilled } from '@element-plus/icons-vue';
@@ -238,12 +286,14 @@ const {
     currentPage,
 } = usePagination();
 const { addData, addForm, addDialog, saveAdd, cancelAdd, openDialog } = useAddData();
+const { addData: quickSupplierData, addForm: quickSupplierForm, addDialog: quickSupplierDialog, saveAdd: saveQuickSupplier, cancelAdd: cancelQuickSupplier, openDialog: openQuickSupplier } = useAddData();
 const { editData, editForm, editDialog, openEditDialog, saveEdit, cancelEdit } = useEditData();
 const { deleteData } = useDeleteData();
 const [supplierList, getSupplierList] = useGetData();
 const productGroupOptions = ['ALKES', 'APOTEK_MEDICINE', 'KLINIK_MEDICINE'];
 const statusOptions = ['NEW', 'COMMITED', 'CANCEL'];
 const filterDialog = ref(false);
+const quickSupplierTarget = ref('add');
 const activeFilterCount = computed(() => {
     const filters = filterData.value || {};
     let count = 0;
@@ -308,6 +358,29 @@ function onSaveAdd() {
 
 function onSaveEdit() {
     saveEdit(APIupdateStockEntry, 'id', () => doPaginate(1));
+}
+
+function openQuickSupplierDialog(target = 'add') {
+    quickSupplierTarget.value = target;
+    quickSupplierData.value.is_pbf = false;
+    quickSupplierData.value.status = 'aktif';
+    openQuickSupplier(0);
+}
+
+function onSaveQuickSupplier() {
+    saveQuickSupplier(APIstoreSupplier, ({ supplier = {} }) => {
+        const data = supplier;
+        getSupplierList(APIGetSuppliersList, false, true);
+
+        if (!data?.id) return;
+
+        if (quickSupplierTarget.value === 'edit') {
+            editData.value.supplier_id = data.id;
+            return;
+        }
+
+        addData.value.supplier_id = data.id;
+    });
 }
 
 async function openAddDialog() {
