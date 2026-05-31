@@ -17,6 +17,7 @@
     "axios-auth-refresh": "^3.3.6",
     "element-plus": "^2.8.1",
     "firebase": "^12.13.0",
+    "html2pdf.js": "^0.14.0",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "laravel-echo": "^2.1.6",

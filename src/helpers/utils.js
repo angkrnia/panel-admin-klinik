@@ -500,13 +500,13 @@ export const adminMenus = [
         hasChildren: false,
         icon: FileText,
     },
-    {
-        seq: 122,
-        title: "Analisis Kunjungan",
-        path: "/reports/visit-time-analysis",
-        hasChildren: false,
-        icon: Activity,
-    },
+    // {
+    //     seq: 122,
+    //     title: "Analisis Kunjungan",
+    //     path: "/reports/visit-time-analysis",
+    //     hasChildren: false,
+    //     icon: Activity,
+    // },
 ];
 
 export const getStatusType = (status) => {

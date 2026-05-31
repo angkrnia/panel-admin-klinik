@@ -66,9 +66,17 @@
             {
                 path: "/resep-obat",
                 name: "resep-obat",
-                component: () => import("@/views/ResepObat/ResepObatPage.vue"),
+                component: () => import("@/views/ResepObat/PrescriptionPrintSearchPage.vue"),
                 meta: {
                     title: "Resep Obat",
+                },
+            },
+            {
+                path: "/resep-obat/cetak",
+                name: "resep-obat-cetak",
+                component: () => import("@/views/ResepObat/ResepObatPage.vue"),
+                meta: {
+                    title: "Cetak Resep Obat",
                 },
             },
             {
