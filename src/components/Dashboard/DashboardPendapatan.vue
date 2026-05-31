@@ -1,10 +1,10 @@
-<template>
+﻿<template>
     <div>
         <div class="mb-5 2xl:mb-10">
             <p class="text-gray-600 mb-1">Filter data berdasarkan tanggal:</p>
             <div class="flex items-center gap-x-2">
                 <ElDateRangeInput v-model:startDate="startDate" v-model:endDate="endDate" />
-                <el-button type="primary">Filter</el-button>
+                <el-button type="primary" @click="onFilter">Filter</el-button>
             </div>
         </div>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3" v-role="['admin']">
@@ -53,7 +53,7 @@
                 </div>
                 <div class="p-2 flex items-center justify-between">
                     <div v-html="SVG.graphUpArrow" class="size-5 text-slate-600"></div>
-                    <h1 class="font-bold text-gray-700">{{ convertRp(summarySales.total_profit) }}</h1>
+                    <h1 class="font-bold text-gray-700">{{ convertRp(summaryCount.total_profit) }}</h1>
                 </div>
             </div>
             <div class="flex-1 border rounded-md overflow-hidden">
@@ -164,13 +164,15 @@ import { ref } from 'vue';
 import { APISummaryProducts, APIsummarySales, APIsummaryTransaction, APITransactionDateByDate } from '../../api/apiChart';
 import useGetData from '../../composables/useGetData';
 
+const emit = defineEmits(['filter-date']);
 const { 1: fetchData } = useGetData();
 
 const summaryCount = ref({
     total_transaction: 0,
     total_sales: 0,
     total_quantity: 0,
-    total_product: 0
+    total_product: 0,
+    total_profit: 0
 });
 const summaryProduct = ref({
     total_unique_products: 0,
@@ -184,8 +186,9 @@ const summarySales = ref({
     total_buy_product: 0,
     total_buy_quantity: 0,
 });
-const startDate = ref(null);
-const endDate = ref(null);
+const today = formatDateInput(new Date());
+const startDate = ref(today);
+const endDate = ref(today);
 
 function getTransactionDateByDate() {
     fetchData(APITransactionDateByDate, false, true, (data) => {
@@ -201,7 +204,7 @@ function getTransactionDateByDate() {
 }
 
 function getSummaryData() {
-    fetchData(() => APIsummaryTransaction({ start: startDate.value, end: endDate.value }), false, true, (data) => {
+    fetchData(() => APIsummaryTransaction({ date_from: startDate.value, date_to: endDate.value }), false, true, (data) => {
         if (data) {
             summaryCount.value = data;
         }
@@ -211,6 +214,19 @@ function getSummaryData() {
             summaryProduct.value = data;
         }
     });
+}
+
+function onFilter() {
+    emit('filter-date', { date_from: startDate.value, date_to: endDate.value });
+    getSummaryData();
+    getSalesData();
+}
+
+function formatDateInput(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return year + '-' + month + '-' + day;
 }
 
 function getSalesData() {
@@ -225,3 +241,6 @@ function getSalesData() {
 getSummaryData();
 getSalesData();
 </script>
+
+
+

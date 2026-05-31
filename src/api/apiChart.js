@@ -81,3 +81,15 @@ export function APITopMedicines() {
   return axiosAuth.get("/chart/top-medicines");
 }
 
+export function APIVisitTimeAnalysis(params = {}) {
+  const urlParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      urlParams.append(key, value);
+    }
+  });
+
+  return axiosAuth.get(`/chart/visit-time-analysis?${urlParams.toString()}`);
+}
+

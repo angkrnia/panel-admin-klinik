@@ -1,7 +1,7 @@
-import { axiosAuth } from "../config/axios";
+﻿import { axiosAuth } from "../config/axios";
 
-export function summaryData(data) {
-  return axiosAuth.get("/chart/summary", data);
+export function summaryData(params = {}) {
+  return axiosAuth.get("/chart/summary", { params });
 }
 
 export function patientByDate() {
@@ -11,3 +11,6 @@ export function patientByDate() {
 export function historyByDate() {
   return axiosAuth.get("/chart/history-by-date");
 }
+
+
+

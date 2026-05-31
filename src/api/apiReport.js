@@ -1,7 +1,15 @@
-import { axiosDownload } from '@/config/axios'
+﻿import { axiosAuth, axiosDownload } from '@/config/axios'
 
-export function APIGetAllProducts() {
-  return axiosDownload.get('/report/download/products')
+export function APIGetDoctorFeeDetail(params = {}) {
+  return axiosAuth.get('/reports/doctor-fees/detail', { params })
+}
+
+export function APIExportDoctorFeeDetail(params = {}) {
+  return axiosDownload.get('/reports/doctor-fees/detail/export', { params })
+}
+
+export function APIGetAllProducts(params = {}) {
+  return axiosDownload.get('/report/download/products', { params })
 }
 
 export function APIGetStockInDetail(headerId) {
@@ -11,3 +19,4 @@ export function APIGetStockInDetail(headerId) {
 export function APIGetStockOpnameDetail(headerId) {
   return axiosDownload.get('/report/download/stock-opname/' + headerId)
 }
+

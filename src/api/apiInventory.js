@@ -53,6 +53,23 @@ export function APIdeleteCategory(id) {
     return axiosAuth.delete(`/categories/${id}`);
 }
 
+// CRUD SUPPLIERS
+export function listSuppliersPagination(pageIndex = 1, pageSize = pageSizeEnv, textSearch = "", newObj = {}) {
+    return axiosAuth.get(paramPaging("/suppliers", pageIndex, pageSize, textSearch, newObj));
+}
+
+export function APIstoreSupplier(data) {
+    return axiosAuth.post("/suppliers", data);
+}
+
+export function APIupdateSupplier(id, data) {
+    return axiosAuth.put(`/suppliers/${id}`, data);
+}
+
+export function APIdeleteSupplier(id) {
+    return axiosAuth.delete(`/suppliers/${id}`);
+}
+
 // CRUD MASTER OBAT
 export function listMedicinesPagination(pageIndex = 1, pageSize = pageSizeEnv, textSearch = "", newObj = {}) {
     return axiosAuth.get(paramPaging("/products", pageIndex, pageSize, textSearch, newObj));

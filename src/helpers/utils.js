@@ -1,11 +1,11 @@
-import { ElLoading, ElMessage } from "element-plus";
+﻿import { ElLoading, ElMessage } from "element-plus";
 import { useAppStore } from "../store/appStore";
 import Cookies from "js-cookie";
 import { axiosAuth, axiosDownload } from "../config/axios";
 import { jwtDecode } from "jwt-decode";
 import { getDokterSelect } from "../api/dokterApi";
 import { APIUploadPhotos } from "../api/apiHelper";
-import { Activity, Box, BoxSelect, Clipboard, Clock, CreditCard, Database, Droplets, FlaskRound, Flower, HeartPulse, Home, Layers, ListCheck, Package, ShoppingCart, Tag, Upload, User, UserCheck, Users } from "lucide-vue-next";
+import { Activity, Box, BoxSelect, Clipboard, Clock, CreditCard, Database, Droplets, FileText, FlaskRound, Flower, HeartPulse, Home, Layers, ListCheck, Package, Pill, ShoppingCart, Store, Tag, Upload, User, UserCheck, Users } from "lucide-vue-next";
 
 export const isObjectEmpty = (object) => {
     if (!object) return true;
@@ -409,11 +409,18 @@ export const allMenus = [
         hasChildren: false,
         icon: Clock,
     },
+    {
+        seq: 10,
+        title: "Resep Obat",
+        path: "/resep-obat",
+        hasChildren: false,
+        icon: Pill,
+    },
 ];
 
 export const adminMenus = [
     {
-        seq: 7,
+        seq: 9,
         title: "Inventory",
         path: "/inventory",
         hasChildren: true,
@@ -448,6 +455,13 @@ export const adminMenus = [
                 icon: Tag,
             },
             {
+                seq: 5,
+                title: "Supplier",
+                path: "/inventory/suppliers",
+                hasChildren: false,
+                icon: Store,
+            },
+            {
                 seq: 6,
                 title: "Riwayat Stok",
                 path: "/inventory/riwayat-stok",
@@ -479,6 +493,20 @@ export const adminMenus = [
             },
         ],
     },
+        {
+        seq: 11,
+        title: "Fee Dokter",
+        path: "/reports/doctor-fees",
+        hasChildren: false,
+        icon: FileText,
+    },
+    // {
+    //     seq: 122,
+    //     title: "Analisis Kunjungan",
+    //     path: "/reports/visit-time-analysis",
+    //     hasChildren: false,
+    //     icon: Activity,
+    // },
 ];
 
 export const getStatusType = (status) => {
@@ -539,3 +567,8 @@ export function highlight(name, query) {
     const re = new RegExp(`(${escapeRegExp(query)})`, 'ig')
     return escapeHtml(name).replace(re, '<span class="bg-yellow-200">$1</span>')
 }
+
+
+
+
+

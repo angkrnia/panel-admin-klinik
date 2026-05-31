@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <section>
         <TitleDashboard title="Dashboard Monitoring" />
     </section>
@@ -12,7 +12,7 @@
         </div>
 
         <!-- Dashboard pendapatan -->
-        <DashboardPendapatan />
+        <DashboardPendapatan @filter-date="onFilterDate" />
 
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <div class="flex-1 border rounded-md overflow-hidden">
@@ -230,6 +230,8 @@ const historyOptions = ref({
     },
 })
 const { 1: fetchData } = useGetData();
+const today = formatDateInput(new Date());
+const dashboardFilter = ref({ date_from: today, date_to: today });
 
 function getPatientByDate() {
     fetchData(patientByDate, false, true, (data) => {
@@ -245,8 +247,20 @@ function getHistoryByDate() {
     });
 }
 
+function onFilterDate(filter) {
+    dashboardFilter.value = filter;
+    getSummaryData();
+}
+
+function formatDateInput(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return year + '-' + month + '-' + day;
+}
+
 function getSummaryData() {
-    fetchData(summaryData, false, true, (data) => {
+    fetchData(() => summaryData(dashboardFilter.value), false, true, (data) => {
         if (data) {
             summaryCount.value = data;
         }

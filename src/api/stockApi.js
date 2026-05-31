@@ -19,6 +19,10 @@ export function APIdeleteStockEntry(id) {
     return axiosAuth.delete(`/stock-entries/${id}`);
 }
 
+export function APIGetSuppliersList() {
+    return axiosAuth.get("/suppliers-list");
+}
+
 export function APIStockEntryDetail(id) {
     return axiosAuth.get(`/stock-entries/${id}`);
 }

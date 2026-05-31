@@ -348,6 +348,7 @@ function onSaveEdit() {
 }
 
 async function onOpenQueue(row) {
+    openQueueDialog(1);
     getTipeLayanan(APISelectTipeLayanan, true, false);
     const data = await doctorListHelper();
     const currentDoctor = data.find((item) => item.is_on_duty === true);
@@ -358,7 +359,6 @@ async function onOpenQueue(row) {
     queueInfo.value.doctor = currentDoctor?.fullname;
     queueInfo.value.hasAllergy = row.has_allergy == 1 ? true : false;
     queueInfo.value.allergy = row.allergy;
-    openQueueDialog(1);
 }
 
 function onSaveQueue() {

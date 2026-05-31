@@ -1,35 +1,29 @@
 <template>
-    <nav class="fixed z-50 bg-primary w-full">
+    <nav ref="topMenuRef" class="fixed z-50 bg-primary w-full">
         <div class="flex items-start justify-between overflow-hidden h-full w-full shadow-lg">
-            <el-menu background-color="#2563eb" text-color="#f8fafc" active-text-color="#cbd5e1" :default-active="defaultActive" class="el-menu-demo" mode="horizontal" ellipsis
-                menu-trigger="click" close-on-click-outside :ellipsis-icon="Menu">
-                <template v-for="item in menuList" :key="item.path">
-                    <template v-if="item.hasChildren">
-                        <el-sub-menu :index="item.path">
-                            <template #title>
-                                <div class="flex items-center gap-1">
-                                    <component :is="item.icon" class="size-4" />
-                                    <p>{{ item.title }}</p>
-                                </div>
-                            </template>
-                            <template v-for="child in item.children" :key="child.path">
-                                <el-menu-item @click="$router.push(child.path)" :index="child.path">
-                                    <div class="flex items-center gap-1">
-                                        <component :is="child.icon" class="size-4" />
-                                        <p>{{ child.title }}</p>
-                                    </div>
-                                </el-menu-item>
-                            </template>
-                        </el-sub-menu>
-                    </template>
-                    <template v-else>
-                        <el-menu-item @click="$router.push(item.path)" :index="item.path">
+            <el-menu ref="menuRef" background-color="#2563eb" text-color="#f8fafc" active-text-color="#cbd5e1" :default-active="defaultActive" class="el-menu-demo" mode="horizontal" ellipsis
+                menu-trigger="click" close-on-click-outside :ellipsis-icon="Menu" @open="onOpenMenu" @select="onMenuItemClick">
+                <template v-for="item in menuList" :key="`menu-fragment-${item.path}`">
+                    <el-sub-menu v-if="item.hasChildren" :key="`menu-parent-${item.path}`" :index="item.path">
+                        <template #title>
                             <div class="flex items-center gap-1">
                                 <component :is="item.icon" class="size-4" />
                                 <p>{{ item.title }}</p>
                             </div>
+                        </template>
+                        <el-menu-item v-for="child in item.children" :key="`menu-child-${child.path}`" :index="child.path">
+                            <div class="flex items-center gap-1" @click.stop="onMenuItemClick(child.path)">
+                                <component :is="child.icon" class="size-4" />
+                                <p>{{ child.title }}</p>
+                            </div>
                         </el-menu-item>
-                    </template>
+                    </el-sub-menu>
+                    <el-menu-item v-else :key="`menu-item-${item.path}`" :index="item.path">
+                        <div class="flex items-center gap-1" @click.stop="onMenuItemClick(item.path)">
+                            <component :is="item.icon" class="size-4" />
+                            <p>{{ item.title }}</p>
+                        </div>
+                    </el-menu-item>
                 </template>
             </el-menu>
 
@@ -59,16 +53,37 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { onLogoutHandler } from '../../helpers/utils';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useAppStore } from '../../store/appStore';
 import { Menu } from 'lucide-vue-next';
 
 const route = useRoute();
+const router = useRouter();
 const defaultActive = ref(route.path);
 const appStore = useAppStore();
+const menuRef = ref(null);
+const topMenuRef = ref(null);
 
 const fullname = computed(() => appStore.profile.fullname);
 const role = computed(() => appStore.profile.role);
+
+function closeAllSubMenus() {
+    menuList.value
+        .filter((item) => item.hasChildren)
+        .forEach((item) => menuRef.value?.close(item.path));
+}
+
+function onOpenMenu(index) {
+    menuList.value
+        .filter((item) => item.hasChildren && item.path !== index)
+        .forEach((item) => menuRef.value?.close(item.path));
+}
+
+function onMenuItemClick(path) {
+    document.activeElement?.blur?.();
+    closeAllSubMenus();
+    router.push(path);
+}
 
 function onUpdatePassword() {
 

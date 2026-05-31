@@ -1,4 +1,4 @@
-export const routes = [
+﻿export const routes = [
     {
         path: "/",
         redirect: "/dashboard",
@@ -60,7 +60,23 @@ export const routes = [
                 name: "vital-sign",
                 component: () => import("@/views/VitalSign/VitalSignPage.vue"),
                 meta: {
-                    title: "Antrian",
+                    title: "Vital Sign",
+                },
+            },
+            {
+                path: "/resep-obat",
+                name: "resep-obat",
+                component: () => import("@/views/ResepObat/PrescriptionPrintSearchPage.vue"),
+                meta: {
+                    title: "Resep Obat",
+                },
+            },
+            {
+                path: "/resep-obat/cetak",
+                name: "resep-obat-cetak",
+                component: () => import("@/views/ResepObat/ResepObatPage.vue"),
+                meta: {
+                    title: "Cetak Resep Obat",
                 },
             },
             {
@@ -77,6 +93,21 @@ export const routes = [
                 component: () => import("@/views/Histories/HistoriesPage.vue"),
                 meta: {
                     title: "Riwayat Kunjunan",
+                },
+            },
+            {
+                path: "/reports/doctor-fees",
+                name: "report-fee-dokter",
+                component: () => import("@/views/Reports/DoctorFeeReport.vue"),
+                meta: {
+                    title: "Fee Dokter",
+                },
+            },            {
+                path: "/reports/visit-time-analysis",
+                name: "visit-time-analysis",
+                component: () => import("@/views/Reports/VisitTimeAnalysisPage.vue"),
+                meta: {
+                    title: "Analisis Waktu Kunjungan",
                 },
             },
             {
@@ -148,6 +179,14 @@ export const routes = [
                         },
                     },
                     {
+                        path: "suppliers",
+                        name: "inventory-suppliers",
+                        component: () => import("@/views/Inventory/SuppliersPage.vue"),
+                        meta: {
+                            title: "Suppliers",
+                        },
+                    },
+                    {
                         path: "riwayat-stok",
                         name: "riwayat-stok",
                         component: () => import("@/views/Inventory/RiwayatStok.vue"),
@@ -215,3 +254,5 @@ export const routes = [
         },
     },
 ];
+
+
