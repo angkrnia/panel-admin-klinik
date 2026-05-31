@@ -219,7 +219,7 @@ import { ref } from 'vue';
 import usePagination from '../../composables/usePagination';
 import { listAntrianPagination, tambahAntrian, updateVitalSign } from '../../api/antrianApi';
 import useAddData from '../../composables/useAddData';
-import { convertDate, convertRp, convertStatusName, dialogWidth, doctorListHelper, labelPosition } from '../../helpers/utils';
+import { convertDate, convertRp, convertStatusName, dialogWidth, doctorListHelper, labelPosition, messageInfo } from '../../helpers/utils';
 import { queueRule } from '../../rules/queueRule';
 import QueueInformation from '../../components/QueueInformation.vue';
 import useEditData from '../../composables/useEditData';
@@ -380,6 +380,11 @@ async function firstLoad() {
 }
 
 function onEditDialog(data) {
+    if (data?.status === 'completed') {
+        messageInfo('Antrian yang sudah selesai tidak bisa diedit.', 'warning');
+        return;
+    }
+
     getTipeLayanan(APISelectTipeLayanan, false, true, () => {
         data.temperature = data.history.temperature;
         data.height = data.history.height;
