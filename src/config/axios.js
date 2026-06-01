@@ -1,6 +1,7 @@
 import axios from "axios";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 import { getRefreshToken, setAuthentication } from "../helpers/utils";
+import Cookies from "js-cookie";
 
 export const baseUrl =
   import.meta.env.VITE_API_ENVIRONMENT == "production"
@@ -19,6 +20,45 @@ export const axiosAuth = axios.create({
   // withCredentials: true,
 });
 axiosAuth.defaults.headers.common["Content-Type"] = "application/json";
+
+function isLoginRequiredResponse(response) {
+  const data = response?.data;
+  return (
+    data?.code === 401 &&
+    data?.status === false &&
+    data?.message === "Anda harus login terlebih dahulu"
+  );
+}
+
+function redirectToLogin() {
+  Cookies.remove("TOKEN");
+  Cookies.remove("ACCESS");
+  localStorage.clear();
+
+  if (window.location.pathname !== "/login") {
+    window.location.href = "/login";
+  }
+}
+
+function handleLoginRequired(response) {
+  if (isLoginRequiredResponse(response)) {
+    redirectToLogin();
+    return true;
+  }
+
+  return false;
+}
+
+axiosAuth.interceptors.response.use(
+  (response) => {
+    if (handleLoginRequired(response)) return Promise.reject(response);
+    return response;
+  },
+  (error) => {
+    handleLoginRequired(error?.response);
+    return Promise.reject(error);
+  }
+);
 
 export const refreshAuthLogic = async () => {
   const refreshToken = getRefreshToken();
@@ -54,5 +94,16 @@ export const axiosDownload = axios.create({
   timeout: 600000,
   responseType: 'blob',
 })
+
+axiosDownload.interceptors.response.use(
+  (response) => {
+    if (handleLoginRequired(response)) return Promise.reject(response);
+    return response;
+  },
+  (error) => {
+    handleLoginRequired(error?.response);
+    return Promise.reject(error);
+  }
+);
 
 export default { axiosNoAuth, axiosAuth, axiosDownload, refreshAuthLogic };
