@@ -4,17 +4,25 @@ import { getMessaging, getToken, isSupported as isMessagingSupported, onMessage 
 import { ElNotification } from "element-plus";
 import { axiosAuth } from "../config/axios";
 
+const firebaseEnvironment = ["production", "prod"].includes(import.meta.env.VITE_API_ENVIRONMENT)
+    ? "PROD"
+    : "DEV";
+
+function getFirebaseEnv(key) {
+    return import.meta.env[`VITE_FIREBASE_${key}_${firebaseEnvironment}`];
+}
+
 const firebaseConfig = {
-    apiKey: "AIzaSyBNobSA29VuHuIBnxquspP68omOSTWmlC4",
-    authDomain: "dev-adiyasa.firebaseapp.com",
-    projectId: "dev-adiyasa",
-    storageBucket: "dev-adiyasa.firebasestorage.app",
-    messagingSenderId: "919205361636",
-    appId: "1:919205361636:web:bc8527c60bd637c49479f1",
-    measurementId: "G-S0VM63T3VY",
+    apiKey: getFirebaseEnv("API_KEY"),
+    authDomain: getFirebaseEnv("AUTH_DOMAIN"),
+    projectId: getFirebaseEnv("PROJECT_ID"),
+    storageBucket: getFirebaseEnv("STORAGE_BUCKET"),
+    messagingSenderId: getFirebaseEnv("MESSAGING_SENDER_ID"),
+    appId: getFirebaseEnv("APP_ID"),
+    measurementId: getFirebaseEnv("MEASUREMENT_ID"),
 };
 
-const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
+const vapidKey = getFirebaseEnv("VAPID_KEY");
 const app = initializeApp(firebaseConfig);
 
 let messaging = null;
@@ -39,7 +47,8 @@ async function getFirebaseMessaging() {
 async function registerServiceWorker() {
     if (!("serviceWorker" in navigator)) return null;
 
-    return navigator.serviceWorker.register("/firebase-messaging-sw.js");
+    const params = new URLSearchParams(firebaseConfig);
+    return navigator.serviceWorker.register(`/firebase-messaging-sw.js?${params.toString()}`);
 }
 
 async function saveFcmToken(token) {
